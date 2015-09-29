@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/tulip_plugins/!svn/ver/105/team_dev/archambault/topo3.1/fastOverlapRemoval/pairingheap
+END
+.dirstamp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/tulip_plugins/!svn/ver/105/team_dev/archambault/topo3.1/fastOverlapRemoval/pairingheap/.dirstamp
+END
+PairingHeap.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/tulip_plugins/!svn/ver/105/team_dev/archambault/topo3.1/fastOverlapRemoval/pairingheap/PairingHeap.cpp
+END
+PairingHeap.d
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/tulip_plugins/!svn/ver/105/team_dev/archambault/topo3.1/fastOverlapRemoval/pairingheap/PairingHeap.d
+END
+PairingHeap.h
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/tulip_plugins/!svn/ver/105/team_dev/archambault/topo3.1/fastOverlapRemoval/pairingheap/PairingHeap.h
+END
+dsexceptions.h
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/tulip_plugins/!svn/ver/105/team_dev/archambault/topo3.1/fastOverlapRemoval/pairingheap/dsexceptions.h
+END
