@@ -78,6 +78,15 @@ public:
     QList<QColor> getDataColor1() const;
     void setDataColor1(const QList<QColor> &value);
 
+    bool getAlgorithm() const;
+    void setAlgorithm(bool algorithm);
+
+    bool getLookAhead() const;
+    void setLookAhead(bool lookAhead);
+
+    bool getOtherColor() const;
+    void setOtherColor(bool otherColor);
+
 public slots:
     void animate();
 
@@ -93,6 +102,12 @@ private slots:
     void on_checkBox_toggled(bool checked);
 
     void windowClose();
+
+    void on_checkBox_2_toggled(bool checked);
+
+    void on_checkBox_3_toggled(bool checked);
+
+    void on_checkBox_4_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -125,6 +140,9 @@ private:
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     bool m_samesize=false;
+    bool m_algorithm=false;
+    bool m_lookAhead=false;
+    bool m_otherColor=false;
     int m_Windowsnumber=0;
 
 };

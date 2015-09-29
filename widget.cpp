@@ -77,7 +77,14 @@ Widget::~Widget()
 
 void Widget::paintEvent(QPaintEvent *event)
 {
-    this->dataColor=this->dataColor2;
+    if(this->getOtherColor()==false)
+    {
+        this->dataColor=this->dataColor2;
+    }
+    else
+    {
+        this->dataColor=this->dataColor1;
+    }
     QPainter painter(this);
     QFont font("font:Arial");
     font.setPixelSize(FONTSIZEA);
@@ -115,14 +122,31 @@ void Widget::paintEvent(QPaintEvent *event)
 
     if(this->getFinished())
     {
-        for(int i=0;i<this->regionListV()->size();i++)
+        if(this->getLookAhead()==false)
         {
-            drawSqTreeMap(this->regionListV()->at(i)->X(),
-                        this->regionListV()->at(i)->Y(),
-                        this->regionListV()->at(i)->getSize(),
-                        this->regionListV()->at(i)->getSize(),0,
-                        this->regionListV()->at(i)->healthData(),
-                        &painter);
+            for(int i=0;i<this->regionListV()->size();i++)
+            {
+
+                drawSqTreeMap(this->regionListV()->at(i)->X(),
+                            this->regionListV()->at(i)->Y(),
+                            this->regionListV()->at(i)->getSize(),
+                            this->regionListV()->at(i)->getSize(),0,
+                            this->regionListV()->at(i)->healthData(),
+                            &painter);
+            }
+        }
+        else
+        {
+            for(int i=0;i<this->regionListV()->size();i++)
+            {
+
+                drawSqTreeMap2(this->regionListV()->at(i)->X(),
+                            this->regionListV()->at(i)->Y(),
+                            this->regionListV()->at(i)->getSize(),
+                            this->regionListV()->at(i)->getSize(),0,
+                            this->regionListV()->at(i)->healthData(),
+                            &painter);
+            }
         }
         drawSign(&painter);
     }
@@ -130,7 +154,14 @@ void Widget::paintEvent(QPaintEvent *event)
 
 void Widget::animate()
 {
-    regionIncrease2();
+    if(this->getAlgorithm()==false)
+    {
+        regionIncrease();
+    }
+    else
+    {
+        regionIncrease2();
+    }
     index++;
     update();
 }
@@ -462,7 +493,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
          this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()>y)
       {
 
-          treeMap * t=new treeMap(0,this->regionListV()->at(i));
+          treeMap * t=new treeMap(0,this->getLookAhead(),this->getOtherColor(),this->regionListV()->at(i));
           t->setGeometry(10+510*this->Windowsnumber(),30,500,600);
           t->setAttribute(Qt::WA_DeleteOnClose);
           t->setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -557,7 +588,7 @@ void Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos,
         return;
     }
     qreal total=0;
-    qreal ratio=INFINITY;
+    qreal ratio=10000;
     qreal temp;
     qreal value=0;
     int number;
@@ -587,7 +618,7 @@ void Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos,
         for(int i=pos;i<pos+number;i++)
         {
             QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
-            p->fillRect(rect,dataColor2.at(i));
+            p->fillRect(rect,dataColor.at(i));
             tempx=tempx+data->at(i)*width/value;
         }
         y=y+value*length/total;
@@ -774,14 +805,21 @@ void Widget::on_start_pressed()
     }
     count=0;
     index=0;
-    timer->start();
+    if(this->getAlgorithm()==false)
+    {
+        timer->start();
+    }
+    else
+    {
+        timer->start(100);
+    }
 }
 
 
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("H:/qtproject/centerp.csv");
+    inFlow.open("D:/qtproject/Cmap/centerp.csv");
     string input;
     int i = 0;
 
@@ -970,6 +1008,36 @@ void Widget::overlapRemove()
         this->regionListV()->at(i)->setY(nodeRect[i]->getMinY());
     }
 }
+
+bool Widget::getOtherColor() const
+{
+    return m_otherColor;
+}
+
+void Widget::setOtherColor(bool otherColor)
+{
+    m_otherColor = otherColor;
+}
+
+bool Widget::getLookAhead() const
+{
+    return m_lookAhead;
+}
+
+void Widget::setLookAhead(bool lookAhead)
+{
+    m_lookAhead = lookAhead;
+}
+
+bool Widget::getAlgorithm() const
+{
+    return m_algorithm;
+}
+
+void Widget::setAlgorithm(bool algorithm)
+{
+    m_algorithm = algorithm;
+}
 QList<QColor> Widget::getDataColor1() const
 {
     return dataColor1;
@@ -1026,4 +1094,41 @@ void Widget::on_checkBox_toggled(bool checked)
 void Widget::windowClose()
 {
     this->setWindowsnumber(this->Windowsnumber()-1);
+}
+
+void Widget::on_checkBox_2_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setAlgorithm(true);
+    }
+    else
+    {
+        this->setAlgorithm(false);
+    }
+}
+
+void Widget::on_checkBox_3_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setLookAhead(true);
+    }
+    else
+    {
+        this->setLookAhead(false);
+    }
+
+}
+
+void Widget::on_checkBox_4_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setOtherColor(true);
+    }
+    else
+    {
+        this->setOtherColor(false);
+    }
 }

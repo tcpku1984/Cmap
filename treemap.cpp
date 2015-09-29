@@ -1,11 +1,13 @@
 #include "treemap.h"
 #include "ui_treemap.h"
 
-treeMap::treeMap(QWidget *parent,Region *region) :
+treeMap::treeMap(QWidget *parent, bool treemap, bool color, Region *region) :
     QWidget(parent),
     ui(new Ui::treeMap)
 {
     ui->setupUi(this);
+    this->setLookAhead(treemap);
+    this->setOtherColor(color);
     this->setRegion(region);
     dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
              <<QColor("#b2df8a")<<QColor("#33a02c")
@@ -45,7 +47,14 @@ treeMap::~treeMap()
 
 void treeMap::paintEvent(QPaintEvent *event)
 {
-    this->dataColor=this->dataColor2;
+    if(this->getOtherColor()==true)
+    {
+        this->dataColor=this->dataColor1;
+    }
+    else
+    {
+        this->dataColor=this->dataColor2;
+    }
     QPainter painter(this);
     QFont font("font:Arial");
     painter.setFont(font);
@@ -54,7 +63,14 @@ void treeMap::paintEvent(QPaintEvent *event)
             +this->region()->ccgCode()+"  "
             +QString::number(this->region()->poplation())+"  ";
     painter.drawText(rect,temp);
-    drawSqTreeMap2(0,100,500,500,0,this->region()->healthData(),&painter);
+    if(this->getLookAhead()==true)
+    {
+        drawSqTreeMap2(0,100,500,500,0,this->region()->healthData(),&painter);
+    }
+    else
+    {
+        drawSqTreeMap(0,100,500,500,0,this->region()->healthData(),&painter);
+    }
 
 }
 Region *treeMap::region() const
@@ -74,7 +90,7 @@ void treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos
         return;
     }
     qreal total=0;
-    qreal ratio=INFINITY;
+    qreal ratio=10000;
     qreal temp;
     qreal value=0;
     int number;
@@ -266,6 +282,26 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<float> *da
     return ratio;
 
 
+}
+
+bool treeMap::getOtherColor() const
+{
+    return m_otherColor;
+}
+
+void treeMap::setOtherColor(bool otherColor)
+{
+    m_otherColor = otherColor;
+}
+
+bool treeMap::getLookAhead() const
+{
+    return m_lookAhead;
+}
+
+void treeMap::setLookAhead(bool lookAhead)
+{
+    m_lookAhead = lookAhead;
 }
 
 

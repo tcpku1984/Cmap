@@ -13,7 +13,7 @@ class treeMap : public QWidget
     Q_OBJECT
 
 public:
-    explicit treeMap(QWidget *parent = 0,Region* region=NULL);
+    explicit treeMap(QWidget *parent = 0,bool treemap = false,bool color = false,Region* region=NULL);
     ~treeMap();
     void paintEvent(QPaintEvent * event);
 
@@ -28,6 +28,12 @@ public:
     QList<QColor> getDataColor2() const;
     void setDataColor2(const QList<QColor> &value);
 
+    bool getLookAhead() const;
+    void setLookAhead(bool lookAhead);
+
+    bool getOtherColor() const;
+    void setOtherColor(bool otherColor);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -38,6 +44,8 @@ private:
     QList<QColor> dataColor;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
+    bool m_lookAhead=false;
+    bool m_otherColor=false;
 
 };
 
