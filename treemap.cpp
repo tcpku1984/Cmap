@@ -56,13 +56,13 @@ void treeMap::paintEvent(QPaintEvent *event)
         this->dataColor=this->dataColor2;
     }
     QPainter painter(this);
-    QFont font("font:Arial");
+    QFont font("font:Arial",12,QFont::Bold);
     painter.setFont(font);
     QRect rect=QRect(0,0,500,100);
-    QString temp=this->region()->ccgName()
+    QString tempString=this->region()->ccgName()
             +this->region()->ccgCode()+"  "
             +QString::number(this->region()->poplation())+"  ";
-    painter.drawText(rect,temp);
+
     if(this->getLookAhead()==true)
     {
         drawSqTreeMap2(0,100,500,500,0,this->region()->healthData(),&painter);
@@ -71,6 +71,9 @@ void treeMap::paintEvent(QPaintEvent *event)
     {
         drawSqTreeMap(0,100,500,500,0,this->region()->healthData(),&painter);
     }
+    tempString+="Average aspect ratio "+QString::number(this->getTotalAsp()/this->region()->healthData()->size());
+    painter.drawText(rect,tempString);
+
 
 }
 Region *treeMap::region() const
@@ -85,6 +88,7 @@ void treeMap::setRegion(Region *region)
 void treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
 {
     //p->setPen(Qt::white);
+    p->setFont(QFont ("font:Arial",10,QFont::Bold));
     if(pos>=data->size())
     {
         return;
@@ -112,6 +116,8 @@ void treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos
     }
     if(true)//if(length>=width)
     {
+        temp=calRatio(width,length,pos,number-1,data);
+        this->setTotalAsp(this->getTotalAsp()+this->getRatioTemp());
         qreal tempx=x;
         for(int i=pos;i<pos+number;i++)
         {
@@ -172,7 +178,7 @@ void treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int po
     {
         temp1=calRatio(width,length,pos,number,data);
         temp2=calRatio2(width,length,pos,number,data);
-        cout<<"ratio1 "<<temp1<<"  ratio2 "<<temp2<<endl;
+        //cout<<"ratio1 "<<temp1<<"  ratio2 "<<temp2<<endl;
         if(temp1>temp2)
         {
             break;
@@ -180,6 +186,8 @@ void treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int po
     }
     if(true)//if(length>=width)
     {
+        temp1=calRatio(width,length,pos,number-1,data);
+        this->setTotalAsp(this->getTotalAsp()+this->getRatioTemp());
         qreal tempx=x;
         for(int i=pos;i<pos+number;i++)
         {
@@ -196,7 +204,7 @@ void treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int po
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
-        drawSqTreeMap(x,y,width,length,pos,data,p);
+        drawSqTreeMap2(x,y,width,length,pos,data,p);
     }
 }
 
@@ -244,6 +252,7 @@ qreal treeMap::calRatio(qreal w, qreal l, int pos, int number, QList<float> *dat
         }
 
     }*/
+    this->setRatioTemp(sum);
     ratio=sum/(number+1);
     //cout<<"number:" <<number+1<<" ratio: "<<ratio<<endl;
     return ratio;
@@ -278,10 +287,31 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<float> *da
         }
     }
     sum+=w*total/(data->at(pos+number)*l);
+    this->setRatioTemp(sum);
     ratio=sum/(number+1);
     return ratio;
 
 
+}
+
+qreal treeMap::getTotalAsp() const
+{
+    return m_totalAsp;
+}
+
+void treeMap::setTotalAsp(const qreal &totalAsp)
+{
+    m_totalAsp = totalAsp;
+}
+
+qreal treeMap::getRatioTemp() const
+{
+    return m_ratioTemp;
+}
+
+void treeMap::setRatioTemp(const qreal &ratioTemp)
+{
+    m_ratioTemp = ratioTemp;
 }
 
 bool treeMap::getOtherColor() const

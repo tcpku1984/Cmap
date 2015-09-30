@@ -748,7 +748,7 @@ void Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
-        drawSqTreeMap(x,y,width,length,pos,data,p);
+        drawSqTreeMap2(x,y,width,length,pos,data,p);
     }
 }
 

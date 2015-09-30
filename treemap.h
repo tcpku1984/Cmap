@@ -34,6 +34,12 @@ public:
     bool getOtherColor() const;
     void setOtherColor(bool otherColor);
 
+    qreal getRatioTemp() const;
+    void setRatioTemp(const qreal &ratioTemp);
+
+    qreal getTotalAsp() const;
+    void setTotalAsp(const qreal &totalAsp);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -46,6 +52,8 @@ private:
     QList<QColor> dataColor2;
     bool m_lookAhead=false;
     bool m_otherColor=false;
+    qreal m_ratioTemp=0;
+    qreal m_totalAsp=0;
 
 };
 
