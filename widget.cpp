@@ -726,7 +726,7 @@ void Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos
     {
         temp1=calRatio(width,length,pos,number,data);
         temp2=calRatio2(width,length,pos,number,data);
-        cout<<"ratio1 "<<temp1<<"  ratio2 "<<temp2<<endl;
+        //cout<<"ratio1 "<<temp1<<"  ratio2 "<<temp2<<endl;
         if(temp1>temp2)
         {
             break;
@@ -819,7 +819,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp.csv");
+    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -855,7 +855,8 @@ void Widget::fileRead()
             tempList->append(b);
         }
         temp->setHealthData(tempList);
-
+        getline(inFlow,input, ',');
+        getline(inFlow,input, ',');
         int a;
         inFlow>>a;
         addPopulation(a);
@@ -1009,6 +1010,16 @@ void Widget::overlapRemove()
     }
 }
 
+QList<AreaTeam *> *Widget::getAreaGroup() const
+{
+    return m_AreaGroup;
+}
+
+void Widget::setAreaGroup(QList<AreaTeam *> *AreaGroup)
+{
+    m_AreaGroup = AreaGroup;
+}
+
 bool Widget::getOtherColor() const
 {
     return m_otherColor;
@@ -1017,6 +1028,11 @@ bool Widget::getOtherColor() const
 void Widget::setOtherColor(bool otherColor)
 {
     m_otherColor = otherColor;
+}
+
+int Widget::searchArea(QString areaCode)
+{
+
 }
 
 bool Widget::getLookAhead() const

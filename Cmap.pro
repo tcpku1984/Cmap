@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     generate-constraints.cpp \
     remove_rectangle_overlap.cpp \
     solve_VPSC.cpp \
-    variable.cpp
+    variable.cpp \
+    areateam.cpp
 
 HEADERS  += widget.h \
     region.h \
@@ -36,7 +37,8 @@ HEADERS  += widget.h \
     placement_SolveVPSC.h \
     remove_rectangle_overlap.h \
     solve_VPSC.h \
-    variable.h
+    variable.h \
+    areateam.h
 
 FORMS    += widget.ui \
     treemap.ui

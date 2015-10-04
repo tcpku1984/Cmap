@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QWidget>
 #include<QGraphicsScene>
+#include<areateam.h>
 #include<region.h>
 #include<treemap.h>
 #include<iostream>
@@ -86,6 +87,11 @@ public:
 
     bool getOtherColor() const;
     void setOtherColor(bool otherColor);
+    int searchArea(QString  areaCode);
+
+
+    QList<AreaTeam *> *getAreaGroup() const;
+    void setAreaGroup(QList<AreaTeam *> *AreaGroup);
 
 public slots:
     void animate();
@@ -144,7 +150,7 @@ private:
     bool m_lookAhead=false;
     bool m_otherColor=false;
     int m_Windowsnumber=0;
-
+    QList <AreaTeam *>  * m_AreaGroup=new QList<AreaTeam *>;
 };
 
 #endif // WIDGET_H

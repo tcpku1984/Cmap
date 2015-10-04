@@ -65,6 +65,7 @@ void treeMap::paintEvent(QPaintEvent *event)
 
     if(this->getLookAhead()==true)
     {
+        //cout<<"looking aheadddddddddddddddddddddddddddddddddddddddddddd"<<endl;
         drawSqTreeMap2(0,100,500,500,0,this->region()->healthData(),&painter);
     }
     else
@@ -178,6 +179,7 @@ void treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int po
     {
         temp1=calRatio(width,length,pos,number,data);
         temp2=calRatio2(width,length,pos,number,data);
+        cout<<" pos "<<pos<<" number "<<number<<endl;
         //cout<<"ratio1 "<<temp1<<"  ratio2 "<<temp2<<endl;
         if(temp1>temp2)
         {
