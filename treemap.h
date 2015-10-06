@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <widget.h>
 #include<region.h>
+#include<rectholder.h>
 namespace Ui {
 class treeMap;
 }
@@ -43,8 +44,8 @@ public:
 private:
     Ui::treeMap *ui;
     Region *m_region;
-    void drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
-    void drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
+    QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
+    QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<float> *data);
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<float> *data);
     QList<QColor> dataColor;

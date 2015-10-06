@@ -46,6 +46,7 @@ Widget::Widget(QWidget *parent) :
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
+    this->setColorFont(false);
 
 
 
@@ -56,6 +57,7 @@ Widget::Widget(QWidget *parent) :
     for(int i=0; i<this->getAreaGroup()->size();i++)
     {
         this->getAreaGroup()->at(i)->initi();
+        //cout<<this->getAreaGroup()->at(i)->PopulationList()->size()<<endl;
         /*
         cout<<"area Code : "<<this->getAreaGroup()->at(i)->AreaCode().toStdString()<<endl;
         cout<<"ccg number :"<<this->getAreaGroup()->at(i)->RegionList()->size()<<endl;
@@ -199,6 +201,7 @@ void Widget::paintCCg(QPainter *painter)
 
 void Widget::paintArea(QPainter *painter)
 {
+    //cout<<"paintArea"<<endl;
     for(int i=0;i<this->getAreaGroup()->size();i++)
     {
         painter->drawRect(
@@ -209,15 +212,40 @@ void Widget::paintArea(QPainter *painter)
     }
     if(this->getFinished()==true)
     {
+        //cout<<"drawing"<<endl;
         for(int i=0;i<this->getAreaGroup()->size();i++)
         {
-            cout<<"draw Treemap: "<<i<<endl;
-            drawSqTreeMap(this->getAreaGroup()->at(i)->X(),
+            //cout<<"draw Treemap: "<<i<<endl;
+           QList<rectHolder *> *rectList;
+            rectList=drawSqTreeMap(this->getAreaGroup()->at(i)->X(),
                           this->getAreaGroup()->at(i)->Y(),
                           this->getAreaGroup()->at(i)->Size(),
                           this->getAreaGroup()->at(i)->Size(),0,
                           this->getAreaGroup()->at(i)->PopulationList(),
-                          painter);
+                          painter);        
+            cout<<"i: "<<i<<" popluationlist "
+               <<this->getAreaGroup()->at(i)->PopulationList()->size()
+              <<" size "<<rectList->size()<<endl;
+            cout<<"region list "<<this->getAreaGroup()->at(i)->RegionList()->size()<<endl;
+
+            for(int j=0;j<rectList->size();j++)
+            {
+                cout<<j<<endl;
+                qreal x=rectList->at(j)->X();
+                qreal y=rectList->at(j)->Y();
+                qreal w=rectList->at(j)->W();
+                qreal l=rectList->at(j)->L();
+                //cout<<"x :"<<x<<" y :"<<y<<" w: "<<w<<" l: "<<l<<endl;
+                //cout<<this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->size()<<endl;
+                drawSqTreeMap(x,y,w,l,0,
+                             this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData(),painter);
+               /* drawSqTreeMap(rectList->at(j)->x(),rectList->at(j)->y(),
+                              rectList->at(j)->width(),rectList->at(j)->height(),
+                              0,this->getAreaGroup()->at(i)
+                              ->RegionList()->at(j)->healthData(),
+                              painter);
+                              */
+            }
         }
         drawSign(painter);
     }
@@ -622,11 +650,12 @@ void Widget::mousePressEvent(QMouseEvent *e)
           {
               temp->at(j)->setColor(0);
           }
-
+          update();
           break;
+
       }
     }
-    update();
+
 
 }
 
@@ -649,10 +678,12 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
           {
               temp->at(j)->setColor(1);
           }
+          update();
           break;
+
       }
     }
-    update();
+
 
 
 }
@@ -696,13 +727,14 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 */
 
 
-void Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
+QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
 {
    // cout<<" draw sq treemap called"<<endl;
     if(pos>=data->size())
     {
-        return;
+        return NULL;
     }
+    QList<rectHolder *> *rectList=new QList<rectHolder *>;
     qreal total=0;
     qreal ratio=10000;
     qreal temp;
@@ -734,13 +766,21 @@ void Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos,
         for(int i=pos;i<pos+number;i++)
         {
             QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
-            //p->fillRect(rect,dataColor.at(i));
+            //cout<<"new length"<<value*length/total<<endl;
+            rectList->append(new rectHolder(tempx,y,data->at(i)*width/value,value*length/total));
+
+            //p->drawRect(rect);
+            p->fillRect(rect,dataColor.at(i));
             tempx=tempx+data->at(i)*width/value;
         }
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
-        drawSqTreeMap(x,y,width,length,pos,data,p);
+        if(drawSqTreeMap(x,y,width,length,pos,data,p)!=NULL)
+        {
+            rectList->append(*drawSqTreeMap(x,y,width,length,pos,data,p));
+        }
+        return rectList;
     }
     /*
     else
@@ -948,7 +988,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
+    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1096,8 +1136,13 @@ void Widget::setRegionListV(QList<Region *> *regionListV)
 
 void Widget::drawSign(QPainter *p)
 {
-    QFont font("font:Arial");
-    font.setPixelSize(FONTSIZEB);
+    QFont font;
+    if(this->getColorFont()==false)
+    {
+     QFont font1("font:Arial",12,QFont::Bold);
+
+     font=font1;
+    }
     p->setFont(font);
     p->setPen(Qt::white);
 
@@ -1186,6 +1231,16 @@ int Widget::searchAreaCode(QString code)
         }
     }
     return -1;
+}
+
+bool Widget::getColorFont() const
+{
+    return colorFont;
+}
+
+void Widget::setColorFont(bool value)
+{
+    colorFont = value;
 }
 
 bool Widget::getGroup() const
@@ -1343,4 +1398,17 @@ void Widget::on_checkBox_5_toggled(bool checked)
         this->setGroup(false);
     }
 
+}
+
+void Widget::on_checkBox_6_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setColorFont(true);
+    }
+    else
+    {
+        this->setColorFont(false);
+    }
+    update();
 }

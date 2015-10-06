@@ -19,6 +19,7 @@ void AreaTeam::addRegion(Region *region)
 
 void AreaTeam::initi()
 {
+    m_PopulationList=new QList<float>;
     this->setPopulation(0);
     this->setSize(1);
     this->setStopIncrease(false);

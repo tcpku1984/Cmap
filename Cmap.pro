@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     remove_rectangle_overlap.cpp \
     solve_VPSC.cpp \
     variable.cpp \
-    areateam.cpp
+    areateam.cpp \
+    rectholder.cpp
 
 HEADERS  += widget.h \
     region.h \
@@ -38,7 +39,8 @@ HEADERS  += widget.h \
     remove_rectangle_overlap.h \
     solve_VPSC.h \
     variable.h \
-    areateam.h
+    areateam.h \
+    rectholder.h
 
 FORMS    += widget.ui \
     treemap.ui

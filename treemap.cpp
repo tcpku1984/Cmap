@@ -28,17 +28,17 @@ treeMap::treeMap(QWidget *parent, bool treemap, bool color, Region *region) :
     for(int i=4;i<6;i++)
     {
         this->dataColor2.append(QColor::fromHsvF((qreal(90)+qreal(i-4)*90/qreal(2))/qreal(360),1,1));
-        cout<<(qreal(90)+qreal(i)*90/qreal(2))<<endl;
+        //cout<<(qreal(90)+qreal(i)*90/qreal(2))<<endl;
     }
     for(int i=6;i<10;i++)
     {
         this->dataColor2.append(QColor::fromHsvF((qreal(180)+qreal(i-6)*90/qreal(4))/qreal(360),1,1));
-        cout<<(qreal(180)+qreal(i)*90/qreal(4))<<endl;
+        //cout<<(qreal(180)+qreal(i)*90/qreal(4))<<endl;
     }
     for(int i=10;i<14;i++)
     {
         this->dataColor2.append(QColor::fromHsvF((qreal(270)+qreal(i-10)*90/qreal(4))/qreal(360),1,1));
-        cout<<(qreal(270)+qreal(i)*90/qreal(4))<<endl;
+        //cout<<(qreal(270)+qreal(i)*90/qreal(4))<<endl;
 
     }
 }
@@ -66,15 +66,28 @@ void treeMap::paintEvent(QPaintEvent *event)
     QString tempString=this->region()->ccgName()
             +this->region()->ccgCode()+"  "
             +QString::number(this->region()->poplation())+"  ";
-
+    QList <rectHolder *> * rectlist;
     if(this->getLookAhead()==true)
     {
         //cout<<"looking aheadddddddddddddddddddddddddddddddddddddddddddd"<<endl;
-        drawSqTreeMap2(0,100,500,500,0,this->region()->healthData(),&painter);
+        rectlist=drawSqTreeMap2(0,100,500,500,0,this->region()->healthData(),&painter);
     }
     else
     {
-        drawSqTreeMap(0,100,500,500,0,this->region()->healthData(),&painter);
+        rectlist=drawSqTreeMap(0,100,500,500,0,this->region()->healthData(),&painter);
+    }
+    this->setTotalAsp(0);
+    qreal tempAsp;
+    for(int i=0;i<rectlist->size();i++)
+    {
+        cout<<rectlist->at(i)->W()<<" "<<rectlist->at(i)->L()<<endl;
+        tempAsp=rectlist->at(i)->W()/rectlist->at(i)->L();
+
+        if(tempAsp<1)
+        {
+            tempAsp=1/tempAsp;
+        }
+        this->setTotalAsp(this->getTotalAsp()+tempAsp);
     }
     tempString+="Average aspect ratio "+QString::number(this->getTotalAsp()/this->region()->healthData()->size());
     painter.drawText(rect,tempString);
@@ -90,14 +103,15 @@ void treeMap::setRegion(Region *region)
 {
     m_region = region;
 }
-void treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
+QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
 {
     //p->setPen(Qt::white);
     p->setFont(QFont ("font:Arial",10,QFont::Bold));
     if(pos>=data->size())
     {
-        return;
+        return NULL;
     }
+    QList<rectHolder *> *rectList=new QList<rectHolder *>;
     qreal total=0;
     qreal ratio=10000;
     qreal temp;
@@ -131,6 +145,8 @@ void treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos
         for(int i=pos;i<pos+number;i++)
         {
             QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
+            rectList->append(
+                        new rectHolder(tempx,y,data->at(i)*width/value,value*length/total));
             p->fillRect(rect,dataColor.at(i));
 
             p->drawText(rect,QString::number(data->at(i)));
@@ -139,7 +155,11 @@ void treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
-        drawSqTreeMap(x,y,width,length,pos,data,p);
+        if(drawSqTreeMap(x,y,width,length,pos,data,p)!=NULL)
+        {
+            rectList->append(*drawSqTreeMap(x,y,width,length,pos,data,p));
+        }
+        return rectList;
     }
     /*
     else
@@ -164,12 +184,13 @@ void treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos
     //p->setPen(Qt::black);
 }
 
-void treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
+QList <rectHolder *> *  treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
 {
     if(pos>=data->size())
     {
-        return;
+        return NULL;
     }
+    QList<rectHolder *> *rectList=new QList<rectHolder *>;
     qreal total=0;
     qreal temp1;
     qreal temp2;
@@ -202,6 +223,8 @@ void treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int po
         for(int i=pos;i<pos+number;i++)
         {
             QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
+            rectList->append(new rectHolder(tempx,y,data->at(i)*width/value,value*length/total));
+
             p->fillRect(rect,dataColor.at(i));
 
             p->drawText(rect,QString::number(data->at(i)));
@@ -210,7 +233,11 @@ void treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int po
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
-        drawSqTreeMap2(x,y,width,length,pos,data,p);
+        if(drawSqTreeMap(x,y,width,length,pos,data,p)!=NULL)
+        {
+            rectList->append(*drawSqTreeMap2(x,y,width,length,pos,data,p));
+        }
+        return rectList;
     }
 }
 
