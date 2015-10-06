@@ -31,8 +31,39 @@ Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {
+    m_regionListV= new QList<Region *>;
+    m_regionListH= new QList<Region *>;
+    index=0;
+    m_increaseSize=1;
+    m_regionMaxsize=10;
+    m_searchRange=212;
+    m_population=0;
+    finished=false;
+    m_samesize=false;
+    m_algorithm=false;
+    m_lookAhead=false;
+    m_otherColor=false;
+    m_Windowsnumber=0;
+    m_AreaGroup=new QList<AreaTeam *>;
+    this->setGroup(false);
+
+
+
     ui->setupUi(this);
     fileRead();
+    cout<<"ccg size:"<<this->regionListH()->size()<<endl;
+    cout<<"area number :"<<this->getAreaGroup()->size()<<endl;
+    for(int i=0; i<this->getAreaGroup()->size();i++)
+    {
+        this->getAreaGroup()->at(i)->initi();
+        /*
+        cout<<"area Code : "<<this->getAreaGroup()->at(i)->AreaCode().toStdString()<<endl;
+        cout<<"ccg number :"<<this->getAreaGroup()->at(i)->RegionList()->size()<<endl;
+        for(int j=0;j<this->getAreaGroup()->at(i)->RegionList()->size();j++)
+        {
+            cout<<"ccg code :"<<this->getAreaGroup()->at(i)->RegionList()->at(j)->ccgCode().toStdString()<<endl;
+        }*/
+    }
     qSort(this->regionListH()->begin(),this->regionListH()->end(),
           horizontalOrder);
     qSort(this->regionListV()->begin(),this->regionListV()->end(),
@@ -86,34 +117,48 @@ void Widget::paintEvent(QPaintEvent *event)
         this->dataColor=this->dataColor1;
     }
     QPainter painter(this);
+    if(this->getGroup()==false)
+    {
+       paintCCg(&painter);
+    }
+    else
+    {
+        paintArea(&painter);
+    }
+
+
+}
+
+void Widget::paintCCg(QPainter *painter)
+{
     QFont font("font:Arial");
     font.setPixelSize(FONTSIZEA);
-    painter.setFont(font);
+    painter->setFont(font);
 
     int z=this->regionListV()->size()/HALF;
-    painter.setPen(Qt::green);
-    painter.drawLine(QPoint(300,this->regionListV()->at(z)->Y()),
+    painter->setPen(Qt::green);
+    painter->drawLine(QPoint(300,this->regionListV()->at(z)->Y()),
                      QPoint(1720,this->regionListV()->at(z)->Y()));
-    painter.drawLine(QPoint(this->regionListH()->at(z)->X(),0),
+    painter->drawLine(QPoint(this->regionListH()->at(z)->X(),0),
                      QPoint(this->regionListH()->at(z)->X(),1920));
-    painter.setPen(Qt::black);
+    painter->setPen(Qt::black);
     for(int i=0;i<this->regionListV()->size();i++)
     {
         if(this->regionListV()->at(i)->color()==1)
         {
-            painter.setBrush(Qt::red);
+            painter->setBrush(Qt::red);
         }
         else if(this->regionListV()->at(i)->color()==2)
         {
-            painter.setBrush(Qt::green);
+            painter->setBrush(Qt::green);
         }
         else
         {
-            painter.setBrush(Qt::blue);
+            painter->setBrush(Qt::blue);
         }
 
 
-        painter.drawRect(
+        painter->drawRect(
                     QRectF(this->regionListV()->at(i)->X(),
                            this->regionListV()->at(i)->Y(),
                            this->regionListV()->at(i)->getSize(),
@@ -132,7 +177,7 @@ void Widget::paintEvent(QPaintEvent *event)
                             this->regionListV()->at(i)->getSize(),
                             this->regionListV()->at(i)->getSize(),0,
                             this->regionListV()->at(i)->healthData(),
-                            &painter);
+                            painter);
             }
         }
         else
@@ -145,10 +190,22 @@ void Widget::paintEvent(QPaintEvent *event)
                             this->regionListV()->at(i)->getSize(),
                             this->regionListV()->at(i)->getSize(),0,
                             this->regionListV()->at(i)->healthData(),
-                            &painter);
+                            painter);
             }
         }
-        drawSign(&painter);
+        drawSign(painter);
+    }
+}
+
+void Widget::paintArea(QPainter *painter)
+{
+    for(int i=0;i<this->getAreaGroup()->size();i++)
+    {
+        painter->drawRect(
+                    QRectF(this->getAreaGroup()->at(i)->X(),
+                           this->getAreaGroup()->at(i)->Y(),
+                           this->getAreaGroup()->at(i)->Size(),
+                           this->getAreaGroup()->at(i)->Size()));
     }
 }
 
@@ -542,9 +599,9 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 
 }
 
-void Widget::drawTreeMap(qreal x, qreal y, qreal width, qreal length, QList<float> *data, QPainter *p)
+/*void Widget::drawTreeMap(qreal x, qreal y, qreal width, qreal length, QList<float> *data, QPainter *p)
 {
-/*
+
    qreal total=0;
    for(int i=0;i<data->size();i++)
    {
@@ -577,9 +634,9 @@ void Widget::drawTreeMap(qreal x, qreal y, qreal width, qreal length, QList<floa
            total=total-data->at(i);
        }
    }
-
-*/
 }
+*/
+
 
 void Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
 {
@@ -840,6 +897,7 @@ void Widget::fileRead()
         //cout<<i<<"region"<<endl;
         QList<float> *tempList=new QList<float>;
         Region * temp=new Region();
+        AreaTeam * areaTemp;
         getline(inFlow,input, ',');
         temp->setCcgCode(QString::fromStdString(input));
         getline(inFlow,input, ',');
@@ -856,7 +914,22 @@ void Widget::fileRead()
         }
         temp->setHealthData(tempList);
         getline(inFlow,input, ',');
-        getline(inFlow,input, ',');
+        QString areaCode=QString::fromStdString(input);
+        int index=this->searchAreaCode(areaCode);
+        if(index<0)
+        {
+            areaTemp=new AreaTeam();
+            areaTemp->setAreaCode(areaCode);
+            getline(inFlow,input, ',');
+            areaTemp->setAreaName(QString::fromStdString(input));
+            this->getAreaGroup()->append(areaTemp);
+        }
+        else
+        {
+            areaTemp=this->getAreaGroup()->at(index);
+            getline(inFlow,input, ',');
+        }
+
         int a;
         inFlow>>a;
         addPopulation(a);
@@ -865,6 +938,7 @@ void Widget::fileRead()
         temp->setY(-temp->Longti()/RATHV+VV);
         this->regionListH()->append(temp);
         this->regionListV()->append(temp);
+        areaTemp->addRegion(temp);
         i++;
 
     }
@@ -1010,6 +1084,28 @@ void Widget::overlapRemove()
     }
 }
 
+int Widget::searchAreaCode(QString code)
+{
+    for(int i=0;i<this->getAreaGroup()->size();i++)
+    {
+        if(this->getAreaGroup()->at(i)->AreaCode()==code)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool Widget::getGroup() const
+{
+    return m_group;
+}
+
+void Widget::setGroup(bool group)
+{
+    m_group = group;
+}
+
 QList<AreaTeam *> *Widget::getAreaGroup() const
 {
     return m_AreaGroup;
@@ -1028,11 +1124,6 @@ bool Widget::getOtherColor() const
 void Widget::setOtherColor(bool otherColor)
 {
     m_otherColor = otherColor;
-}
-
-int Widget::searchArea(QString areaCode)
-{
-
 }
 
 bool Widget::getLookAhead() const
@@ -1147,4 +1238,17 @@ void Widget::on_checkBox_4_toggled(bool checked)
     {
         this->setOtherColor(false);
     }
+}
+
+void Widget::on_checkBox_5_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setGroup(true);
+    }
+    else
+    {
+        this->setGroup(false);
+    }
+
 }

@@ -36,6 +36,8 @@ public:
     QList<Region *> *regionListH() const;
     void setRegionListH(QList<Region *> *regionListH);
     void paintEvent(QPaintEvent * event);
+    void paintCCg(QPainter * painter);
+    void paintArea(QPainter * painter);
     void regionIncrease();
     void regionIncrease2();
     QList<Region *> * overlap(int k);
@@ -87,11 +89,13 @@ public:
 
     bool getOtherColor() const;
     void setOtherColor(bool otherColor);
-    int searchArea(QString  areaCode);
 
 
     QList<AreaTeam *> *getAreaGroup() const;
     void setAreaGroup(QList<AreaTeam *> *AreaGroup);
+
+    bool getGroup() const;
+    void setGroup(bool group);
 
 public slots:
     void animate();
@@ -115,6 +119,8 @@ private slots:
 
     void on_checkBox_4_toggled(bool checked);
 
+    void on_checkBox_5_toggled(bool checked);
+
 private:
     Ui::Widget *ui;
     void fileRead();
@@ -127,30 +133,32 @@ private:
     bool testEastOverlap(int k);
     void drawSign(QPainter * p);
     void overlapRemove();
+    int searchAreaCode(QString code);
     //void moveWest();
 
 
     QTimer  *timer;
-    QList <Region *> * m_regionListV= new QList<Region *>;
-    QList <Region *> * m_regionListH= new QList<Region *>;
+    QList <Region *> * m_regionListV;
+    QList <Region *> * m_regionListH;
     int count;
-    int index=0;
-    int m_increaseSize=1;
-    int m_regionMaxsize=10;
-    int m_searchRange=212;
-    int m_population=0;
+    int index;
+    int m_increaseSize;
+    int m_regionMaxsize;
+    int m_searchRange;
+    int m_population;
     QElapsedTimer tCount;
     bool pressed;
-    bool finished=false;
+    bool finished;
     QList<QColor> dataColor;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
-    bool m_samesize=false;
-    bool m_algorithm=false;
-    bool m_lookAhead=false;
-    bool m_otherColor=false;
-    int m_Windowsnumber=0;
-    QList <AreaTeam *>  * m_AreaGroup=new QList<AreaTeam *>;
+    bool m_samesize;
+    bool m_algorithm;
+    bool m_lookAhead;
+    bool m_otherColor;
+    bool m_group;
+    int m_Windowsnumber;
+    QList <AreaTeam *>  * m_AreaGroup;
 };
 
 #endif // WIDGET_H

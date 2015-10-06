@@ -7,6 +7,11 @@ enum{
 };
 Region::Region()
 {
+    m_healthData= new QList<float>;
+    m_stopIncrease=false;
+    size=1;
+    m_color=0;
+    m_detail=false;
 }
 
 Region::~Region()

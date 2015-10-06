@@ -50,10 +50,10 @@ private:
     QList<QColor> dataColor;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
-    bool m_lookAhead=false;
-    bool m_otherColor=false;
-    qreal m_ratioTemp=0;
-    qreal m_totalAsp=0;
+    bool m_lookAhead;
+    bool m_otherColor;
+    qreal m_ratioTemp;
+    qreal m_totalAsp;
 
 };
 

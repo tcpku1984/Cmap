@@ -1,13 +1,38 @@
 #include "areateam.h"
-
+enum{
+    RATHH=400,
+    RATHV=600,
+    HH=-200,
+    VV=1000
+};
 AreaTeam::AreaTeam()
 {
-    regionList=new QList<Region *>;
+    m_RegionList=new QList<Region *>;
 }
 
 void AreaTeam::addRegion(Region *region)
 {
-    regionList->append(region);
+    m_RegionList->append(region);
+}
+
+void AreaTeam::initi()
+{
+    this->setPopulation(0);
+    this->setSize(1);
+    qreal lati=0;
+    qreal longti=0;
+    for(int i=0;i<this->RegionList()->size();i++)
+    {
+        lati+=this->RegionList()->at(i)->Lati();
+        longti+=this->RegionList()->at(i)->Longti();
+        this->setPopulation(
+                    this->Population()+this->RegionList()->at(i)->poplation());
+    }
+    lati=lati/this->RegionList()->size();
+    longti=longti/this->RegionList()->size();
+    this->setX(lati/RATHH+HH);
+    this->setY(-longti/RATHV+VV);
+
 }
 
 QString AreaTeam::AreaCode() const
@@ -29,4 +54,56 @@ void AreaTeam::setAreaName(const QString &AreaName)
 {
     m_AreaName = AreaName;
 }
+
+QList<Region *> *AreaTeam::RegionList() const
+{
+    return m_RegionList;
+}
+
+void AreaTeam::setRegionList(QList<Region *> *RegionList)
+{
+    m_RegionList = RegionList;
+}
+
+int AreaTeam::X() const
+{
+    return m_X;
+}
+
+void AreaTeam::setX(int X)
+{
+    m_X = X;
+}
+
+int AreaTeam::Y() const
+{
+    return m_Y;
+}
+
+void AreaTeam::setY(int Y)
+{
+    m_Y = Y;
+}
+
+int AreaTeam::Population() const
+{
+    return m_Population;
+}
+
+void AreaTeam::setPopulation(int Population)
+{
+    m_Population = Population;
+}
+
+int AreaTeam::Size() const
+{
+    return m_Size;
+}
+
+void AreaTeam::setSize(int Size)
+{
+    m_Size = Size;
+}
+
+
 

@@ -80,7 +80,7 @@ private:
      * @brief m_X information of x position on map
      */
 
-    QList <float> * m_healthData= new QList<float>;
+    QList <float> * m_healthData;
 
 
 
@@ -97,10 +97,10 @@ private:
      * @brief m_stopIncrease information of whether point
      * can do increment or not
      */
-    bool m_stopIncrease=false;
-    int size=1;
-    int m_color=0;
-    bool m_detail=false;
+    bool m_stopIncrease;
+    int size;
+    int m_color;
+    bool m_detail;
 };
 
 #endif // Region_H

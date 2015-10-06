@@ -5,6 +5,10 @@ treeMap::treeMap(QWidget *parent, bool treemap, bool color, Region *region) :
     QWidget(parent),
     ui(new Ui::treeMap)
 {
+    m_lookAhead=false;
+    m_otherColor=false;
+    m_ratioTemp=0;
+    m_totalAsp=0;
     ui->setupUi(this);
     this->setLookAhead(treemap);
     this->setOtherColor(color);
