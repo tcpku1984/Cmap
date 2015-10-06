@@ -40,6 +40,7 @@ public:
     void paintArea(QPainter * painter);
     void regionIncrease();
     void regionIncrease2();
+    void areaIncrease();
     QList<Region *> * overlap(int k);
     void mousePressEvent(QMouseEvent * e);
     void mouseReleaseEvent(QMouseEvent *e);
@@ -133,6 +134,7 @@ private:
     bool testEastOverlap(int k);
     void drawSign(QPainter * p);
     void overlapRemove();
+    void overlapRemoveArea();
     int searchAreaCode(QString code);
     //void moveWest();
 

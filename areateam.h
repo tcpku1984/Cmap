@@ -12,6 +12,8 @@ public:
 
     void initi();
 
+    void increase();
+
     QString AreaCode() const;
     void setAreaCode(const QString &AreaCode);
 
@@ -35,16 +37,24 @@ public:
     int Size() const;
     void setSize(int Size);
 
+    bool stopIncrease() const;
+    void setStopIncrease(bool stopIncrease);
+
+    QList<float> *PopulationList() const;
+    void setPopulationList(QList<float> *PopulationList);
+
 private:
     QList<Region *> * m_RegionList;
     QString m_AreaCode;
     QString m_AreaName;
     qreal m_lati;
     qreal m_longti;
+    QList<float > * m_PopulationList;
     int m_X;
     int m_Y;
     int m_Population;
     int m_Size;
+    bool m_stopIncrease;
 
 
 };

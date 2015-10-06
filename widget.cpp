@@ -83,17 +83,17 @@ Widget::Widget(QWidget *parent) :
     for(int i=4;i<6;i++)
     {
         this->dataColor2.append(QColor::fromHsvF((qreal(90)+qreal(i-4)*90/qreal(2))/qreal(360),1,1));
-        cout<<(qreal(90)+qreal(i)*90/qreal(2))<<endl;
+        //cout<<(qreal(90)+qreal(i)*90/qreal(2))<<endl;
     }
     for(int i=6;i<10;i++)
     {
         this->dataColor2.append(QColor::fromHsvF((qreal(180)+qreal(i-6)*90/qreal(4))/qreal(360),1,1));
-        cout<<(qreal(180)+qreal(i)*90/qreal(4))<<endl;
+        //cout<<(qreal(180)+qreal(i)*90/qreal(4))<<endl;
     }
     for(int i=10;i<14;i++)
     {
         this->dataColor2.append(QColor::fromHsvF((qreal(270)+qreal(i-10)*90/qreal(4))/qreal(360),1,1));
-        cout<<(qreal(270)+qreal(i)*90/qreal(4))<<endl;
+        //cout<<(qreal(270)+qreal(i)*90/qreal(4))<<endl;
 
     }
     count=0;
@@ -207,20 +207,43 @@ void Widget::paintArea(QPainter *painter)
                            this->getAreaGroup()->at(i)->Size(),
                            this->getAreaGroup()->at(i)->Size()));
     }
+    if(this->getFinished()==true)
+    {
+        for(int i=0;i<this->getAreaGroup()->size();i++)
+        {
+            cout<<"draw Treemap: "<<i<<endl;
+            drawSqTreeMap(this->getAreaGroup()->at(i)->X(),
+                          this->getAreaGroup()->at(i)->Y(),
+                          this->getAreaGroup()->at(i)->Size(),
+                          this->getAreaGroup()->at(i)->Size(),0,
+                          this->getAreaGroup()->at(i)->PopulationList(),
+                          painter);
+        }
+        drawSign(painter);
+    }
+
 }
 
 void Widget::animate()
 {
-    if(this->getAlgorithm()==false)
+    if(this->getGroup()==false)
     {
-        regionIncrease();
+        if(this->getAlgorithm()==false)
+        {
+            regionIncrease();
+        }
+        else
+        {
+            regionIncrease2();
+        }
+        index++;
+        update();
     }
     else
     {
-        regionIncrease2();
+        areaIncrease();
+        update();
     }
-    index++;
-    update();
 }
 
 void Widget::regionIncrease()
@@ -317,6 +340,41 @@ void Widget::regionIncrease2()
      }
     overlapRemove();
     if(count>=this->regionListV()->size())
+    {
+        timer->stop();
+        this->setFinished(true);
+    }
+}
+
+void Widget::areaIncrease()
+{
+    for(int i=0;i<this->getAreaGroup()->size();i++)
+    {
+        double max;
+        if(this->samesize()==false)
+        {
+            max=MAXSIZE*this->regionMaxsize()*double(
+                    this->getAreaGroup()->at(i)->Population()
+                    /double(this->population()));
+        }
+        else
+        {
+            max=this->regionMaxsize();
+        }
+
+        if(this->getAreaGroup()->at(i)->stopIncrease()==false)
+        {
+           this->getAreaGroup()->at(i)->increase();
+            if(this->getAreaGroup()->at(i)->Size()
+                    >max)
+            {
+                this->getAreaGroup()->at(i)->setStopIncrease(true);
+                count++;
+            }
+        }
+     }
+    overlapRemoveArea();
+    if(count>=this->getAreaGroup()->size())
     {
         timer->stop();
         this->setFinished(true);
@@ -640,6 +698,7 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 
 void Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
 {
+   // cout<<" draw sq treemap called"<<endl;
     if(pos>=data->size())
     {
         return;
@@ -675,7 +734,7 @@ void Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos,
         for(int i=pos;i<pos+number;i++)
         {
             QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
-            p->fillRect(rect,dataColor.at(i));
+            //p->fillRect(rect,dataColor.at(i));
             tempx=tempx+data->at(i)*width/value;
         }
         y=y+value*length/total;
@@ -846,28 +905,41 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<float> *dat
 
 void Widget::on_start_pressed()
 {
-
-    for(int i=0;i<this->regionListV()->size();i++)
+    if(this->getGroup()==false)
     {
-        this->regionListV()->at(i)->setSize(1);
-        this->regionListV()->at(i)->setX(
-                    this->regionListV()->at(i)->Lati()/RATHH+HH);
-        this->regionListV()->at(i)->setY(-
-                    this->regionListV()->at(i)->Longti()/RATHV+VV);
-        this->regionListV()->at(i)->setColor(0);
-        this->regionListV()->at(i)->setStopIncrease(false);
 
-        this->setFinished(false);
+        for(int i=0;i<this->regionListV()->size();i++)
+        {
+            this->regionListV()->at(i)->setSize(1);
+            this->regionListV()->at(i)->setX(
+                        this->regionListV()->at(i)->Lati()/RATHH+HH);
+            this->regionListV()->at(i)->setY(-
+                        this->regionListV()->at(i)->Longti()/RATHV+VV);
+            this->regionListV()->at(i)->setColor(0);
+            this->regionListV()->at(i)->setStopIncrease(false);
+        }
+            this->setFinished(false);
 
-    }
-    count=0;
-    index=0;
-    if(this->getAlgorithm()==false)
-    {
-        timer->start();
+
+        count=0;
+        index=0;
+        if(this->getAlgorithm()==false)
+        {
+            timer->start();
+        }
+        else
+        {
+            timer->start(100);
+        }
     }
     else
     {
+        for(int i=0;i<this->getAreaGroup()->size();i++)
+        {
+            this->getAreaGroup()->at(i)->initi();
+        }
+        this->setFinished(false);
+        count=0;
         timer->start(100);
     }
 }
@@ -876,7 +948,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1082,6 +1154,26 @@ void Widget::overlapRemove()
         this->regionListV()->at(i)->setX(nodeRect[i]->getMinX());
         this->regionListV()->at(i)->setY(nodeRect[i]->getMinY());
     }
+}
+
+void Widget::overlapRemoveArea()
+{
+    vpsc::Rectangle ** nodeRect = new vpsc::Rectangle * [this->getAreaGroup()->size()];
+    for(int i=0;i<this->getAreaGroup()->size();i++)
+    {
+        int minX=this->getAreaGroup()->at(i)->X();
+        int maxX=minX+this->getAreaGroup()->at(i)->Size();
+        int minY=this->getAreaGroup()->at(i)->Y();
+        int maxY=minY+this->getAreaGroup()->at(i)->Size();
+        nodeRect[i]=new vpsc::Rectangle(minX,maxX,minY,maxY);
+    }
+    removeRectangleOverlap(this->getAreaGroup()->size(),nodeRect,1e-3,1e-3);
+    for(int i=0;i<this->getAreaGroup()->size();i++)
+    {
+        this->getAreaGroup()->at(i)->setX(nodeRect[i]->getMinX());
+        this->getAreaGroup()->at(i)->setY(nodeRect[i]->getMinY());
+    }
+
 }
 
 int Widget::searchAreaCode(QString code)

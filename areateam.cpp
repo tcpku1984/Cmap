@@ -8,6 +8,8 @@ enum{
 AreaTeam::AreaTeam()
 {
     m_RegionList=new QList<Region *>;
+    m_PopulationList=new QList<float>;
+    this->setStopIncrease(false);
 }
 
 void AreaTeam::addRegion(Region *region)
@@ -19,6 +21,7 @@ void AreaTeam::initi()
 {
     this->setPopulation(0);
     this->setSize(1);
+    this->setStopIncrease(false);
     qreal lati=0;
     qreal longti=0;
     for(int i=0;i<this->RegionList()->size();i++)
@@ -27,12 +30,19 @@ void AreaTeam::initi()
         longti+=this->RegionList()->at(i)->Longti();
         this->setPopulation(
                     this->Population()+this->RegionList()->at(i)->poplation());
+        this->PopulationList()->append(float(
+                                           this->RegionList()->at(i)->poplation()));
     }
     lati=lati/this->RegionList()->size();
     longti=longti/this->RegionList()->size();
     this->setX(lati/RATHH+HH);
     this->setY(-longti/RATHV+VV);
 
+}
+
+void AreaTeam::increase()
+{
+    this->setSize(this->Size()+1);
 }
 
 QString AreaTeam::AreaCode() const
@@ -103,6 +113,26 @@ int AreaTeam::Size() const
 void AreaTeam::setSize(int Size)
 {
     m_Size = Size;
+}
+
+bool AreaTeam::stopIncrease() const
+{
+    return m_stopIncrease;
+}
+
+void AreaTeam::setStopIncrease(bool stopIncrease)
+{
+    m_stopIncrease = stopIncrease;
+}
+
+QList<float> *AreaTeam::PopulationList() const
+{
+    return m_PopulationList;
+}
+
+void AreaTeam::setPopulationList(QList<float> *PopulationList)
+{
+    m_PopulationList = PopulationList;
 }
 
 
