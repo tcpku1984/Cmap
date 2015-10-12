@@ -46,9 +46,11 @@ Widget::Widget(QWidget *parent) :
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
-    this->setColorFont(false);
-
-
+    m_AveragePrevlance=new QList<float>;
+    for(int i=0;i<14;i++)
+    {
+        this->getAveragePrevlance()->append(0);
+    }
 
     ui->setupUi(this);
     fileRead();
@@ -230,7 +232,7 @@ void Widget::paintArea(QPainter *painter)
 
             for(int j=0;j<rectList->size();j++)
             {
-                cout<<j<<endl;
+                //cout<<j<<endl;
                 qreal x=rectList->at(j)->X();
                 qreal y=rectList->at(j)->Y();
                 qreal w=rectList->at(j)->W();
@@ -628,32 +630,64 @@ void Widget::mousePressEvent(QMouseEvent *e)
     int x=e->pos().x();
     int y=e->pos().y();
     this->setPressed(true);
-    for(int i=0;i<this->regionListV()->size();i++)
+    if(this->getGroup()==false)
     {
-      if(this->regionListV()->at(i)->X()<x&&
-         this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()>x&&
-         this->regionListV()->at(i)->Y()<y&&
-         this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()>y)
-      {
-
-          treeMap * t=new treeMap(0,this->getLookAhead(),this->getOtherColor(),this->regionListV()->at(i));
-          t->setGeometry(10+510*this->Windowsnumber(),30,500,600);
-          t->setAttribute(Qt::WA_DeleteOnClose);
-          t->setWindowFlags(Qt::WindowStaysOnTopHint);
-          connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
-          t->show();
-          this->setWindowsnumber(this->Windowsnumber()+1);
-          this->regionListV()->at(i)->setColor(2);
-          this->regionListV()->at(i)->setDetail(true);
-          QList <Region *> * temp=this->overlap(i);
-          for(int j=0;j<temp->size();j++)
+        for(int i=0;i<this->regionListV()->size();i++)
+        {
+          if(this->regionListV()->at(i)->X()<x&&
+             this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()>x&&
+             this->regionListV()->at(i)->Y()<y&&
+             this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()>y)
           {
-              temp->at(j)->setColor(0);
-          }
-          update();
-          break;
+              treeMap * t=new treeMap(0,this->getLookAhead(),
+                                      this->getOtherColor(),this->regionListV()->at(i),
+                                      this->getAveragePrevlance());
+              t->setGeometry(10+530*this->Windowsnumber(),30,520,620);
+              t->setAttribute(Qt::WA_DeleteOnClose);
+              t->setWindowFlags(Qt::WindowStaysOnTopHint);
+              connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
+              t->show();
+              this->setWindowsnumber(this->Windowsnumber()+1);
+              this->regionListV()->at(i)->setColor(2);
+              this->regionListV()->at(i)->setDetail(true);
+              QList <Region *> * temp=this->overlap(i);
+              for(int j=0;j<temp->size();j++)
+              {
+                  temp->at(j)->setColor(0);
+              }
+              update();
+              break;
 
-      }
+          }
+        }
+    }
+    else
+    {
+        for(int i=0;i<this->getAreaGroup()->size();i++)
+        {
+          if(this->getAreaGroup()->at(i)->X()<x&&
+             this->getAreaGroup()->at(i)->X()+this->getAreaGroup()->at(i)->Size()>x&&
+             this->getAreaGroup()->at(i)->Y()<y&&
+             this->getAreaGroup()->at(i)->Y()+this->getAreaGroup()->at(i)->Size()>y)
+          {
+              areaTreemap * t=new areaTreemap(0,this->getOtherColor(),this->getAreaGroup()->at(i),this->getAveragePrevlance());
+              t->setGeometry(10+630*this->Windowsnumber(),30,620,720);
+              t->setAttribute(Qt::WA_DeleteOnClose);
+              t->setWindowFlags(Qt::WindowStaysOnTopHint);
+              connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
+              t->show();
+              this->setWindowsnumber(this->Windowsnumber()+1);
+              this->regionListV()->at(i)->setColor(2);
+              this->regionListV()->at(i)->setDetail(true);
+              QList <Region *> * temp=this->overlap(i);
+              for(int j=0;j<temp->size();j++)
+              {
+                  temp->at(j)->setColor(0);
+              }
+              update();
+              break;
+          }
+        }
     }
 
 
@@ -768,8 +802,15 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
             QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
             //cout<<"new length"<<value*length/total<<endl;
             rectList->append(new rectHolder(tempx,y,data->at(i)*width/value,value*length/total));
-
-            //p->drawRect(rect);
+            if(data->at(i)>this->getAveragePrevlance()->at(i))
+            {
+                p->setPen(Qt::red);
+            }
+            else
+            {
+                p->setPen(Qt::green);
+            }
+            p->drawRect(rect);
             p->fillRect(rect,dataColor.at(i));
             tempx=tempx+data->at(i)*width/value;
         }
@@ -863,12 +904,13 @@ qreal Widget::calRatio(qreal w, qreal l, int pos, int number, QList<float> *data
 
 }
 
-void Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
+QList <rectHolder *> * Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
 {
     if(pos>=data->size())
     {
-        return;
+        return NULL;
     }
+    QList<rectHolder *> *rectList=new QList<rectHolder *>;
     qreal total=0;
     qreal temp1;
     qreal temp2;
@@ -898,13 +940,19 @@ void Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos
         for(int i=pos;i<pos+number;i++)
         {
             QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
+            rectList->append(new rectHolder(tempx,y,data->at(i)*width/value,value*length/total));
+
             p->fillRect(rect,dataColor.at(i));
             tempx=tempx+data->at(i)*width/value;
         }
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
-        drawSqTreeMap2(x,y,width,length,pos,data,p);
+        if(drawSqTreeMap(x,y,width,length,pos,data,p)!=NULL)
+        {
+            rectList->append(*drawSqTreeMap2(x,y,width,length,pos,data,p));
+        }
+        return rectList;
     }
 }
 
@@ -980,7 +1028,7 @@ void Widget::on_start_pressed()
         }
         this->setFinished(false);
         count=0;
-        timer->start(100);
+        timer->start(50);
     }
 }
 
@@ -988,7 +1036,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("C:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1022,6 +1070,8 @@ void Widget::fileRead()
         {
             getline(inFlow,input, ',');
             float b=atof(input.c_str());
+            this->getAveragePrevlance()->replace(j,
+                   this->getAveragePrevlance()->at(j)+b);
             tempList->append(b);
         }
         temp->setHealthData(tempList);
@@ -1055,6 +1105,13 @@ void Widget::fileRead()
 
     }
     inFlow.close();
+
+    for(int i=0;i<14;i++)
+    {
+        this->getAveragePrevlance()->replace(i,
+             this->getAveragePrevlance()->at(i)/this->regionListV()->size());
+        cout<<"average data: "<<this->getAveragePrevlance()->at(i)<<endl;
+    }
     }
 
 }
@@ -1135,14 +1192,8 @@ void Widget::setRegionListV(QList<Region *> *regionListV)
 }
 
 void Widget::drawSign(QPainter *p)
-{
-    QFont font;
-    if(this->getColorFont()==false)
-    {
-     QFont font1("font:Arial",12,QFont::Bold);
-
-     font=font1;
-    }
+{ 
+    QFont font("font:Arial",12,QFont::Bold);
     p->setFont(font);
     p->setPen(Qt::white);
 
@@ -1175,6 +1226,7 @@ void Widget::drawSign(QPainter *p)
     p->fillRect(QRect(1780,920,100,40),dataColor[13]);
     p->drawText(QRect(1780,920,100,40),"Palliative");
     font.setPixelSize(FONTSIZEA);
+    font.setBold(false);
     p->setFont(font);
     p->setPen(Qt::black);
 
@@ -1232,16 +1284,18 @@ int Widget::searchAreaCode(QString code)
     }
     return -1;
 }
-
-bool Widget::getColorFont() const
+QList<float> *Widget::getAveragePrevlance() const
 {
-    return colorFont;
+    return m_AveragePrevlance;
 }
 
-void Widget::setColorFont(bool value)
+void Widget::setAveragePrevlance(QList<float> *AveragePrevlance)
 {
-    colorFont = value;
+    m_AveragePrevlance = AveragePrevlance;
 }
+
+
+
 
 bool Widget::getGroup() const
 {
@@ -1400,15 +1454,3 @@ void Widget::on_checkBox_5_toggled(bool checked)
 
 }
 
-void Widget::on_checkBox_6_toggled(bool checked)
-{
-    if(checked==true)
-    {
-        this->setColorFont(true);
-    }
-    else
-    {
-        this->setColorFont(false);
-    }
-    update();
-}

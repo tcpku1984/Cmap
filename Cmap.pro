@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     solve_VPSC.cpp \
     variable.cpp \
     areateam.cpp \
-    rectholder.cpp
+    rectholder.cpp \
+    areatreemap.cpp
 
 HEADERS  += widget.h \
     region.h \
@@ -40,7 +41,9 @@ HEADERS  += widget.h \
     solve_VPSC.h \
     variable.h \
     areateam.h \
-    rectholder.h
+    rectholder.h \
+    areatreemap.h
 
 FORMS    += widget.ui \
-    treemap.ui
+    treemap.ui \
+    areatreemap.ui

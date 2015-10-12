@@ -18,6 +18,8 @@
 #include<generate-constraints.h>
 #include<remove_rectangle_overlap.h>
 #include<rectholder.h>
+#include<QGradient>
+#include<areatreemap.h>
 using namespace std;
 namespace Ui {
 class Widget;
@@ -49,7 +51,7 @@ public:
     void drawTreeMap(qreal x,qreal y,qreal width,qreal length,QList<float> * data, QPainter * p);
     QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<float> *data);
-    void drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
+    QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<float> *data);
 
 
@@ -99,8 +101,9 @@ public:
     bool getGroup() const;
     void setGroup(bool group);
 
-    bool getColorFont() const;
-    void setColorFont(bool value);
+
+    QList<float> *getAveragePrevlance() const;
+    void setAveragePrevlance(QList<float> *AveragePrevlance);
 
 public slots:
     void animate();
@@ -126,7 +129,6 @@ private slots:
 
     void on_checkBox_5_toggled(bool checked);
 
-    void on_checkBox_6_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -167,7 +169,7 @@ private:
     bool m_group;
     int m_Windowsnumber;
     QList <AreaTeam *>  * m_AreaGroup;
-    bool colorFont;
+    QList <float> * m_AveragePrevlance;
 };
 
 #endif // WIDGET_H

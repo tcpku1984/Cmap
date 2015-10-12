@@ -342,24 +342,6 @@
       <string>Area Group</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkBox_6">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>250</y>
-       <width>111</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>colorfont</string>
-     </property>
-    </widget>
    </widget>
   </widget>
  </widget>

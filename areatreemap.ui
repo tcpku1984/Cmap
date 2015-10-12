@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>treeMap</class>
- <widget class="QWidget" name="treeMap">
+ <class>areaTreemap</class>
+ <widget class="QWidget" name="areaTreemap">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>650</height>
+    <width>820</width>
+    <height>820</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1920</width>
-    <height>1080</height>
+    <width>820</width>
+    <height>820</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>Arial</family>
+    <pointsize>10</pointsize>
+    <weight>75</weight>
+    <bold>true</bold>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Form</string>

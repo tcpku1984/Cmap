@@ -1,30 +1,34 @@
-#ifndef TREEMAP_H
-#define TREEMAP_H
+#ifndef AREATREEMAP_H
+#define AREATREEMAP_H
 
 #include <QWidget>
 #include <widget.h>
 #include<region.h>
+
 #include<rectholder.h>
 #include<QGradient>
 #include <QLinearGradient>
+#include <areateam.h>
+#include<QMouseEvent>
 namespace Ui {
-class treeMap;
+class areaTreemap;
 }
 
-class treeMap : public QWidget
+class areaTreemap : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit treeMap(QWidget *parent = 0,bool treemap = false,
-                     bool color = false,Region* region=NULL,QList<float> *aver=NULL);
-    ~treeMap();
+    explicit areaTreemap(QWidget *parent = 0,
+       bool color=false, AreaTeam * area=NULL,QList <float>* aver=NULL);
+    ~areaTreemap();
     void paintEvent(QPaintEvent * event);
 
+    AreaTeam *Area() const;
+    void setArea(AreaTeam *Area);
 
-
-    Region *region() const;
-    void setRegion(Region *region);
+    QList<QColor> getDataColor() const;
+    void setDataColor(const QList<QColor> &value);
 
     QList<QColor> getDataColor1() const;
     void setDataColor1(const QList<QColor> &value);
@@ -32,24 +36,27 @@ public:
     QList<QColor> getDataColor2() const;
     void setDataColor2(const QList<QColor> &value);
 
-    bool getLookAhead() const;
-    void setLookAhead(bool lookAhead);
-
     bool getOtherColor() const;
     void setOtherColor(bool otherColor);
 
-    qreal getRatioTemp() const;
-    void setRatioTemp(const qreal &ratioTemp);
 
-    qreal getTotalAsp() const;
-    void setTotalAsp(const qreal &totalAsp);
+
+
 
     QList<float> *getAveragePrevlance() const;
     void setAveragePrevlance(QList<float> *AveragePrevlance);
 
+    void mousePressEvent(QMouseEvent * e);
+
+    QList<rectHolder *> *getRectList() const;
+    void setRectList(QList<rectHolder *> *RectList);
+
+    int getWindowsnumber() const;
+    void setWindowsnumber(int Windowsnumber);
+
 private:
-    Ui::treeMap *ui;
-    Region *m_region;
+    Ui::areaTreemap *ui;
+    AreaTeam * m_Area;
     QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
     QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<float> *data);
@@ -59,10 +66,13 @@ private:
     QList<QColor> dataColor2;
     bool m_lookAhead;
     bool m_otherColor;
-    qreal m_ratioTemp;
-    qreal m_totalAsp;
     QList <float> * m_AveragePrevlance;
+    QList <rectHolder *> * m_RectList;
+    int m_Windowsnumber;
+private slots:
+    void windowClose();
+
 
 };
 
-#endif // TREEMAP_H
+#endif // AREATREEMAP_H
