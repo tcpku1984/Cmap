@@ -275,7 +275,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap2(qreal x, qreal y, qreal width, q
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
-        if(drawSqTreeMap(x,y,width,length,pos,data,p)!=NULL)
+        if(drawSqTreeMap2(x,y,width,length,pos,data,p)!=NULL)
         {
             rectList->append(*drawSqTreeMap2(x,y,width,length,pos,data,p));
         }

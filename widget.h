@@ -49,7 +49,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *e);
 
     void drawTreeMap(qreal x,qreal y,qreal width,qreal length,QList<float> * data, QPainter * p);
-    QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
+    QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p,int layer);
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<float> *data);
     QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<float> *data);
@@ -105,6 +105,9 @@ public:
     QList<float> *getAveragePrevlance() const;
     void setAveragePrevlance(QList<float> *AveragePrevlance);
 
+    int getBorder() const;
+    void setBorder(int border);
+
 public slots:
     void animate();
 
@@ -129,6 +132,8 @@ private slots:
 
     void on_checkBox_5_toggled(bool checked);
 
+
+    void on_horizontalSlider_4_valueChanged(int value);
 
 private:
     Ui::Widget *ui;
@@ -170,6 +175,7 @@ private:
     int m_Windowsnumber;
     QList <AreaTeam *>  * m_AreaGroup;
     QList <float> * m_AveragePrevlance;
+    int m_border;
 };
 
 #endif // WIDGET_H
