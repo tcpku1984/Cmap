@@ -44,6 +44,7 @@ Widget::Widget(QWidget *parent) :
     m_algorithm=false;
     m_lookAhead=false;
     m_otherColor=false;
+    this->setMapDifference(false);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
@@ -176,13 +177,44 @@ void Widget::paintCCg(QPainter *painter)
         {
             for(int i=0;i<this->regionListV()->size();i++)
             {
+                if(this->getMapDifference()==false)
+                {
 
-                drawSqTreeMap(this->regionListV()->at(i)->X(),
-                            this->regionListV()->at(i)->Y(),
-                            this->regionListV()->at(i)->getSize(),
-                            this->regionListV()->at(i)->getSize(),0,
-                            this->regionListV()->at(i)->healthData(),
-                            painter,2);
+                    drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                this->regionListV()->at(i)->Y(),
+                                this->regionListV()->at(i)->getSize(),
+                                this->regionListV()->at(i)->getSize(),0,
+                                this->regionListV()->at(i)->healthData(),
+                                painter,2);
+                }
+                else
+                {
+                    QList <float>* dataTemp=new QList<float>;
+                    for(int k=0;k<this->regionListV()->at(i)->healthData()->size();k++)
+                    {
+                        dataTemp->append(this->regionListV()->at(i)->healthData()->at(k)-
+                                         this->getAveragePrevlance()->at(k));
+                        cout<<"1 "<<this->regionListV()->at(i)->healthData()->at(k)<<endl;
+                        cout<<"2 "<<this->getAveragePrevlance()->at(k)<<endl;
+                        cout<<k<<": "<<dataTemp->at(k)<<endl;
+                        //dataTemp->append(-1);
+                    }
+                    //dataTemp->replace(5,0);
+                    if(dataTemp->contains(0)==true)
+                    {
+
+                    }
+                    else
+                    {
+                        drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                this->regionListV()->at(i)->Y(),
+                                this->regionListV()->at(i)->getSize(),
+                                this->regionListV()->at(i)->getSize(),0,
+                                dataTemp,
+                                painter,2);
+                    }
+
+                }
             }
         }
         else
@@ -777,7 +809,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
     int number;
     for(int i=pos;i<data->size();i++)
     {
-        total+=data->at(i);
+        total+=fabs(data->at(i));
     }
     for(number=0;number<data->size()-pos;number++)
     {
@@ -796,16 +828,16 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
         qreal tempx=x;
         for(int i=pos;i<pos+number;i++)
         {
-            value+=data->at(i);
+            value+=fabs(data->at(i));
         }
         for(int i=pos;i<pos+number;i++)
         {
-            QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
+            QRectF rect=QRectF(tempx,y,fabs(data->at(i))*width/value,value*length/total);
             //cout<<"new length"<<value*length/total<<endl;
-            rectList->append(new rectHolder(tempx,y,data->at(i)*width/value,value*length/total));
+            rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
             if(layer==2)
             {
-                if(data->at(i)>this->getAveragePrevlance()->at(i))
+                if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
                 {
                     QPen pen(QColor::fromRgb(255,0,0,100));
                     pen.setWidth(this->getBorder());
@@ -827,7 +859,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
             }
             p->drawRect(rect);
             p->fillRect(rect,dataColor.at(i));
-            tempx=tempx+data->at(i)*width/value;
+            tempx=tempx+fabs(data->at(i))*width/value;
         }
         y=y+value*length/total;
         length=length-value*length/total;
@@ -868,18 +900,18 @@ qreal Widget::calRatio(qreal w, qreal l, int pos, int number, QList<float> *data
     qreal sum=0;
     for(int i=pos;i<data->size();i++)
     {
-        total+=data->at(i);
+        total+=fabs(data->at(i));
     }
     qreal value=0;
     for(int i=pos;i<=pos+number;i++)
     {
-        value+=data->at(i);
+        value+=fabs(data->at(i));
     }
     if(true)//if(l>=w)
     {
         for(int i=pos;i<=pos+number;i++)
         {
-            temp=data->at(i)*total*w/(l*value*value);
+            temp=fabs(data->at(i))*total*w/(l*value*value);
             if(temp<1)
             {
                 temp=1/temp;
@@ -933,7 +965,7 @@ QList <rectHolder *> * Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qre
     int number;
     for(int i=pos;i<data->size();i++)
     {
-        total+=data->at(i);
+        total+=fabs(data->at(i));
     }
     for(number=0;number<data->size()-pos;number++)
     {
@@ -950,15 +982,15 @@ QList <rectHolder *> * Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qre
         qreal tempx=x;
         for(int i=pos;i<pos+number;i++)
         {
-            value+=data->at(i);
+            value+=fabs(data->at(i));
         }
         for(int i=pos;i<pos+number;i++)
         {
-            QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
-            rectList->append(new rectHolder(tempx,y,data->at(i)*width/value,value*length/total));
+            QRectF rect=QRectF(tempx,y,fabs(data->at(i))*width/value,value*length/total);
+            rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
 
             p->fillRect(rect,dataColor.at(i));
-            tempx=tempx+data->at(i)*width/value;
+            tempx=tempx+fabs(data->at(i))*width/value;
         }
         y=y+value*length/total;
         length=length-value*length/total;
@@ -980,18 +1012,18 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<float> *dat
     int i;
     for(i=pos;i<data->size();i++)
     {
-        total+=data->at(i);
+        total+=fabs(data->at(i));
     }
     qreal value=0;
     for(int i=pos;i<=pos+number-1;i++)
     {
-        value+=data->at(i);
+        value+=fabs(data->at(i));
     }
     if(true)//if(l>=w)
     {
         for(i=pos;i<=pos+number-1;i++)
         {
-            temp=data->at(i)*total*w/(l*value*value);
+            temp=fabs(data->at(i))*total*w/(l*value*value);
             if(temp<1)
             {
                 temp=1/temp;
@@ -999,7 +1031,7 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<float> *dat
             sum=sum+temp;
         }
     }
-    sum+=w*total/(data->at(pos+number)*l);
+    sum+=w*total/(fabs(data->at(pos+number))*l);
     ratio=sum/(number+1);
     return ratio;
 
@@ -1051,7 +1083,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("C:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1299,6 +1331,16 @@ int Widget::searchAreaCode(QString code)
     }
     return -1;
 }
+bool Widget::getMapDifference() const
+{
+    return m_mapDifference;
+}
+
+void Widget::setMapDifference(bool mapDifference)
+{
+    m_mapDifference = mapDifference;
+}
+
 
 int Widget::getBorder() const
 {
@@ -1483,4 +1525,16 @@ void Widget::on_checkBox_5_toggled(bool checked)
 void Widget::on_horizontalSlider_4_valueChanged(int value)
 {
     this->setBorder(value);
+}
+
+void Widget::on_checkBox_6_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setMapDifference(true);
+    }
+    else
+    {
+        this->setMapDifference(false);
+    }
 }

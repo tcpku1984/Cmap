@@ -20,6 +20,8 @@
 #include<rectholder.h>
 #include<QGradient>
 #include<areatreemap.h>
+#include<stdlib.h>
+#include<cmath>
 using namespace std;
 namespace Ui {
 class Widget;
@@ -108,6 +110,9 @@ public:
     int getBorder() const;
     void setBorder(int border);
 
+    bool getMapDifference() const;
+    void setMapDifference(bool mapDifference);
+
 public slots:
     void animate();
 
@@ -134,6 +139,8 @@ private slots:
 
 
     void on_horizontalSlider_4_valueChanged(int value);
+
+    void on_checkBox_6_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -172,6 +179,7 @@ private:
     bool m_lookAhead;
     bool m_otherColor;
     bool m_group;
+    bool m_mapDifference;
     int m_Windowsnumber;
     QList <AreaTeam *>  * m_AreaGroup;
     QList <float> * m_AveragePrevlance;

@@ -54,6 +54,7 @@ public:
     int getWindowsnumber() const;
     void setWindowsnumber(int Windowsnumber);
 
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;

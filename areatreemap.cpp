@@ -269,6 +269,7 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<float> 
     return ratio;
 }
 
+
 void areaTreemap::windowClose()
 {
     this->setWindowsnumber(this->getWindowsnumber()-1);
