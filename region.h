@@ -13,11 +13,11 @@ public:
      */
 
 
-    float Lati() const;
-    void setLati(float Lati);
+    double Lati() const;
+    void setLati(double Lati);
 
-    float Longti() const;
-    void setLongti(float Longti);
+    double Longti() const;
+    void setLongti(double Longti);
 
     int poplation() const;
     void setPoplation(int poplation);
@@ -54,8 +54,8 @@ public:
     bool detail() const;
     void setDetail(bool detail);
 
-    QList<float> *healthData() const;
-    void setHealthData(QList<float> *healthData);
+    QList<double> *healthData() const;
+    void setHealthData(QList<double> *healthData);
 
 private:
     /**
@@ -67,11 +67,11 @@ private:
      * @brief m_Lati information of latitude
      */
 
-    float m_Lati;
+    double m_Lati;
     /**
      * @brief m_Longti information of longtitude
      */
-    float m_Longti;
+    double m_Longti;
     /**
      * @brief m_poplation information of population
      */
@@ -80,7 +80,7 @@ private:
      * @brief m_X information of x position on map
      */
 
-    QList <float> * m_healthData;
+    QList <double> * m_healthData;
 
 
 

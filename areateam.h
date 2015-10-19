@@ -40,8 +40,8 @@ public:
     bool stopIncrease() const;
     void setStopIncrease(bool stopIncrease);
 
-    QList<float> *PopulationList() const;
-    void setPopulationList(QList<float> *PopulationList);
+    QList<double> *PopulationList() const;
+    void setPopulationList(QList<double> *PopulationList);
 
 private:
     QList<Region *> * m_RegionList;
@@ -49,7 +49,7 @@ private:
     QString m_AreaName;
     qreal m_lati;
     qreal m_longti;
-    QList<float > * m_PopulationList;
+    QList<double > * m_PopulationList;
     int m_X;
     int m_Y;
     int m_Population;

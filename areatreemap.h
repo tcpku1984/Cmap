@@ -20,7 +20,7 @@ class areaTreemap : public QWidget
 
 public:
     explicit areaTreemap(QWidget *parent = 0,
-       bool color=false, AreaTeam * area=NULL,QList <float>* aver=NULL);
+       bool color=false, AreaTeam * area=NULL,QList <double>* aver=NULL);
     ~areaTreemap();
     void paintEvent(QPaintEvent * event);
 
@@ -43,8 +43,8 @@ public:
 
 
 
-    QList<float> *getAveragePrevlance() const;
-    void setAveragePrevlance(QList<float> *AveragePrevlance);
+    QList<double> *getAveragePrevlance() const;
+    void setAveragePrevlance(QList<double> *AveragePrevlance);
 
     void mousePressEvent(QMouseEvent * e);
 
@@ -55,21 +55,29 @@ public:
     void setWindowsnumber(int Windowsnumber);
 
 
+    bool getMapDifference() const;
+    void setMapDifference(bool Mapdifference);
+
+    int getBorder() const;
+    void setBorder(int border);
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;
-    QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
-    QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
-    qreal calRatio(qreal w, qreal l, int pos, int number, QList<float> *data);
-    qreal calRatio2(qreal w, qreal l, int pos, int number, QList<float> *data);
+    QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p,int layer);
+    QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p);
+    qreal calRatio(qreal w, qreal l, int pos, int number, QList<double> *data);
+    qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
     QList<QColor> dataColor;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     bool m_lookAhead;
     bool m_otherColor;
-    QList <float> * m_AveragePrevlance;
+    QList <double> * m_AveragePrevlance;
     QList <rectHolder *> * m_RectList;
     int m_Windowsnumber;
+    bool m_MapDifference;
+    int m_border;
 private slots:
     void windowClose();
 

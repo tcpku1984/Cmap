@@ -3,17 +3,19 @@
 
 
 
-areaTreemap::areaTreemap(QWidget *parent, bool color, AreaTeam * area,QList <float>* aver) :
+areaTreemap::areaTreemap(QWidget *parent, bool color, AreaTeam * area,QList <double>* aver) :
     QWidget(parent),
     ui(new Ui::areaTreemap)
 {
-    m_AveragePrevlance=new QList<float>;
+    m_AveragePrevlance=new QList<double>;
     m_RectList=new QList <rectHolder *>;
     this->setWindowsnumber(0);
     ui->setupUi(this);
     this->setOtherColor(color);
     this->setArea(area);
     this->setAveragePrevlance(aver);
+    this->setMapDifference(true);
+    this->setBorder(3);
 
     dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
              <<QColor("#b2df8a")<<QColor("#33a02c")
@@ -74,16 +76,45 @@ void areaTreemap::paintEvent(QPaintEvent *event)
 
 
     this->setRectList(drawSqTreeMap(10,100,600,600,
-                           0,this->Area()->PopulationList(),&painter));
+                           0,this->Area()->PopulationList(),&painter,1));
     for(int j=0;j<this->getRectList()->size();j++)
     {
         qreal x=this->getRectList()->at(j)->X();
         qreal y=this->getRectList()->at(j)->Y();
         qreal w=this->getRectList()->at(j)->W();
         qreal l=this->getRectList()->at(j)->L();
-        drawSqTreeMap(x,y,w,l,0,
-                      this->Area()->RegionList()->at(j)->healthData(),
-                      &painter);
+        if(this->getMapDifference()==false)
+        {
+            drawSqTreeMap(x,y,w,l,0,
+                     this->Area()->RegionList()->at(j)->healthData(),&painter,2);
+        }
+        else
+        {
+            QList <double>* dataTemp=new QList<double>;
+            for(int k=0;k<this->Area()->RegionList()->at(j)->healthData()->size();k++)
+            {
+                double tempdata=double(this->Area()->RegionList()
+                                       ->at(j)->healthData()->at(k)-
+                        this->getAveragePrevlance()->at(k));
+                //cout<<"testing :"<<tempdata<<endl;
+                if(fabs(tempdata)>0.005)
+                {
+                    dataTemp->append(tempdata);
+                }
+                else
+                {
+                    if(tempdata>0)
+                        dataTemp->append(0.005);
+                    else
+                        dataTemp->append(-0.005);
+                }
+            }
+            drawSqTreeMap(x,y,w,l,0,
+                         dataTemp,
+                         &painter,2);
+
+
+        }
     }
     painter.setPen(Qt::black);
     painter.drawText(rect,tempString);
@@ -139,7 +170,7 @@ void areaTreemap::setOtherColor(bool otherColor)
     m_otherColor = otherColor;
 }
 
-QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
+QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<double> *data, QPainter *p, int layer)
 {
     if(pos>=data->size())
     {
@@ -153,7 +184,7 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
     int number;
     for(int i=pos;i<data->size();i++)
     {
-        total+=data->at(i);
+        total+=fabs(data->at(i));
     }
     for(number=0;number<data->size()-pos;number++)
     {
@@ -172,47 +203,80 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
         qreal tempx=x;
         for(int i=pos;i<pos+number;i++)
         {
-            value+=data->at(i);
+            value+=fabs(data->at(i));
         }
         for(int i=pos;i<pos+number;i++)
         {
-            QRectF rect=QRectF(tempx,y,data->at(i)*width/value,value*length/total);
+            QRectF rect=QRectF(tempx,y,fabs(data->at(i))*width/value,value*length/total);
             //cout<<"new length"<<value*length/total<<endl;
-            rectList->append(new rectHolder(tempx,y,data->at(i)*width/value,value*length/total));
-            if(data->at(i)>this->getAveragePrevlance()->at(i))
+            rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
+            if(layer==2)
             {
-                QLinearGradient grad(tempx,y,tempx+data->at(i)*width/value,y+value*length/total);
-                QPen pen(Qt::red);
-                p->setPen(pen);
-                p->drawRect(rect);
+                if(this->getMapDifference()==false)
+                {
+                    if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
+                    {
+                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+
+                    }
+                    else
+                    {
+                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                    }
+                }
+                else
+                {
+                    if(data->at(i)>0)
+                    {
+                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+
+                    }
+                    else
+                    {
+                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                    }
+                }
+                QLinearGradient grad(tempx,y,
+                                     tempx+fabs(data->at(i))*width/value,
+                                     y+value*length/total);
                 grad.setColorAt(0,
-                                QColor::fromHsvF(dataColor.at(i).hueF(),1,0.7));
+                                QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                 1,0.5));
                 grad.setColorAt(1,
-                                QColor::fromHsvF(dataColor.at(i).hueF(),0.7,1));
+                                QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                 0.5,1));
                 p->fillRect(rect,grad);
             }
             else
             {
-                QPen pen(Qt::green);
+                QPen pen(Qt::black);
+                pen.setWidth(this->getBorder());
                 p->setPen(pen);
-                p->drawRect(rect);
-                p->fillRect(rect,dataColor.at(i));
-
             }
-            tempx=tempx+data->at(i)*width/value;
+            p->drawRect(rect);
+            tempx=tempx+fabs(data->at(i))*width/value;
         }
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
-        if(drawSqTreeMap(x,y,width,length,pos,data,p)!=NULL)
+        if(drawSqTreeMap(x,y,width,length,pos,data,p,layer)!=NULL)
         {
-            rectList->append(*drawSqTreeMap(x,y,width,length,pos,data,p));
+            rectList->append(*drawSqTreeMap(x,y,width,length,pos,data,p,layer));
         }
         return rectList;
     }
+
 }
 
-qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<float> *data)
+qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<double> *data)
 {
     qreal ratio=1;
     qreal temp=1;
@@ -220,18 +284,18 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<float> 
     qreal sum=0;
     for(int i=pos;i<data->size();i++)
     {
-        total+=data->at(i);
+        total+=fabs(data->at(i));
     }
     qreal value=0;
     for(int i=pos;i<=pos+number;i++)
     {
-        value+=data->at(i);
+        value+=fabs(data->at(i));
     }
     if(true)//if(l>=w)
     {
         for(int i=pos;i<=pos+number;i++)
         {
-            temp=data->at(i)*total*w/(l*value*value);
+            temp=fabs(data->at(i))*total*w/(l*value*value);
             if(temp<1)
             {
                 temp=1/temp;
@@ -244,30 +308,30 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<float> 
             }
         }
     }
-    /*
-    else
-    {
-        for(int i=pos;i<=pos+number;i++)
-        {
-            temp=data->at(i)*total*l/(w*value*value);
-            if(temp<1)
-            {
-                temp=1/temp;
-            }
-            if(temp>ratio)
-            {
-                ratio=temp;
-            }
-        }
-
-    }*/
-    //cout<<sum<<endl;
     sum=sum/(number+1);
     ratio=sum;
-    //cout<<sum<<endl;
-    //ratio=sumRatio/(number+1);
     return ratio;
 }
+int areaTreemap::getBorder() const
+{
+    return m_border;
+}
+
+void areaTreemap::setBorder(int border)
+{
+    m_border = border;
+}
+
+bool areaTreemap::getMapDifference() const
+{
+    return m_MapDifference;
+}
+
+void areaTreemap::setMapDifference(bool MapDifference)
+{
+    m_MapDifference = MapDifference;
+}
+
 
 
 void areaTreemap::windowClose()
@@ -294,12 +358,12 @@ void areaTreemap::setRectList(QList<rectHolder *> *RectList)
     m_RectList = RectList;
 }
 
-QList<float> *areaTreemap::getAveragePrevlance() const
+QList<double> *areaTreemap::getAveragePrevlance() const
 {
     return m_AveragePrevlance;
 }
 
-void areaTreemap::setAveragePrevlance(QList<float> *AveragePrevlance)
+void areaTreemap::setAveragePrevlance(QList<double> *AveragePrevlance)
 {
     m_AveragePrevlance = AveragePrevlance;
 }

@@ -48,7 +48,7 @@ Widget::Widget(QWidget *parent) :
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
-    m_AveragePrevlance=new QList<float>;
+    m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
     {
         this->getAveragePrevlance()->append(0);
@@ -61,14 +61,6 @@ Widget::Widget(QWidget *parent) :
     for(int i=0; i<this->getAreaGroup()->size();i++)
     {
         this->getAreaGroup()->at(i)->initi();
-        //cout<<this->getAreaGroup()->at(i)->PopulationList()->size()<<endl;
-        /*
-        cout<<"area Code : "<<this->getAreaGroup()->at(i)->AreaCode().toStdString()<<endl;
-        cout<<"ccg number :"<<this->getAreaGroup()->at(i)->RegionList()->size()<<endl;
-        for(int j=0;j<this->getAreaGroup()->at(i)->RegionList()->size();j++)
-        {
-            cout<<"ccg code :"<<this->getAreaGroup()->at(i)->RegionList()->at(j)->ccgCode().toStdString()<<endl;
-        }*/
     }
     qSort(this->regionListH()->begin(),this->regionListH()->end(),
           horizontalOrder);
@@ -189,30 +181,32 @@ void Widget::paintCCg(QPainter *painter)
                 }
                 else
                 {
-                    QList <float>* dataTemp=new QList<float>;
+                    QList <double>* dataTemp=new QList<double>;
                     for(int k=0;k<this->regionListV()->at(i)->healthData()->size();k++)
                     {
-                        dataTemp->append(this->regionListV()->at(i)->healthData()->at(k)-
-                                         this->getAveragePrevlance()->at(k));
-                        cout<<"1 "<<this->regionListV()->at(i)->healthData()->at(k)<<endl;
-                        cout<<"2 "<<this->getAveragePrevlance()->at(k)<<endl;
-                        cout<<k<<": "<<dataTemp->at(k)<<endl;
-                        //dataTemp->append(-1);
+                        double tempdata=double(this->regionListV()->at(i)->healthData()->at(k)-
+                                this->getAveragePrevlance()->at(k));
+                        if(fabs(tempdata)>0.005)
+                        {
+                            dataTemp->append(this->regionListV()->at(i)->healthData()->at(k)-
+                                             this->getAveragePrevlance()->at(k));
+                        }
+                        else
+                        {
+                            if(tempdata>0)
+                                dataTemp->append(0.005);
+                            else
+                                dataTemp->append(-0.005);
+                        }
                     }
-                    //dataTemp->replace(5,0);
-                    if(dataTemp->contains(0)==true)
-                    {
 
-                    }
-                    else
-                    {
-                        drawSqTreeMap(this->regionListV()->at(i)->X(),
-                                this->regionListV()->at(i)->Y(),
-                                this->regionListV()->at(i)->getSize(),
-                                this->regionListV()->at(i)->getSize(),0,
-                                dataTemp,
-                                painter,2);
-                    }
+                    drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                 this->regionListV()->at(i)->Y(),
+                                 this->regionListV()->at(i)->getSize(),
+                                 this->regionListV()->at(i)->getSize(),0,
+                                 dataTemp,
+                                 painter,2);
+
 
                 }
             }
@@ -270,16 +264,38 @@ void Widget::paintArea(QPainter *painter)
                 qreal y=rectList->at(j)->Y();
                 qreal w=rectList->at(j)->W();
                 qreal l=rectList->at(j)->L();
-                //cout<<"x :"<<x<<" y :"<<y<<" w: "<<w<<" l: "<<l<<endl;
-                //cout<<this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->size()<<endl;
-                drawSqTreeMap(x,y,w,l,0,
+                if(this->getMapDifference()==false)
+                {
+                    drawSqTreeMap(x,y,w,l,0,
                              this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData(),painter,2);
-               /* drawSqTreeMap(rectList->at(j)->x(),rectList->at(j)->y(),
-                              rectList->at(j)->width(),rectList->at(j)->height(),
-                              0,this->getAreaGroup()->at(i)
-                              ->RegionList()->at(j)->healthData(),
-                              painter);
-                              */
+                }
+                else
+                {
+                    QList <double>* dataTemp=new QList<double>;
+                    for(int k=0;k<this->regionListV()->at(i)->healthData()->size();k++)
+                    {
+                        double tempdata=double(this->getAreaGroup()->at(i)->RegionList()
+                                               ->at(j)->healthData()->at(k)-
+                                this->getAveragePrevlance()->at(k));
+                        if(fabs(tempdata)>0.005)
+                        {
+                            dataTemp->append(tempdata);
+                        }
+                        else
+                        {
+                            if(tempdata>0)
+                                dataTemp->append(0.005);
+                            else
+                                dataTemp->append(-0.005);
+                        }
+                    }
+
+                    drawSqTreeMap(x,y,w,l,0,
+                                 dataTemp,
+                                 painter,2);
+
+
+                }
             }
         }
         drawSign(painter);
@@ -444,185 +460,6 @@ void Widget::areaIncrease()
     }
 }
 
-QList<Region *> *Widget::overlap(int k)
-{
-    Region * r=this->regionListV()->at(k);
-    QList <Region *> * temp= new QList<Region *>;
-    QRect rect(r->X(),r->Y(),r->getSize(),r->getSize());
-    int i=0;
-    int max=this->regionListV()->size();
-    if(k-this->searchRange()>0)
-    {
-        i=k-this->searchRange();
-    }
-    if(k+this->searchRange()<max)
-    {
-        max=k+this->searchRange();
-    }
-    for(i;i<max;i++)
-    {
-        Region * r1=this->regionListV()->at(i);
-        QRect rect1(r1->X(),r1->Y(),r1->getSize(),r1->getSize());
-        if(r->X()==r1->X()&&r->Y()==r1->Y())
-        {
-
-        }
-        else
-        {
-            if(rect.contains(r1->X(),r1->Y(),false)||
-               rect.contains(r1->X(),r1->Y()+r1->getSize(),false)||
-               rect.contains(r1->X()+r1->getSize(),r1->Y(),false)||
-               rect.contains(r1->X()+r1->getSize(),r1->Y()+r1->getSize(),false))
-            {
-                 temp->append(this->regionListV()->at(i));
-            }
-            else if(rect1.contains(r->X(),r->Y(),false)||
-                    rect1.contains(r->X(),r->Y()+r->getSize(),false)||
-                    rect1.contains(r->X()+r->getSize(),r->Y(),false)||
-                    rect1.contains(r->X()+r->getSize(),r->Y()+r->getSize(),false))
-            {
-                temp->append(this->regionListV()->at(i));
-            }
-
-        }
-    }
-    return temp;
-}
-
-
-bool Widget::testSouthOverlap(int k)
-{
-    Region * r=this->regionListV()->at(k);
-    QList <Region *> * temp=this->overlap(k);
-    if(temp->isEmpty()==true)
-    {
-      return false;
-    }
-    else
-    {
-       for(int i=0;i<temp->size();i++)
-       {
-           if(temp->at(i)->Y()>=r->Y())
-           {
-               return true;
-           }
-       }
-       return false;
-    }
-}
-
-void Widget::moveNorth(int vOrder)
-{
-    if(vOrder<0)
-    {
-        return;
-    }
-    if(testSouthOverlap(vOrder)==true)
-    {
-        this->regionListV()->at(vOrder)->moveNorth();
-        if(testWestOverlap(vOrder)==true)
-            this->regionListV()->at(vOrder)->moveWest();
-        moveNorth(vOrder-1);
-    }
-    else
-    {
-        if(testWestOverlap(vOrder)==true)
-            this->regionListV()->at(vOrder)->moveWest();
-        moveNorth(vOrder-1);
-    }
-
-
-}
-
-bool Widget::testNorthOverlap(int k)
-{
-    Region * r=this->regionListV()->at(k);
-    QList <Region *> * temp=this->overlap(k);
-    if(temp->isEmpty()==true)
-    {
-      return false;
-    }
-    else
-    {
-       for(int i=0;i<temp->size();i++)
-       {
-           if(temp->at(i)->Y()<r->Y())
-           {
-               return true;
-           }
-       }
-       return false;
-    }
-}
-
-void Widget::moveSouth(int vOrder)
-{
-    if(vOrder>=this->regionListV()->size())
-    {
-        return;
-    }
-    if(testNorthOverlap(vOrder)==true)
-    {
-        this->regionListV()->at(vOrder)->moveSouth();
-        if(testEastOverlap(vOrder)==true)
-            this->regionListV()->at(vOrder)->moveEast();
-        moveSouth(vOrder+1);
-    }
-    else
-    {
-        if(testEastOverlap(vOrder)==true)
-            this->regionListV()->at(vOrder)->moveEast();
-        moveSouth(vOrder+1);
-    }
-
-
-}
-
-bool Widget::testWestOverlap(int k)
-{
-    Region * r=this->regionListV()->at(k);
-    QList <Region *> * temp=this->overlap(k);
-    if(temp->isEmpty()==true)
-    {
-      return false;
-    }
-    else
-    {
-       for(int i=0;i<temp->size();i++)
-       {
-           if(temp->at(i)->X()>r->X())
-           {
-               return true;
-           }
-       }
-       return false;
-    }
-}
-
-bool Widget::testEastOverlap(int k)
-{
-    Region * r=this->regionListV()->at(k);
-    QList <Region *> * temp=this->overlap(k);
-    if(temp->isEmpty()==true)
-    {
-      return false;
-    }
-    else
-    {
-       for(int i=0;i<temp->size();i++)
-       {
-           if(temp->at(i)->X()<r->X())
-           {
-               return true;
-           }
-       }
-       return false;
-    }
-
-
-}
-
-
 bool Widget::getFinished() const
 {
     return finished;
@@ -755,48 +592,9 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 
 }
 
-/*void Widget::drawTreeMap(qreal x, qreal y, qreal width, qreal length, QList<float> *data, QPainter *p)
+
+QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<double> *data, QPainter *p, int layer)
 {
-
-   qreal total=0;
-   for(int i=0;i<data->size();i++)
-   {
-       total+=data->at(i);
-   }
-   for(int i=0;i<data->size();i++)
-   {
-       if(length>=width)
-       {
-           qreal temp=length*data->at(i)/total;
-
-           QRectF rect=QRectF(x,y,width,temp);
-           p->fillRect(rect,dataColor.at(i));
-
-           if(data->at(i)>1)
-           {
-               p->fillRect(rect,Qt::BDiagPattern);
-           }
-           y=y+temp;
-           length=length-temp;
-           total=total-data->at(i);
-       }
-       else
-       {
-           qreal temp=width*data->at(i)/total;
-           QRectF rect=QRectF(x,y,temp,length);
-           p->fillRect(rect,dataColor.at(i));
-           x=x+temp;
-           width=width-temp;
-           total=total-data->at(i);
-       }
-   }
-}
-*/
-
-
-QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p, int layer)
-{
-   // cout<<" draw sq treemap called"<<endl;
     if(pos>=data->size())
     {
         return NULL;
@@ -837,19 +635,48 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
             if(layer==2)
             {
-                if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
+                if(this->getMapDifference()==false)
                 {
-                    QPen pen(QColor::fromRgb(255,0,0,100));
-                    pen.setWidth(this->getBorder());
-                    p->setPen(pen);
+                    if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
+                    {
+                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
 
+                    }
+                    else
+                    {
+                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                    }
                 }
                 else
                 {
-                    QPen pen(QColor::fromRgb(0,255,0,100));
-                    pen.setWidth(this->getBorder());
-                    p->setPen(pen);
+                    if(data->at(i)>0)
+                    {
+                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+
+                    }
+                    else
+                    {
+                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                    }
                 }
+                QLinearGradient grad(tempx,y,
+                                     tempx+fabs(data->at(i))*width/value,
+                                     y+value*length/total);
+                grad.setColorAt(0,
+                                QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                 1,0.5));
+                grad.setColorAt(1,
+                                QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                 0.5,1));
+                p->fillRect(rect,grad);
             }
             else
             {
@@ -858,7 +685,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 p->setPen(pen);
             }
             p->drawRect(rect);
-            p->fillRect(rect,dataColor.at(i));
+
             tempx=tempx+fabs(data->at(i))*width/value;
         }
         y=y+value*length/total;
@@ -870,29 +697,10 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
         }
         return rectList;
     }
-    /*
-    else
-    {
-        qreal tempy=y;
-        for(int i=pos;i<pos+number;i++)
-        {
-            value+=data->at(i);
-        }
-        for(int i=pos;i<pos+number;i++)
-        {
-            QRectF rect=QRectF(x,tempy,value*width/total,data->at(i)*length/value);
-            p->fillRect(rect,dataColor.at(i));
-            tempy=tempy+data->at(i)*length/value;
-        }
-        x=x+value*width/total;
-        width=width-value*width/total;
-        pos=pos+number;
-        drawSqTreeMap(x,y,width,length,pos,data,p);
-    }*/
 
 }
 
-qreal Widget::calRatio(qreal w, qreal l, int pos, int number, QList<float> *data)
+qreal Widget::calRatio(qreal w, qreal l, int pos, int number, QList<double> *data)
 {
     qreal ratio=1;
     qreal temp=1;
@@ -924,34 +732,12 @@ qreal Widget::calRatio(qreal w, qreal l, int pos, int number, QList<float> *data
             }
         }
     }
-    /*
-    else
-    {
-        for(int i=pos;i<=pos+number;i++)
-        {
-            temp=data->at(i)*total*l/(w*value*value);
-            if(temp<1)
-            {
-                temp=1/temp;
-            }
-            if(temp>ratio)
-            {
-                ratio=temp;
-            }
-        }
-
-    }*/
-    //cout<<sum<<endl;
     sum=sum/(number+1);
     ratio=sum;
-    //cout<<sum<<endl;
-    //ratio=sumRatio/(number+1);
     return ratio;
-
-
 }
 
-QList <rectHolder *> * Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos, QList<float> *data, QPainter *p)
+QList <rectHolder *> * Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qreal length, int pos, QList<double> *data, QPainter *p)
 {
     if(pos>=data->size())
     {
@@ -1003,7 +789,7 @@ QList <rectHolder *> * Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qre
     }
 }
 
-qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<float> *data)
+qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data)
 {
     qreal ratio=1;
     qreal temp;
@@ -1075,7 +861,7 @@ void Widget::on_start_pressed()
         }
         this->setFinished(false);
         count=0;
-        timer->start(50);
+        timer->start(20);
     }
 }
 
@@ -1102,7 +888,7 @@ void Widget::fileRead()
     while (!inFlow.eof())
     {
         //cout<<i<<"region"<<endl;
-        QList<float> *tempList=new QList<float>;
+        QList<double> *tempList=new QList<double>;
         Region * temp=new Region();
         AreaTeam * areaTemp;
         getline(inFlow,input, ',');
@@ -1116,7 +902,7 @@ void Widget::fileRead()
         for(int j=0;j<14;j++)
         {
             getline(inFlow,input, ',');
-            float b=atof(input.c_str());
+            double b=atof(input.c_str());
             this->getAveragePrevlance()->replace(j,
                    this->getAveragePrevlance()->at(j)+b);
             tempList->append(b);
@@ -1243,34 +1029,30 @@ void Widget::drawSign(QPainter *p)
     QFont font("font:Arial",12,QFont::Bold);
     p->setFont(font);
     p->setPen(Qt::white);
-
-    p->fillRect(QRect(1780,400,100,40),dataColor[0]);
+    for(int i=0;i<14;i++)
+    {
+        QLinearGradient temp(1780,400+i*40,1880,440+40*i);
+        temp.setColorAt(0,
+                        QColor::fromHsvF(dataColor[i].hueF(),
+                                         1,0.6));
+        temp.setColorAt(1,
+                        QColor::fromHsvF(dataColor[i].hueF(),
+                                         0.6,1));
+        p->fillRect(1780,400+i*40,100,40,temp);
+    }
     p->drawText(QRect(1780,400,100,40),"Coronary-heart-disease");
-    p->fillRect(QRect(1780,440,100,40),dataColor[1]);
     p->drawText(QRect(1780,440,100,40),"Chronic-kidney-disease");
-    p->fillRect(QRect(1780,480,100,40),dataColor[2]);
     p->drawText(QRect(1780,480,100,40),"diabetes");
-    p->fillRect(QRect(1780,520,100,40),dataColor[3]);
     p->drawText(QRect(1780,520,100,40),"Heart Failure");
-    p->fillRect(QRect(1780,560,100,40),dataColor[4]);
     p->drawText(QRect(1780,560,100,40),"Stroke");
-    p->fillRect(QRect(1780,600,100,40),dataColor[5]);
     p->drawText(QRect(1780,600,100,40),"Hypertension");
-    p->fillRect(QRect(1780,640,100,40),dataColor[6]);
     p->drawText(QRect(1780,640,100,40),"COPD");
-    p->fillRect(QRect(1780,680,100,40),dataColor[7]);
     p->drawText(QRect(1780,680,100,40),"Mental-Health");
-    p->fillRect(QRect(1780,720,100,40),dataColor[8]);
     p->drawText(QRect(1780,720,100,40),"Osteoporosis");
-    p->fillRect(QRect(1780,760,100,40),dataColor[9]);
     p->drawText(QRect(1780,760,100,40),"Rheumatoid-Arthritis");
-    p->fillRect(QRect(1780,800,100,40),dataColor[10]);
     p->drawText(QRect(1780,800,100,40),"Cancer");
-    p->fillRect(QRect(1780,840,100,40),dataColor[11]);
     p->drawText(QRect(1780,840,100,40),"Epilepsy");
-    p->fillRect(QRect(1780,880,100,40),dataColor[12]);
     p->drawText(QRect(1780,880,100,40),"Hypothyroidism");
-    p->fillRect(QRect(1780,920,100,40),dataColor[13]);
     p->drawText(QRect(1780,920,100,40),"Palliative");
     font.setPixelSize(FONTSIZEA);
     font.setBold(false);
@@ -1351,12 +1133,12 @@ void Widget::setBorder(int border)
 {
     m_border = border;
 }
-QList<float> *Widget::getAveragePrevlance() const
+QList<double> *Widget::getAveragePrevlance() const
 {
     return m_AveragePrevlance;
 }
 
-void Widget::setAveragePrevlance(QList<float> *AveragePrevlance)
+void Widget::setAveragePrevlance(QList<double> *AveragePrevlance)
 {
     m_AveragePrevlance = AveragePrevlance;
 }
@@ -1537,4 +1319,181 @@ void Widget::on_checkBox_6_toggled(bool checked)
     {
         this->setMapDifference(false);
     }
+}
+QList<Region *> *Widget::overlap(int k)
+{
+    Region * r=this->regionListV()->at(k);
+    QList <Region *> * temp= new QList<Region *>;
+    QRect rect(r->X(),r->Y(),r->getSize(),r->getSize());
+    int i=0;
+    int max=this->regionListV()->size();
+    if(k-this->searchRange()>0)
+    {
+        i=k-this->searchRange();
+    }
+    if(k+this->searchRange()<max)
+    {
+        max=k+this->searchRange();
+    }
+    for(i;i<max;i++)
+    {
+        Region * r1=this->regionListV()->at(i);
+        QRect rect1(r1->X(),r1->Y(),r1->getSize(),r1->getSize());
+        if(r->X()==r1->X()&&r->Y()==r1->Y())
+        {
+
+        }
+        else
+        {
+            if(rect.contains(r1->X(),r1->Y(),false)||
+               rect.contains(r1->X(),r1->Y()+r1->getSize(),false)||
+               rect.contains(r1->X()+r1->getSize(),r1->Y(),false)||
+               rect.contains(r1->X()+r1->getSize(),r1->Y()+r1->getSize(),false))
+            {
+                 temp->append(this->regionListV()->at(i));
+            }
+            else if(rect1.contains(r->X(),r->Y(),false)||
+                    rect1.contains(r->X(),r->Y()+r->getSize(),false)||
+                    rect1.contains(r->X()+r->getSize(),r->Y(),false)||
+                    rect1.contains(r->X()+r->getSize(),r->Y()+r->getSize(),false))
+            {
+                temp->append(this->regionListV()->at(i));
+            }
+
+        }
+    }
+    return temp;
+}
+
+
+bool Widget::testSouthOverlap(int k)
+{
+    Region * r=this->regionListV()->at(k);
+    QList <Region *> * temp=this->overlap(k);
+    if(temp->isEmpty()==true)
+    {
+      return false;
+    }
+    else
+    {
+       for(int i=0;i<temp->size();i++)
+       {
+           if(temp->at(i)->Y()>=r->Y())
+           {
+               return true;
+           }
+       }
+       return false;
+    }
+}
+
+void Widget::moveNorth(int vOrder)
+{
+    if(vOrder<0)
+    {
+        return;
+    }
+    if(testSouthOverlap(vOrder)==true)
+    {
+        this->regionListV()->at(vOrder)->moveNorth();
+        if(testWestOverlap(vOrder)==true)
+            this->regionListV()->at(vOrder)->moveWest();
+        moveNorth(vOrder-1);
+    }
+    else
+    {
+        if(testWestOverlap(vOrder)==true)
+            this->regionListV()->at(vOrder)->moveWest();
+        moveNorth(vOrder-1);
+    }
+
+
+}
+
+bool Widget::testNorthOverlap(int k)
+{
+    Region * r=this->regionListV()->at(k);
+    QList <Region *> * temp=this->overlap(k);
+    if(temp->isEmpty()==true)
+    {
+      return false;
+    }
+    else
+    {
+       for(int i=0;i<temp->size();i++)
+       {
+           if(temp->at(i)->Y()<r->Y())
+           {
+               return true;
+           }
+       }
+       return false;
+    }
+}
+
+void Widget::moveSouth(int vOrder)
+{
+    if(vOrder>=this->regionListV()->size())
+    {
+        return;
+    }
+    if(testNorthOverlap(vOrder)==true)
+    {
+        this->regionListV()->at(vOrder)->moveSouth();
+        if(testEastOverlap(vOrder)==true)
+            this->regionListV()->at(vOrder)->moveEast();
+        moveSouth(vOrder+1);
+    }
+    else
+    {
+        if(testEastOverlap(vOrder)==true)
+            this->regionListV()->at(vOrder)->moveEast();
+        moveSouth(vOrder+1);
+    }
+
+
+}
+
+bool Widget::testWestOverlap(int k)
+{
+    Region * r=this->regionListV()->at(k);
+    QList <Region *> * temp=this->overlap(k);
+    if(temp->isEmpty()==true)
+    {
+      return false;
+    }
+    else
+    {
+       for(int i=0;i<temp->size();i++)
+       {
+           if(temp->at(i)->X()>r->X())
+           {
+               return true;
+           }
+       }
+       return false;
+    }
+}
+
+bool Widget::testEastOverlap(int k)
+{
+    Region * r=this->regionListV()->at(k);
+    QList <Region *> * temp=this->overlap(k);
+    if(temp->isEmpty()==true)
+    {
+      return false;
+    }
+    else
+    {
+       for(int i=0;i<temp->size();i++)
+       {
+           if(temp->at(i)->X()<r->X())
+           {
+               return true;
+           }
+       }
+       return false;
+    }
+
+
 }

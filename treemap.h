@@ -17,7 +17,7 @@ class treeMap : public QWidget
 
 public:
     explicit treeMap(QWidget *parent = 0,bool treemap = false,
-                     bool color = false,Region* region=NULL,QList<float> *aver=NULL);
+                     bool color = false,Region* region=NULL,QList<double> *aver=NULL);
     ~treeMap();
     void paintEvent(QPaintEvent * event);
 
@@ -44,16 +44,22 @@ public:
     qreal getTotalAsp() const;
     void setTotalAsp(const qreal &totalAsp);
 
-    QList<float> *getAveragePrevlance() const;
-    void setAveragePrevlance(QList<float> *AveragePrevlance);
+    QList<double> *getAveragePrevlance() const;
+    void setAveragePrevlance(QList<double> *AveragePrevlance);
+
+    int getBorder() const;
+    void setBorder(int border);
+
+    bool getMapDifference() const;
+    void setMapDifference(bool MapDifference);
 
 private:
     Ui::treeMap *ui;
     Region *m_region;
-    QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
-    QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<float> * data, QPainter * p);
-    qreal calRatio(qreal w, qreal l, int pos, int number, QList<float> *data);
-    qreal calRatio2(qreal w, qreal l, int pos, int number, QList<float> *data);
+    QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p,int layer);
+    QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p);
+    qreal calRatio(qreal w, qreal l, int pos, int number, QList<double> *data);
+    qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
     QList<QColor> dataColor;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
@@ -61,7 +67,9 @@ private:
     bool m_otherColor;
     qreal m_ratioTemp;
     qreal m_totalAsp;
-    QList <float> * m_AveragePrevlance;
+    bool m_MapDifference;
+    int m_border;
+    QList <double> * m_AveragePrevlance;
 
 };
 

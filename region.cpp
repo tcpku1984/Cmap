@@ -7,7 +7,7 @@ enum{
 };
 Region::Region()
 {
-    m_healthData= new QList<float>;
+    m_healthData= new QList<double>;
     m_stopIncrease=false;
     size=1;
     m_color=0;
@@ -19,21 +19,21 @@ Region::~Region()
 
 }
 
-float Region::Lati() const
+double Region::Lati() const
 {
     return m_Lati;
 }
 
-void Region::setLati(float Lati)
+void Region::setLati(double Lati)
 {
     m_Lati = Lati;
 }
-float Region::Longti() const
+double Region::Longti() const
 {
     return m_Longti;
 }
 
-void Region::setLongti(float Longti)
+void Region::setLongti(double Longti)
 {
     m_Longti = Longti;
 }
@@ -163,12 +163,12 @@ void Region::setDetail(bool detail)
 {
     m_detail = detail;
 }
-QList<float> *Region::healthData() const
+QList<double> *Region::healthData() const
 {
     return m_healthData;
 }
 
-void Region::setHealthData(QList<float> *healthData)
+void Region::setHealthData(QList<double> *healthData)
 {
     m_healthData = healthData;
 }
