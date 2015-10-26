@@ -512,6 +512,8 @@ void Widget::mousePressEvent(QMouseEvent *e)
               treeMap * t=new treeMap(0,this->getLookAhead(),
                                       this->getOtherColor(),this->regionListV()->at(i),
                                       this->getAveragePrevlance());
+              t->setBorder(this->getBorder());
+              t->setMapDifference(this->getMapDifference());
               t->setGeometry(10+530*this->Windowsnumber(),30,520,620);
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -541,6 +543,8 @@ void Widget::mousePressEvent(QMouseEvent *e)
              this->getAreaGroup()->at(i)->Y()+this->getAreaGroup()->at(i)->Size()>y)
           {
               areaTreemap * t=new areaTreemap(0,this->getOtherColor(),this->getAreaGroup()->at(i),this->getAveragePrevlance());
+              t->setBorder(this->getBorder());
+              t->setMapDifference(this->getMapDifference());
               t->setGeometry(10+630*this->Windowsnumber(),30,620,720);
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -869,7 +873,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("C:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 

@@ -384,6 +384,8 @@ void areaTreemap::mousePressEvent(QMouseEvent *e)
                                   this->Area()->RegionList()->at(i),
                                   this->getAveragePrevlance());
           t->setGeometry(10+530*this->getWindowsnumber(),730,520,620);
+          t->setBorder(this->getBorder());
+          t->setMapDifference(this->getMapDifference());
           t->setAttribute(Qt::WA_DeleteOnClose);
           t->setWindowFlags(Qt::WindowStaysOnTopHint);
           connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
