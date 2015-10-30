@@ -5,6 +5,9 @@ treeMap::treeMap(QWidget *parent, bool treemap, bool color, Region *region, QLis
     QWidget(parent),
     ui(new Ui::treeMap)
 {
+    QPalette pal = this->palette();
+    pal.setColor(this->backgroundRole(), Qt::white);
+    this->setPalette(pal);
     m_AveragePrevlance=new QList<double>;
     m_lookAhead=false;
     m_otherColor=false;

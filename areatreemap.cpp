@@ -7,6 +7,9 @@ areaTreemap::areaTreemap(QWidget *parent, bool color, AreaTeam * area,QList <dou
     QWidget(parent),
     ui(new Ui::areaTreemap)
 {
+    QPalette pal = this->palette();
+    pal.setColor(this->backgroundRole(), Qt::white);
+    this->setPalette(pal);
     m_AveragePrevlance=new QList<double>;
     m_RectList=new QList <rectHolder *>;
     this->setWindowsnumber(0);
@@ -83,6 +86,7 @@ void areaTreemap::paintEvent(QPaintEvent *event)
         qreal y=this->getRectList()->at(j)->Y();
         qreal w=this->getRectList()->at(j)->W();
         qreal l=this->getRectList()->at(j)->L();
+
         if(this->getMapDifference()==false)
         {
             drawSqTreeMap(x,y,w,l,0,
@@ -115,6 +119,7 @@ void areaTreemap::paintEvent(QPaintEvent *event)
 
 
         }
+
     }
     painter.setPen(Qt::black);
     painter.drawText(rect,tempString);

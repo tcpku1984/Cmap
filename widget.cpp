@@ -31,6 +31,9 @@ Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {
+    QPalette pal = this->palette();
+    pal.setColor(this->backgroundRole(), Qt::white);
+    this->setPalette(pal);
     m_regionListV= new QList<Region *>;
     m_regionListH= new QList<Region *>;
     index=0;
@@ -684,8 +687,8 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
             }
             else
             {
-                QPen pen(Qt::black);
-                pen.setWidth(this->getBorder());
+                QPen pen(Qt::white);
+                pen.setWidth(this->getBorder()+2);
                 p->setPen(pen);
             }
             p->drawRect(rect);
@@ -873,7 +876,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
+    inFlow.open("C:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1036,6 +1039,7 @@ void Widget::drawSign(QPainter *p)
     for(int i=0;i<14;i++)
     {
         QLinearGradient temp(1780,400+i*40,1880,440+40*i);
+        //QRadialGradient temp(QPoint(1830,420+40*i),60);
         temp.setColorAt(0,
                         QColor::fromHsvF(dataColor[i].hueF(),
                                          1,0.6));
