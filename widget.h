@@ -93,10 +93,6 @@ public:
     bool getLookAhead() const;
     void setLookAhead(bool lookAhead);
 
-    bool getOtherColor() const;
-    void setOtherColor(bool otherColor);
-
-
     QList<AreaTeam *> *getAreaGroup() const;
     void setAreaGroup(QList<AreaTeam *> *AreaGroup);
 
@@ -112,6 +108,9 @@ public:
 
     bool getMapDifference() const;
     void setMapDifference(bool mapDifference);
+
+    int getColor() const;
+    void setColor(int Color);
 
 public slots:
     void animate();
@@ -141,6 +140,8 @@ private slots:
     void on_horizontalSlider_4_valueChanged(int value);
 
     void on_checkBox_6_toggled(bool checked);
+
+    void on_horizontalSlider_5_valueChanged(int value);
 
 private:
     Ui::Widget *ui;
@@ -177,13 +178,13 @@ private:
     bool m_samesize;
     bool m_algorithm;
     bool m_lookAhead;
-    bool m_otherColor;
     bool m_group;
     bool m_mapDifference;
     int m_Windowsnumber;
     QList <AreaTeam *>  * m_AreaGroup;
     QList <double> * m_AveragePrevlance;
     int m_border;
+    int m_Color;
 };
 
 #endif // WIDGET_H

@@ -1,7 +1,7 @@
 #include "treemap.h"
 #include "ui_treemap.h"
 
-treeMap::treeMap(QWidget *parent, bool treemap, bool color, Region *region, QList<double> * aver) :
+treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList<double> * aver) :
     QWidget(parent),
     ui(new Ui::treeMap)
 {
@@ -10,14 +10,13 @@ treeMap::treeMap(QWidget *parent, bool treemap, bool color, Region *region, QLis
     this->setPalette(pal);
     m_AveragePrevlance=new QList<double>;
     m_lookAhead=false;
-    m_otherColor=false;
     m_ratioTemp=0;
     m_totalAsp=0;
     this->setMapDifference(true);
     this->setBorder(4);
     ui->setupUi(this);
     this->setLookAhead(treemap);
-    this->setOtherColor(color);
+    this->setColor(color);
     this->setRegion(region);
     this->setAveragePrevlance(aver);
     dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
@@ -58,14 +57,17 @@ treeMap::~treeMap()
 
 void treeMap::paintEvent(QPaintEvent *event)
 {
-    if(this->getOtherColor()==true)
+    switch(this->getColor())
     {
+    case 1:
         this->dataColor=this->dataColor1;
-    }
-    else
-    {
+        break;
+    case 2:
         this->dataColor=this->dataColor2;
+        break;
+
     }
+
     QPainter painter(this);
     QFont font("font:Arial");
     painter.setFont(font);
@@ -405,6 +407,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
 
 
 }
+int treeMap::getColor() const
+{
+    return m_Color;
+}
+
+void treeMap::setColor(int Color)
+{
+    m_Color = Color;
+}
+
 bool treeMap::getMapDifference() const
 {
     return m_MapDifference;
@@ -454,16 +466,6 @@ qreal treeMap::getRatioTemp() const
 void treeMap::setRatioTemp(const qreal &ratioTemp)
 {
     m_ratioTemp = ratioTemp;
-}
-
-bool treeMap::getOtherColor() const
-{
-    return m_otherColor;
-}
-
-void treeMap::setOtherColor(bool otherColor)
-{
-    m_otherColor = otherColor;
 }
 
 bool treeMap::getLookAhead() const

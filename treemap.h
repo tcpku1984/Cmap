@@ -17,7 +17,7 @@ class treeMap : public QWidget
 
 public:
     explicit treeMap(QWidget *parent = 0,bool treemap = false,
-                     bool color = false,Region* region=NULL,QList<double> *aver=NULL);
+                     int color = 2,Region* region=NULL,QList<double> *aver=NULL);
     ~treeMap();
     void paintEvent(QPaintEvent * event);
 
@@ -35,9 +35,6 @@ public:
     bool getLookAhead() const;
     void setLookAhead(bool lookAhead);
 
-    bool getOtherColor() const;
-    void setOtherColor(bool otherColor);
-
     qreal getRatioTemp() const;
     void setRatioTemp(const qreal &ratioTemp);
 
@@ -53,6 +50,9 @@ public:
     bool getMapDifference() const;
     void setMapDifference(bool MapDifference);
 
+    int getColor() const;
+    void setColor(int Color);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -64,7 +64,7 @@ private:
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     bool m_lookAhead;
-    bool m_otherColor;
+    int m_Color;
     qreal m_ratioTemp;
     qreal m_totalAsp;
     bool m_MapDifference;

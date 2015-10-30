@@ -42,11 +42,11 @@ Widget::Widget(QWidget *parent) :
     m_searchRange=212;
     m_population=0;
     m_border=1;
+    this->setColor(2);
     finished=false;
     m_samesize=false;
     m_algorithm=false;
     m_lookAhead=false;
-    m_otherColor=false;
     this->setMapDifference(false);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
@@ -109,14 +109,17 @@ Widget::~Widget()
 
 void Widget::paintEvent(QPaintEvent *event)
 {
-    if(this->getOtherColor()==false)
+    switch(this->getColor())
     {
-        this->dataColor=this->dataColor2;
-    }
-    else
-    {
+    case 1:
         this->dataColor=this->dataColor1;
+        break;
+    case 2:
+        this->dataColor=this->dataColor2;
+        break;
+
     }
+
     QPainter painter(this);
     if(this->getGroup()==false)
     {
@@ -513,7 +516,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
              this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()>y)
           {
               treeMap * t=new treeMap(0,this->getLookAhead(),
-                                      this->getOtherColor(),this->regionListV()->at(i),
+                                      this->getColor(),this->regionListV()->at(i),
                                       this->getAveragePrevlance());
               t->setBorder(this->getBorder());
               t->setMapDifference(this->getMapDifference());
@@ -545,7 +548,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
              this->getAreaGroup()->at(i)->Y()<y&&
              this->getAreaGroup()->at(i)->Y()+this->getAreaGroup()->at(i)->Size()>y)
           {
-              areaTreemap * t=new areaTreemap(0,this->getOtherColor(),this->getAreaGroup()->at(i),this->getAveragePrevlance());
+              areaTreemap * t=new areaTreemap(0,this->getColor(),this->getAreaGroup()->at(i),this->getAveragePrevlance());
               t->setBorder(this->getBorder());
               t->setMapDifference(this->getMapDifference());
               t->setGeometry(10+630*this->Windowsnumber(),30,620,720);
@@ -1121,6 +1124,16 @@ int Widget::searchAreaCode(QString code)
     }
     return -1;
 }
+int Widget::getColor() const
+{
+    return m_Color;
+}
+
+void Widget::setColor(int Color)
+{
+    m_Color = Color;
+}
+
 bool Widget::getMapDifference() const
 {
     return m_mapDifference;
@@ -1174,15 +1187,6 @@ void Widget::setAreaGroup(QList<AreaTeam *> *AreaGroup)
     m_AreaGroup = AreaGroup;
 }
 
-bool Widget::getOtherColor() const
-{
-    return m_otherColor;
-}
-
-void Widget::setOtherColor(bool otherColor)
-{
-    m_otherColor = otherColor;
-}
 
 bool Widget::getLookAhead() const
 {
@@ -1286,17 +1290,6 @@ void Widget::on_checkBox_3_toggled(bool checked)
 
 }
 
-void Widget::on_checkBox_4_toggled(bool checked)
-{
-    if(checked==true)
-    {
-        this->setOtherColor(true);
-    }
-    else
-    {
-        this->setOtherColor(false);
-    }
-}
 
 void Widget::on_checkBox_5_toggled(bool checked)
 {
@@ -1504,4 +1497,9 @@ bool Widget::testEastOverlap(int k)
     }
 
 
+}
+
+void Widget::on_horizontalSlider_5_valueChanged(int value)
+{
+    this->setColor(value);
 }

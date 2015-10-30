@@ -3,7 +3,7 @@
 
 
 
-areaTreemap::areaTreemap(QWidget *parent, bool color, AreaTeam * area,QList <double>* aver) :
+areaTreemap::areaTreemap(QWidget *parent, int color, AreaTeam * area,QList <double>* aver) :
     QWidget(parent),
     ui(new Ui::areaTreemap)
 {
@@ -14,7 +14,7 @@ areaTreemap::areaTreemap(QWidget *parent, bool color, AreaTeam * area,QList <dou
     m_RectList=new QList <rectHolder *>;
     this->setWindowsnumber(0);
     ui->setupUi(this);
-    this->setOtherColor(color);
+    this->setColor(color);
     this->setArea(area);
     this->setAveragePrevlance(aver);
     this->setMapDifference(true);
@@ -57,14 +57,17 @@ areaTreemap::~areaTreemap()
 
 void areaTreemap::paintEvent(QPaintEvent *event)
 {
-    if(this->getOtherColor()==true)
+    switch(this->getColor())
     {
+    case 1:
         this->dataColor=this->dataColor1;
-    }
-    else
-    {
+        break;
+    case 2:
         this->dataColor=this->dataColor2;
+        break;
+
     }
+
     QPainter painter(this);
     QFont font("font:Arial");
     painter.setFont(font);
@@ -164,15 +167,6 @@ QList<QColor> areaTreemap::getDataColor2() const
 void areaTreemap::setDataColor2(const QList<QColor> &value)
 {
     dataColor2 = value;
-}
-bool areaTreemap::getOtherColor() const
-{
-    return m_otherColor;
-}
-
-void areaTreemap::setOtherColor(bool otherColor)
-{
-    m_otherColor = otherColor;
 }
 
 QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<double> *data, QPainter *p, int layer)
@@ -317,6 +311,16 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<double>
     ratio=sum;
     return ratio;
 }
+int areaTreemap::getColor() const
+{
+    return m_Color;
+}
+
+void areaTreemap::setColor(int Color)
+{
+    m_Color = Color;
+}
+
 int areaTreemap::getBorder() const
 {
     return m_border;
@@ -385,7 +389,7 @@ void areaTreemap::mousePressEvent(QMouseEvent *e)
          this->getRectList()->at(i)->Y()+this->getRectList()->at(i)->L()>y)
       {
           treeMap * t=new treeMap(0,false,
-                                  this->getOtherColor(),
+                                  this->getColor(),
                                   this->Area()->RegionList()->at(i),
                                   this->getAveragePrevlance());
           t->setGeometry(10+530*this->getWindowsnumber(),730,520,620);

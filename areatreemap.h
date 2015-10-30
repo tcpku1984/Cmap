@@ -20,7 +20,7 @@ class areaTreemap : public QWidget
 
 public:
     explicit areaTreemap(QWidget *parent = 0,
-       bool color=false, AreaTeam * area=NULL,QList <double>* aver=NULL);
+       int color=2, AreaTeam * area=NULL,QList <double>* aver=NULL);
     ~areaTreemap();
     void paintEvent(QPaintEvent * event);
 
@@ -36,8 +36,6 @@ public:
     QList<QColor> getDataColor2() const;
     void setDataColor2(const QList<QColor> &value);
 
-    bool getOtherColor() const;
-    void setOtherColor(bool otherColor);
 
 
 
@@ -61,6 +59,9 @@ public:
     int getBorder() const;
     void setBorder(int border);
 
+    int getColor() const;
+    void setColor(int Color);
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;
@@ -72,7 +73,7 @@ private:
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     bool m_lookAhead;
-    bool m_otherColor;
+    int m_Color;
     QList <double> * m_AveragePrevlance;
     QList <rectHolder *> * m_RectList;
     int m_Windowsnumber;
