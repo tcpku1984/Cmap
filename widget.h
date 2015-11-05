@@ -112,6 +112,9 @@ public:
     int getColor() const;
     void setColor(int Color);
 
+    bool getGradient() const;
+    void setGradient(bool gradient);
+
 public slots:
     void animate();
 
@@ -132,7 +135,6 @@ private slots:
 
     void on_checkBox_3_toggled(bool checked);
 
-    void on_checkBox_4_toggled(bool checked);
 
     void on_checkBox_5_toggled(bool checked);
 
@@ -142,6 +144,8 @@ private slots:
     void on_checkBox_6_toggled(bool checked);
 
     void on_horizontalSlider_5_valueChanged(int value);
+
+    void on_checkBox_4_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -175,6 +179,7 @@ private:
     QList<QColor> dataColor;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
+    QList<QColor> dataColor3;
     bool m_samesize;
     bool m_algorithm;
     bool m_lookAhead;
@@ -185,6 +190,7 @@ private:
     QList <double> * m_AveragePrevlance;
     int m_border;
     int m_Color;
+    bool m_gradient;
 };
 
 #endif // WIDGET_H

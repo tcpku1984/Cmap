@@ -48,6 +48,13 @@ areaTreemap::areaTreemap(QWidget *parent, int color, AreaTeam * area,QList <doub
         //cout<<(qreal(270)+qreal(i)*90/qreal(4))<<endl;
 
     }
+    dataColor3<<QColor("#2acae6")<<QColor("#deb274")<<QColor("#518adb")
+             <<QColor("#c240d6")<<QColor("#2ecc16")
+             <<QColor("#afef5a")<<QColor("#9163cd")
+             <<QColor("#d26685")<<QColor("#72e6c5")
+             <<QColor("#cf1f9d")<<QColor("#53d179")
+             <<QColor("#e02e0e")<<QColor("#5c5ce6")
+             <<QColor("#000");
 }
 
 areaTreemap::~areaTreemap()
@@ -65,6 +72,9 @@ void areaTreemap::paintEvent(QPaintEvent *event)
     case 2:
         this->dataColor=this->dataColor2;
         break;
+    case 3:
+       this->dataColor=this->dataColor3;
+       break;
 
     }
 
@@ -122,6 +132,18 @@ void areaTreemap::paintEvent(QPaintEvent *event)
 
 
         }
+
+    }
+    QPen pen(Qt::gray);
+    pen.setWidth(this->getBorder()+2);
+    painter.setPen(pen);
+    painter.setBrush(Qt::NoBrush);
+    for(int j=0;j<this->getRectList()->size();j++)
+    {
+        painter.drawRect(this->getRectList()->at(j)->X(),
+                         this->getRectList()->at(j)->Y(),
+                         this->getRectList()->at(j)->W(),
+                         this->getRectList()->at(j)->L());
 
     }
     painter.setPen(Qt::black);
@@ -243,16 +265,33 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
                         p->setPen(pen);
                     }
                 }
-                QLinearGradient grad(tempx,y,
-                                     tempx+fabs(data->at(i))*width/value,
-                                     y+value*length/total);
-                grad.setColorAt(0,
-                                QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                 1,0.5));
-                grad.setColorAt(1,
-                                QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                 0.5,1));
-                p->fillRect(rect,grad);
+                if(this->getGradient()==false)
+                {
+                    QLinearGradient grad(tempx,y,
+                                         tempx+fabs(data->at(i))*width/value,
+                                         y+value*length/total);
+                    grad.setColorAt(0,
+                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                     1,0.5));
+                    grad.setColorAt(1,
+                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                     0.5,1));
+                    p->fillRect(rect,grad);
+                }
+                else
+                {
+                    QRadialGradient grad(tempx+fabs(data->at(i))*width/value/2,
+                                         y+value*length/total/2,
+                                         fabs(data->at(i))*width/value/2+
+                                         value*length/total/2);
+                    grad.setColorAt(0,
+                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                     1,1));
+                    grad.setColorAt(1,
+                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                     0.5,0.5));
+                    p->fillRect(rect,grad);
+                }
             }
             else
             {
@@ -311,6 +350,16 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<double>
     ratio=sum;
     return ratio;
 }
+bool areaTreemap::getGradient() const
+{
+    return m_gradient;
+}
+
+void areaTreemap::setGradient(bool gradient)
+{
+    m_gradient = gradient;
+}
+
 int areaTreemap::getColor() const
 {
     return m_Color;
@@ -395,6 +444,7 @@ void areaTreemap::mousePressEvent(QMouseEvent *e)
           t->setGeometry(10+530*this->getWindowsnumber(),730,520,620);
           t->setBorder(this->getBorder());
           t->setMapDifference(this->getMapDifference());
+          t->setGradient(this->getGradient());
           t->setAttribute(Qt::WA_DeleteOnClose);
           t->setWindowFlags(Qt::WindowStaysOnTopHint);
           connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));

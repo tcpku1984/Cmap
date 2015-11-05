@@ -6,7 +6,7 @@ enum{
     RATHH=400,
     RATHV=600,
     HH=-200,
-    VV=1000,
+    VV=1050,
     MAXSIZE=65,
     HALF=2,
     TEXT=10,
@@ -48,6 +48,7 @@ Widget::Widget(QWidget *parent) :
     m_algorithm=false;
     m_lookAhead=false;
     this->setMapDifference(false);
+    this->setGradient(false);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
@@ -97,6 +98,13 @@ Widget::Widget(QWidget *parent) :
         //cout<<(qreal(270)+qreal(i)*90/qreal(4))<<endl;
 
     }
+    dataColor3<<QColor("#2acae6")<<QColor("#deb274")<<QColor("#518adb")
+             <<QColor("#c240d6")<<QColor("#2ecc16")
+             <<QColor("#afef5a")<<QColor("#9163cd")
+             <<QColor("#d26685")<<QColor("#72e6c5")
+             <<QColor("#cf1f9d")<<QColor("#53d179")
+             <<QColor("#e02e0e")<<QColor("#5c5ce6")
+             <<QColor("#000");
     count=0;
     timer=new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(animate()));
@@ -116,6 +124,9 @@ void Widget::paintEvent(QPaintEvent *event)
         break;
     case 2:
         this->dataColor=this->dataColor2;
+        break;
+     case 3:
+        this->dataColor=this->dataColor3;
         break;
 
     }
@@ -160,7 +171,6 @@ void Widget::paintCCg(QPainter *painter)
         {
             painter->setBrush(Qt::blue);
         }
-
 
         painter->drawRect(
                     QRectF(this->regionListV()->at(i)->X(),
@@ -247,6 +257,7 @@ void Widget::paintArea(QPainter *painter)
     }
     if(this->getFinished()==true)
     {
+        painter->setBrush(Qt::NoBrush);
         //cout<<"drawing"<<endl;
         for(int i=0;i<this->getAreaGroup()->size();i++)
         {
@@ -302,6 +313,18 @@ void Widget::paintArea(QPainter *painter)
 
 
                 }
+            }
+            QPen pen(Qt::gray);
+            pen.setWidth(this->getBorder()+2);
+            painter->setPen(pen);
+            painter->setBrush(Qt::NoBrush);
+            for(int j=0;j<rectList->size();j++)
+            {
+                painter->drawRect(rectList->at(j)->X(),
+                                 rectList->at(j)->Y(),
+                                 rectList->at(j)->W(),
+                                 rectList->at(j)->L());
+
             }
         }
         drawSign(painter);
@@ -520,6 +543,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
                                       this->getAveragePrevlance());
               t->setBorder(this->getBorder());
               t->setMapDifference(this->getMapDifference());
+              t->setGradient(this->getGradient());
               t->setGeometry(10+530*this->Windowsnumber(),30,520,620);
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -551,6 +575,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               areaTreemap * t=new areaTreemap(0,this->getColor(),this->getAreaGroup()->at(i),this->getAveragePrevlance());
               t->setBorder(this->getBorder());
               t->setMapDifference(this->getMapDifference());
+              t->setGradient(this->getGradient());
               t->setGeometry(10+630*this->Windowsnumber(),30,620,720);
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -677,24 +702,42 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         p->setPen(pen);
                     }
                 }
-                QLinearGradient grad(tempx,y,
-                                     tempx+fabs(data->at(i))*width/value,
-                                     y+value*length/total);
-                grad.setColorAt(0,
-                                QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                 1,0.5));
-                grad.setColorAt(1,
-                                QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                 0.5,1));
-                p->fillRect(rect,grad);
+                if(this->getGradient()==false)
+                {
+                    QLinearGradient grad(tempx,y,
+                                         tempx+fabs(data->at(i))*width/value,
+                                         y+value*length/total);
+                    grad.setColorAt(0,
+                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                     1,0.5));
+                    grad.setColorAt(1,
+                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                     0.5,1));
+                    p->fillRect(rect,grad);
+                }
+                else
+                {
+                    QRadialGradient grad(tempx+fabs(data->at(i))*width/value/2,
+                                         y+value*length/total/2,
+                                         fabs(data->at(i))*width/value/2+
+                                         value*length/total/2);
+                    grad.setColorAt(0,
+                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                     1,1));
+                    grad.setColorAt(1,
+                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                     0.5,0.5));
+                    p->fillRect(rect,grad);
+                }
             }
             else
             {
                 QPen pen(Qt::white);
-                pen.setWidth(this->getBorder()+2);
+                pen.setWidth(this->getBorder());
                 p->setPen(pen);
+                p->drawRect(rect);
             }
-            p->drawRect(rect);
+
 
             tempx=tempx+fabs(data->at(i))*width/value;
         }
@@ -879,7 +922,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("C:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1041,15 +1084,30 @@ void Widget::drawSign(QPainter *p)
     p->setPen(Qt::white);
     for(int i=0;i<14;i++)
     {
-        QLinearGradient temp(1780,400+i*40,1880,440+40*i);
-        //QRadialGradient temp(QPoint(1830,420+40*i),60);
-        temp.setColorAt(0,
-                        QColor::fromHsvF(dataColor[i].hueF(),
-                                         1,0.6));
-        temp.setColorAt(1,
-                        QColor::fromHsvF(dataColor[i].hueF(),
-                                         0.6,1));
-        p->fillRect(1780,400+i*40,100,40,temp);
+        if(this->getGradient()==false)
+        {
+            QLinearGradient temp(1780,400+i*40,1880,440+40*i);
+            //QRadialGradient temp(QPoint(1830,420+40*i),60);
+            temp.setColorAt(0,
+                            QColor::fromHsvF(dataColor[i].hueF(),
+                                             1,0.6));
+            temp.setColorAt(1,
+                            QColor::fromHsvF(dataColor[i].hueF(),
+                                             0.6,1));
+            p->fillRect(1780,400+i*40,100,40,temp);
+        }
+        else
+        {
+            QRadialGradient temp(QPoint(1830,420+40*i),60);
+            temp.setColorAt(0,
+                            QColor::fromHsvF(dataColor[i].hueF(),
+                                             1,1));
+            temp.setColorAt(1,
+                            QColor::fromHsvF(dataColor[i].hueF(),
+                                             0.5,0.5));
+            p->fillRect(1780,400+i*40,100,40,temp);
+
+        }
     }
     p->drawText(QRect(1780,400,100,40),"Coronary-heart-disease");
     p->drawText(QRect(1780,440,100,40),"Chronic-kidney-disease");
@@ -1124,6 +1182,16 @@ int Widget::searchAreaCode(QString code)
     }
     return -1;
 }
+bool Widget::getGradient() const
+{
+    return m_gradient;
+}
+
+void Widget::setGradient(bool gradient)
+{
+    m_gradient = gradient;
+}
+
 int Widget::getColor() const
 {
     return m_Color;
@@ -1502,4 +1570,16 @@ bool Widget::testEastOverlap(int k)
 void Widget::on_horizontalSlider_5_valueChanged(int value)
 {
     this->setColor(value);
+}
+
+void Widget::on_checkBox_4_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setGradient(true);
+    }
+    else
+    {
+        this->setGradient(false);
+    }
 }

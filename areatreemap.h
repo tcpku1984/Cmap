@@ -62,6 +62,9 @@ public:
     int getColor() const;
     void setColor(int Color);
 
+    bool getGradient() const;
+    void setGradient(bool gradient);
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;
@@ -72,6 +75,7 @@ private:
     QList<QColor> dataColor;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
+    QList<QColor> dataColor3;
     bool m_lookAhead;
     int m_Color;
     QList <double> * m_AveragePrevlance;
@@ -79,6 +83,7 @@ private:
     int m_Windowsnumber;
     bool m_MapDifference;
     int m_border;
+    bool m_gradient;
 private slots:
     void windowClose();
 
