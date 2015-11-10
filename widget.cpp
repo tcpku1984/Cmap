@@ -45,10 +45,10 @@ Widget::Widget(QWidget *parent) :
     this->setColor(2);
     finished=false;
     m_samesize=false;
-    m_algorithm=false;
+    m_algorithm=true;
     m_lookAhead=false;
     this->setMapDifference(false);
-    this->setGradient(false);
+    this->setGradient(true);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
@@ -327,6 +327,11 @@ void Widget::paintArea(QPainter *painter)
                                  rectList->at(j)->L());
 
             }
+            pen.setWidth(this->getBorder()+4);
+            painter->drawRect(this->getAreaGroup()->at(i)->X(),
+                              this->getAreaGroup()->at(i)->Y(),
+                              this->getAreaGroup()->at(i)->Size(),
+                              this->getAreaGroup()->at(i)->Size());
         }
         drawSign(painter);
     }
@@ -924,7 +929,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
+    inFlow.open("C:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 

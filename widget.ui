@@ -278,6 +278,9 @@
      <string>Option2</string>
     </attribute>
     <widget class="QCheckBox" name="checkBox_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -295,7 +298,13 @@
       </font>
      </property>
      <property name="text">
-      <string>FastNodeRemove</string>
+      <string>FNOR</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkBox_3">
@@ -489,6 +498,12 @@
      </property>
      <property name="text">
       <string>Gradient</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>

@@ -134,12 +134,27 @@ void areaTreemap::paintEvent(QPaintEvent *event)
         }
 
     }
-    QPen pen(Qt::gray);
-    pen.setWidth(this->getBorder()+2);
-    painter.setPen(pen);
+
     painter.setBrush(Qt::NoBrush);
     for(int j=0;j<this->getRectList()->size();j++)
     {
+        QPen pen(Qt::gray);
+        QLinearGradient grad(this->getRectList()->at(j)->X(),
+                        this->getRectList()->at(j)->Y(),
+                        this->getRectList()->at(j)->X()+
+                        this->getRectList()->at(j)->W(),
+                        this->getRectList()->at(j)->Y()+
+                        this->getRectList()->at(j)->L());
+        grad.setColorAt(0,Qt::gray);
+        grad.setColorAt(0.2,Qt::blue);
+        grad.setColorAt(0.4,Qt::gray);
+        grad.setColorAt(0.6,Qt::blue);
+        grad.setColorAt(0.8,Qt::gray);
+        grad.setColorAt(1,Qt::blue);
+        grad.setSpread(QGradient::RepeatSpread);
+        pen.setBrush(grad);
+        pen.setWidth(this->getBorder()+2);
+        painter.setPen(pen);
         painter.drawRect(this->getRectList()->at(j)->X(),
                          this->getRectList()->at(j)->Y(),
                          this->getRectList()->at(j)->W(),
