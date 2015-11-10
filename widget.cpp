@@ -181,6 +181,7 @@ void Widget::paintCCg(QPainter *painter)
 
     if(this->getFinished())
     {
+        painter->setBrush(Qt::NoBrush);
         if(this->getLookAhead()==false)
         {
             for(int i=0;i<this->regionListV()->size();i++)
@@ -723,10 +724,10 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                          value*length/total/2);
                     grad.setColorAt(0,
                                     QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                     1,1));
+                                                     0.3,1));
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                     0.5,0.5));
+                                                     1,0.7));
                     p->fillRect(rect,grad);
                 }
             }
@@ -735,8 +736,9 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 QPen pen(Qt::white);
                 pen.setWidth(this->getBorder());
                 p->setPen(pen);
-                p->drawRect(rect);
+
             }
+            p->drawRect(rect);
 
 
             tempx=tempx+fabs(data->at(i))*width/value;
@@ -1101,10 +1103,10 @@ void Widget::drawSign(QPainter *p)
             QRadialGradient temp(QPoint(1830,420+40*i),60);
             temp.setColorAt(0,
                             QColor::fromHsvF(dataColor[i].hueF(),
-                                             1,1));
+                                             0.3,1));
             temp.setColorAt(1,
                             QColor::fromHsvF(dataColor[i].hueF(),
-                                             0.5,0.5));
+                                             1,0.7));
             p->fillRect(1780,400+i*40,100,40,temp);
 
         }

@@ -243,10 +243,10 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                          value*length/total/2);
                     grad.setColorAt(0,
                                     QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                     1,1));
+                                                     0.3,1));
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                     0.5,0.5));
+                                                     1,0.7));
                     p->fillRect(rect,grad);
                 }
             }
