@@ -80,8 +80,9 @@ void treeMap::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     QFont font("font:Arial");
+    font.setBold(true);
     painter.setFont(font);
-    QRect rect=QRect(0,0,500,100);
+    QRect rect=QRect(10,0,500,100);
     QString tempString=this->region()->ccgName()
             +this->region()->ccgCode()+"  "
             +QString::number(this->region()->poplation())+"  ";

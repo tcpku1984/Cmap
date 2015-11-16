@@ -240,6 +240,18 @@ void Widget::paintCCg(QPainter *painter)
                             this->regionListV()->at(i)->healthData(),
                             painter);
             }
+
+        }
+        for(int i=0;i<this->regionListV()->size();i++)
+        {
+            QPen pen;
+            pen.setBrush(QColor::fromRgb(255,255,193));
+            pen.setWidth(this->getBorder()+2);
+            painter->setPen(pen);
+            painter->drawRect(this->regionListV()->at(i)->X(),
+                              this->regionListV()->at(i)->Y(),
+                              this->regionListV()->at(i)->getSize(),
+                              this->regionListV()->at(i)->getSize());
         }
         drawSign(painter);
     }
@@ -315,19 +327,35 @@ void Widget::paintArea(QPainter *painter)
 
                 }
             }
+
             QPen pen(Qt::gray);
-            pen.setWidth(this->getBorder()+2);
-            painter->setPen(pen);
             painter->setBrush(Qt::NoBrush);
             for(int j=0;j<rectList->size();j++)
             {
+                QLinearGradient grad(rectList->at(j)->X(),rectList->at(j)->Y(),
+                                     rectList->at(j)->X()+
+                                     rectList->at(j)->W(),
+                                     rectList->at(j)->Y()+
+                                     rectList->at(j)->L());
+                grad.setColorAt(0,Qt::gray);
+                grad.setColorAt(0.2,Qt::white);
+                grad.setColorAt(0.4,Qt::gray);
+                grad.setColorAt(0.6,Qt::white);
+                grad.setColorAt(0.8,Qt::gray);
+                grad.setColorAt(1,Qt::white);
+                grad.setSpread(QGradient::RepeatSpread);
+                pen.setBrush(grad);
+                pen.setWidth(this->getBorder()+2);
+                painter->setPen(pen);
                 painter->drawRect(rectList->at(j)->X(),
                                  rectList->at(j)->Y(),
                                  rectList->at(j)->W(),
                                  rectList->at(j)->L());
 
             }
+            pen.setBrush(QColor::fromRgb(255,255,219));
             pen.setWidth(this->getBorder()+4);
+            painter->setPen(pen);
             painter->drawRect(this->getAreaGroup()->at(i)->X(),
                               this->getAreaGroup()->at(i)->Y(),
                               this->getAreaGroup()->at(i)->Size(),
@@ -929,7 +957,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("C:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 

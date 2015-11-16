@@ -80,8 +80,9 @@ void areaTreemap::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     QFont font("font:Arial");
+    font.setBold(true);
     painter.setFont(font);
-    QRect rect=QRect(0,0,600,100);
+    QRect rect=QRect(10,0,600,100);
     QString tempString=this->Area()->AreaName()+"  "
             +this->Area()->AreaCode()+" \nCCG list :";
     for(int i=0;i<this->Area()->RegionList()->size();i++)
@@ -136,9 +137,10 @@ void areaTreemap::paintEvent(QPaintEvent *event)
     }
 
     painter.setBrush(Qt::NoBrush);
+    QPen pen(Qt::gray);
     for(int j=0;j<this->getRectList()->size();j++)
     {
-        QPen pen(Qt::gray);
+
         QLinearGradient grad(this->getRectList()->at(j)->X(),
                         this->getRectList()->at(j)->Y(),
                         this->getRectList()->at(j)->X()+
@@ -146,11 +148,11 @@ void areaTreemap::paintEvent(QPaintEvent *event)
                         this->getRectList()->at(j)->Y()+
                         this->getRectList()->at(j)->L());
         grad.setColorAt(0,Qt::gray);
-        grad.setColorAt(0.2,Qt::blue);
+        grad.setColorAt(0.2,Qt::white);
         grad.setColorAt(0.4,Qt::gray);
-        grad.setColorAt(0.6,Qt::blue);
+        grad.setColorAt(0.6,Qt::white);
         grad.setColorAt(0.8,Qt::gray);
-        grad.setColorAt(1,Qt::blue);
+        grad.setColorAt(1,Qt::white);
         grad.setSpread(QGradient::RepeatSpread);
         pen.setBrush(grad);
         pen.setWidth(this->getBorder()+2);
@@ -161,6 +163,10 @@ void areaTreemap::paintEvent(QPaintEvent *event)
                          this->getRectList()->at(j)->L());
 
     }
+    pen.setBrush(QColor::fromRgb(255,255,219));
+    pen.setWidth(this->getBorder()+4);
+    painter.setPen(pen);
+    painter.drawRect(10,100,600,600);
     painter.setPen(Qt::black);
     painter.drawText(rect,tempString);
 }
