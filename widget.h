@@ -122,6 +122,9 @@ public:
     QList<QColor> getDataColor0() const;
     void setDataColor0(const QList<QColor> &value);
 
+    bool getFont() const;
+    void setFont(bool Font);
+
 public slots:
     void animate();
 
@@ -155,6 +158,8 @@ private slots:
     void on_comboBox_currentIndexChanged(int index);
 
     void on_pushButton_clicked();
+
+    void on_checkBox_7_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -202,6 +207,7 @@ private:
     int m_Color;
     bool m_gradient;
     QColor m_BorderColor;
+    bool m_Font;
 };
 
 #endif // WIDGET_H

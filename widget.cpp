@@ -50,6 +50,7 @@ Widget::Widget(QWidget *parent) :
     this->setMapDifference(false);
     this->setGradient(true);
     this->setBorderColor(Qt::gray);
+    this->setFont(false);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
@@ -595,6 +596,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setMapDifference(this->getMapDifference());
               t->setGradient(this->getGradient());
               t->setGeometry(10+530*this->Windowsnumber(),30,520,620);
+              t->setFont(this->getFont());
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
@@ -628,6 +630,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setGradient(this->getGradient());
               t->setGeometry(10+630*this->Windowsnumber(),30,620,720);
               t->setBorderColor(this->getBorderColor());
+              t->setFont(this->getFont());
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
@@ -1131,7 +1134,7 @@ void Widget::setRegionListV(QList<Region *> *regionListV)
 
 void Widget::drawSign(QPainter *p)
 { 
-    QFont font("font:Arial",12,QFont::Bold);
+    QFont font("Arial",12,QFont::Bold);
     p->setFont(font);
     p->setPen(Qt::white);
     for(int i=0;i<14;i++)
@@ -1233,6 +1236,16 @@ int Widget::searchAreaCode(QString code)
         }
     }
     return -1;
+}
+
+bool Widget::getFont() const
+{
+    return m_Font;
+}
+
+void Widget::setFont(bool Font)
+{
+    m_Font = Font;
 }
 
 QList<QColor> Widget::getDataColor0() const
@@ -1660,4 +1673,16 @@ void Widget::on_pushButton_clicked()
 {
 
     this->setBorderColor(QColorDialog::getColor(Qt::white,this));
+}
+
+void Widget::on_checkBox_7_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setFont(true);
+    }
+    else
+    {
+        this->setFont(false);
+    }
 }

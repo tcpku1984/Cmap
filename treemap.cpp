@@ -89,7 +89,15 @@ void treeMap::paintEvent(QPaintEvent *event)
     }
 
     QPainter painter(this);
-    QFont font("font:Arial");
+    QFont font;
+    if(this->getFont()==false)
+    {
+        font=QFont("Arial");
+    }
+    else
+    {
+        font=QFont("Times");
+    }
     font.setBold(true);
     painter.setFont(font);
     QRect rect=QRect(10,0,500,100);
@@ -445,6 +453,17 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
 
 
 }
+
+bool treeMap::getFont() const
+{
+    return m_Font;
+}
+
+void treeMap::setFont(bool Font)
+{
+    m_Font = Font;
+}
+
 bool treeMap::getGradient() const
 {
     return m_gradient;

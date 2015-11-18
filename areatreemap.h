@@ -68,6 +68,9 @@ public:
     QColor getBorderColor() const;
     void setBorderColor(const QColor &BorderColor);
 
+    bool getFont() const;
+    void setFont(bool Font);
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;
@@ -89,6 +92,7 @@ private:
     int m_border;
     bool m_gradient;
     QColor m_BorderColor;
+    bool m_Font;
 private slots:
     void windowClose();
 

@@ -90,7 +90,15 @@ void areaTreemap::paintEvent(QPaintEvent *event)
     }
 
     QPainter painter(this);
-    QFont font("font:Arial");
+    QFont font;
+    if(this->getFont()==false)
+    {
+        font=QFont("Arial");
+    }
+    else
+    {
+        font=QFont("Times");
+    }
     font.setBold(true);
     painter.setFont(font);
     QRect rect=QRect(10,0,600,100);
@@ -388,6 +396,16 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<double>
     return ratio;
 }
 
+bool areaTreemap::getFont() const
+{
+    return m_Font;
+}
+
+void areaTreemap::setFont(bool Font)
+{
+    m_Font = Font;
+}
+
 QColor areaTreemap::getBorderColor() const
 {
     return m_BorderColor;
@@ -492,6 +510,7 @@ void areaTreemap::mousePressEvent(QMouseEvent *e)
           t->setBorder(this->getBorder());
           t->setMapDifference(this->getMapDifference());
           t->setGradient(this->getGradient());
+          t->setFont(this->getFont());
           t->setAttribute(Qt::WA_DeleteOnClose);
           t->setWindowFlags(Qt::WindowStaysOnTopHint);
           connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));

@@ -55,6 +55,8 @@ public:
 
     bool getGradient() const;
     void setGradient(bool gradient);
+    bool getFont() const;
+    void setFont(bool Font);
 
 private:
     Ui::treeMap *ui;
@@ -76,6 +78,7 @@ private:
     int m_border;
     bool m_gradient;
     QList <double> * m_AveragePrevlance;
+    bool m_Font;
 
 };
 
