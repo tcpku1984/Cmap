@@ -76,6 +76,7 @@ private:
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<double> *data);
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
     QList<QColor> dataColor;
+    QList<QColor> dataColor0;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     QList<QColor> dataColor3;

@@ -119,6 +119,9 @@ public:
     QColor getBorderColor() const;
     void setBorderColor(const QColor &BorderColor);
 
+    QList<QColor> getDataColor0() const;
+    void setDataColor0(const QList<QColor> &value);
+
 public slots:
     void animate();
 
@@ -183,6 +186,7 @@ private:
     bool pressed;
     bool finished;
     QList<QColor> dataColor;
+    QList<QColor> dataColor0;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     QList<QColor> dataColor3;

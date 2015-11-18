@@ -71,6 +71,13 @@ Widget::Widget(QWidget *parent) :
           horizontalOrder);
     qSort(this->regionListV()->begin(),this->regionListV()->end(),
           verticalOrder);
+    dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
+             <<QColor("#00F3F3")<<QColor("#F400F4")
+             <<QColor("#F7F700")<<QColor("#8181DB")
+             <<QColor("#DE8383")<<QColor("#7BD17B")
+             <<QColor("#6DB9B9")<<QColor("#BE70BE")
+             <<QColor("#BCBC6E")<<QColor("#989898")
+             <<QColor("#000");
     dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
              <<QColor("#b2df8a")<<QColor("#33a02c")
              <<QColor("#fb9a99")<<QColor("#e31a1c")
@@ -120,6 +127,9 @@ void Widget::paintEvent(QPaintEvent *event)
 {
     switch(this->getColor())
     {
+    case 0:
+        this->dataColor=this->dataColor0;
+        break;
     case 1:
         this->dataColor=this->dataColor1;
         break;
@@ -1223,6 +1233,16 @@ int Widget::searchAreaCode(QString code)
         }
     }
     return -1;
+}
+
+QList<QColor> Widget::getDataColor0() const
+{
+    return dataColor0;
+}
+
+void Widget::setDataColor0(const QList<QColor> &value)
+{
+    dataColor0 = value;
 }
 
 QColor Widget::getBorderColor() const
