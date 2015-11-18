@@ -19,6 +19,7 @@ areaTreemap::areaTreemap(QWidget *parent, int color, AreaTeam * area,QList <doub
     this->setAveragePrevlance(aver);
     this->setMapDifference(true);
     this->setBorder(3);
+    this->setBorderColor(Qt::gray);
 
     dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
              <<QColor("#b2df8a")<<QColor("#33a02c")
@@ -147,12 +148,17 @@ void areaTreemap::paintEvent(QPaintEvent *event)
                         this->getRectList()->at(j)->W(),
                         this->getRectList()->at(j)->Y()+
                         this->getRectList()->at(j)->L());
-        grad.setColorAt(0,Qt::gray);
-        grad.setColorAt(0.2,Qt::white);
-        grad.setColorAt(0.4,Qt::gray);
-        grad.setColorAt(0.6,Qt::white);
-        grad.setColorAt(0.8,Qt::gray);
-        grad.setColorAt(1,Qt::white);
+        for(int z=0;z<6;z++)
+        {
+            if(z%2==0)
+            {
+                grad.setColorAt(z*0.2,this->getBorderColor());
+            }
+            else
+            {
+                grad.setColorAt(z*0.2,Qt::white);
+            }
+        }
         grad.setSpread(QGradient::RepeatSpread);
         pen.setBrush(grad);
         pen.setWidth(this->getBorder()+2);
@@ -370,6 +376,16 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<double>
     sum=sum/(number+1);
     ratio=sum;
     return ratio;
+}
+
+QColor areaTreemap::getBorderColor() const
+{
+    return m_BorderColor;
+}
+
+void areaTreemap::setBorderColor(const QColor &BorderColor)
+{
+    m_BorderColor = BorderColor;
 }
 bool areaTreemap::getGradient() const
 {

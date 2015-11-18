@@ -49,6 +49,7 @@ Widget::Widget(QWidget *parent) :
     m_lookAhead=false;
     this->setMapDifference(false);
     this->setGradient(true);
+    this->setBorderColor(Qt::gray);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
@@ -337,12 +338,17 @@ void Widget::paintArea(QPainter *painter)
                                      rectList->at(j)->W(),
                                      rectList->at(j)->Y()+
                                      rectList->at(j)->L());
-                grad.setColorAt(0,Qt::gray);
-                grad.setColorAt(0.2,Qt::white);
-                grad.setColorAt(0.4,Qt::gray);
-                grad.setColorAt(0.6,Qt::white);
-                grad.setColorAt(0.8,Qt::gray);
-                grad.setColorAt(1,Qt::white);
+                for(int z=0;z<6;z++)
+                {
+                    if(z%2==0)
+                    {
+                        grad.setColorAt(z*0.2,this->getBorderColor());
+                    }
+                    else
+                    {
+                        grad.setColorAt(z*0.2,Qt::white);
+                    }
+                }
                 grad.setSpread(QGradient::RepeatSpread);
                 pen.setBrush(grad);
                 pen.setWidth(this->getBorder()+2);
@@ -611,6 +617,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setMapDifference(this->getMapDifference());
               t->setGradient(this->getGradient());
               t->setGeometry(10+630*this->Windowsnumber(),30,620,720);
+              t->setBorderColor(this->getBorderColor());
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
@@ -957,7 +964,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
+    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1216,6 +1223,16 @@ int Widget::searchAreaCode(QString code)
         }
     }
     return -1;
+}
+
+QColor Widget::getBorderColor() const
+{
+    return m_BorderColor;
+}
+
+void Widget::setBorderColor(const QColor &BorderColor)
+{
+    m_BorderColor = BorderColor;
 }
 bool Widget::getGradient() const
 {
@@ -1602,11 +1619,6 @@ bool Widget::testEastOverlap(int k)
 
 }
 
-void Widget::on_horizontalSlider_5_valueChanged(int value)
-{
-    this->setColor(value);
-}
-
 void Widget::on_checkBox_4_toggled(bool checked)
 {
     if(checked==true)
@@ -1617,4 +1629,15 @@ void Widget::on_checkBox_4_toggled(bool checked)
     {
         this->setGradient(false);
     }
+}
+
+void Widget::on_comboBox_currentIndexChanged(int index)
+{
+    this->setColor(index);
+}
+
+void Widget::on_pushButton_clicked()
+{
+
+    this->setBorderColor(QColorDialog::getColor(Qt::white,this));
 }

@@ -65,6 +65,9 @@ public:
     bool getGradient() const;
     void setGradient(bool gradient);
 
+    QColor getBorderColor() const;
+    void setBorderColor(const QColor &BorderColor);
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;
@@ -84,6 +87,7 @@ private:
     bool m_MapDifference;
     int m_border;
     bool m_gradient;
+    QColor m_BorderColor;
 private slots:
     void windowClose();
 

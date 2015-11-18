@@ -22,6 +22,7 @@
 #include<areatreemap.h>
 #include<stdlib.h>
 #include<cmath>
+#include<QColorDialog>
 using namespace std;
 namespace Ui {
 class Widget;
@@ -115,6 +116,9 @@ public:
     bool getGradient() const;
     void setGradient(bool gradient);
 
+    QColor getBorderColor() const;
+    void setBorderColor(const QColor &BorderColor);
+
 public slots:
     void animate();
 
@@ -143,9 +147,11 @@ private slots:
 
     void on_checkBox_6_toggled(bool checked);
 
-    void on_horizontalSlider_5_valueChanged(int value);
-
     void on_checkBox_4_toggled(bool checked);
+
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_pushButton_clicked();
 
 private:
     Ui::Widget *ui;
@@ -191,6 +197,7 @@ private:
     int m_border;
     int m_Color;
     bool m_gradient;
+    QColor m_BorderColor;
 };
 
 #endif // WIDGET_H
