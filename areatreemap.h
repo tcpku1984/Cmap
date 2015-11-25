@@ -71,6 +71,9 @@ public:
     bool getFont() const;
     void setFont(bool Font);
 
+    bool getCgroup() const;
+    void setCgroup(bool Cgroup);
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;
@@ -93,8 +96,10 @@ private:
     bool m_gradient;
     QColor m_BorderColor;
     bool m_Font;
+    bool m_Cgroup;
 private slots:
     void windowClose();
+
 
 
 };

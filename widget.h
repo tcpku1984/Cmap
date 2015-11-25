@@ -125,6 +125,9 @@ public:
     bool getFont() const;
     void setFont(bool Font);
 
+    bool getCgroup() const;
+    void setCgroup(bool Cgroup);
+
 public slots:
     void animate();
 
@@ -160,6 +163,8 @@ private slots:
     void on_pushButton_clicked();
 
     void on_checkBox_7_toggled(bool checked);
+
+    void on_checkBox_9_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -208,6 +213,9 @@ private:
     bool m_gradient;
     QColor m_BorderColor;
     bool m_Font;
+    bool m_Cgroup;
+
+
 };
 
 #endif // WIDGET_H

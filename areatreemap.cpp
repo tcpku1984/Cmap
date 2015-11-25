@@ -20,13 +20,13 @@ areaTreemap::areaTreemap(QWidget *parent, int color, AreaTeam * area,QList <doub
     this->setMapDifference(true);
     this->setBorder(3);
     this->setBorderColor(Qt::gray);
+    this->setCgroup(false);
     dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
              <<QColor("#00F3F3")<<QColor("#F400F4")
-             <<QColor("#F7F700")<<QColor("#8181DB")
+             <<QColor("#F7F700")<<QColor("#000")<<QColor("#8181DB")
              <<QColor("#DE8383")<<QColor("#7BD17B")
              <<QColor("#6DB9B9")<<QColor("#BE70BE")
-             <<QColor("#BCBC6E")<<QColor("#989898")
-             <<QColor("#000");
+             <<QColor("#BCBC6E")<<QColor("#989898");
 
     dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
              <<QColor("#b2df8a")<<QColor("#33a02c")
@@ -122,8 +122,28 @@ void areaTreemap::paintEvent(QPaintEvent *event)
 
         if(this->getMapDifference()==false)
         {
-            drawSqTreeMap(x,y,w,l,0,
+            if(this->getCgroup()==false)
+            {
+                drawSqTreeMap(x,y,w,l,0,
                      this->Area()->RegionList()->at(j)->healthData(),&painter,2);
+            }
+            else
+            {
+                QList<double> * dataTemp=new QList<double>;
+                double temp=0;
+                for(int k=0;k<5;k++)
+                {
+                    temp+=this->Area()->RegionList()->at(j)->healthData()->at(k);
+                }
+                dataTemp->append(temp);
+                for(int k=5;k<this->Area()->RegionList()->at(j)->healthData()->size();k++)
+                {
+                    dataTemp->append(this->Area()->RegionList()->at(j)->healthData()->at(k));
+                }
+                drawSqTreeMap(x,y,w,l,0,
+                            dataTemp,
+                            &painter,2);
+            }
         }
         else
         {
@@ -395,6 +415,16 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<double>
     ratio=sum;
     return ratio;
 }
+bool areaTreemap::getCgroup() const
+{
+    return m_Cgroup;
+}
+
+void areaTreemap::setCgroup(bool Cgroup)
+{
+    m_Cgroup = Cgroup;
+}
+
 
 bool areaTreemap::getFont() const
 {
@@ -511,6 +541,7 @@ void areaTreemap::mousePressEvent(QMouseEvent *e)
           t->setMapDifference(this->getMapDifference());
           t->setGradient(this->getGradient());
           t->setFont(this->getFont());
+          t->setCgroup(this->getCgroup());
           t->setAttribute(Qt::WA_DeleteOnClose);
           t->setWindowFlags(Qt::WindowStaysOnTopHint);
           connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));

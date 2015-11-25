@@ -49,8 +49,9 @@ Widget::Widget(QWidget *parent) :
     m_lookAhead=false;
     this->setMapDifference(false);
     this->setGradient(true);
-    this->setBorderColor(Qt::gray);
+    this->setBorderColor(Qt::white);
     this->setFont(false);
+    this->setCgroup(false);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
@@ -74,11 +75,10 @@ Widget::Widget(QWidget *parent) :
           verticalOrder);
     dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
              <<QColor("#00F3F3")<<QColor("#F400F4")
-             <<QColor("#F7F700")<<QColor("#8181DB")
+             <<QColor("#F7F700")<<QColor("#000")<<QColor("#8181DB")
              <<QColor("#DE8383")<<QColor("#7BD17B")
              <<QColor("#6DB9B9")<<QColor("#BE70BE")
-             <<QColor("#BCBC6E")<<QColor("#989898")
-             <<QColor("#000");
+             <<QColor("#BCBC6E")<<QColor("#989898");
     dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
              <<QColor("#b2df8a")<<QColor("#33a02c")
              <<QColor("#fb9a99")<<QColor("#e31a1c")
@@ -200,13 +200,35 @@ void Widget::paintCCg(QPainter *painter)
             {
                 if(this->getMapDifference()==false)
                 {
-
-                    drawSqTreeMap(this->regionListV()->at(i)->X(),
-                                this->regionListV()->at(i)->Y(),
-                                this->regionListV()->at(i)->getSize(),
-                                this->regionListV()->at(i)->getSize(),0,
-                                this->regionListV()->at(i)->healthData(),
-                                painter,2);
+                    if(this->getCgroup()==false)
+                    {
+                        drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                    this->regionListV()->at(i)->Y(),
+                                    this->regionListV()->at(i)->getSize(),
+                                    this->regionListV()->at(i)->getSize(),0,
+                                    this->regionListV()->at(i)->healthData(),
+                                    painter,2);
+                    }
+                    else
+                    {
+                       QList<double> * dataTemp=new QList<double>;
+                       double temp=0;
+                       for(int k=0;k<5;k++)
+                       {
+                           temp+=this->regionListV()->at(i)->healthData()->at(k);
+                       }
+                       dataTemp->append(temp);
+                       for(int k=5;k<this->regionListV()->at(i)->healthData()->size();k++)
+                       {
+                           dataTemp->append(this->regionListV()->at(i)->healthData()->at(k));
+                       }
+                       drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                   this->regionListV()->at(i)->Y(),
+                                   this->regionListV()->at(i)->getSize(),
+                                   this->regionListV()->at(i)->getSize(),0,
+                                   dataTemp,
+                                   painter,2);
+                    }
                 }
                 else
                 {
@@ -308,8 +330,30 @@ void Widget::paintArea(QPainter *painter)
                 qreal l=rectList->at(j)->L();
                 if(this->getMapDifference()==false)
                 {
-                    drawSqTreeMap(x,y,w,l,0,
+                    if(this->getCgroup()==false)
+                    {
+                        drawSqTreeMap(x,y,w,l,0,
                              this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData(),painter,2);
+                    }
+                    else
+                    {
+                        QList<double> * dataTemp=new QList<double>;
+                        double temp=0;
+                        for(int k=0;k<5;k++)
+                        {
+                            temp+=this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->at(k);
+                        }
+                        dataTemp->append(temp);
+                        for(int k=5;k<this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->size();k++)
+                        {
+                            dataTemp->append(
+                                        this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->at(k));
+                        }
+                        drawSqTreeMap(x,y,w,l,0,
+                                    dataTemp,
+                                    painter,2);
+                     }
+
                 }
                 else
                 {
@@ -597,6 +641,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setGradient(this->getGradient());
               t->setGeometry(10+530*this->Windowsnumber(),30,520,620);
               t->setFont(this->getFont());
+              t->setCgroup(this->getCgroup());
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
@@ -631,6 +676,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setGeometry(10+630*this->Windowsnumber(),30,620,720);
               t->setBorderColor(this->getBorderColor());
               t->setFont(this->getFont());
+              t->setCgroup(this->getCgroup());
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
@@ -977,7 +1023,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1237,6 +1283,16 @@ int Widget::searchAreaCode(QString code)
     }
     return -1;
 }
+bool Widget::getCgroup() const
+{
+    return m_Cgroup;
+}
+
+void Widget::setCgroup(bool Cgroup)
+{
+    m_Cgroup = Cgroup;
+}
+
 
 bool Widget::getFont() const
 {
@@ -1684,5 +1740,17 @@ void Widget::on_checkBox_7_toggled(bool checked)
     else
     {
         this->setFont(false);
+    }
+}
+
+void Widget::on_checkBox_9_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setCgroup(true);
+    }
+    else
+    {
+        this->setCgroup(false);
     }
 }

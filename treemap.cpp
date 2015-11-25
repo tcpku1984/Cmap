@@ -21,11 +21,10 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setAveragePrevlance(aver);
     dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
              <<QColor("#00F3F3")<<QColor("#F400F4")
-             <<QColor("#F7F700")<<QColor("#8181DB")
+             <<QColor("#F7F700")<<QColor("#000")<<QColor("#8181DB")
              <<QColor("#DE8383")<<QColor("#7BD17B")
              <<QColor("#6DB9B9")<<QColor("#BE70BE")
-             <<QColor("#BCBC6E")<<QColor("#989898")
-             <<QColor("#000");
+             <<QColor("#BCBC6E")<<QColor("#989898");
     dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
              <<QColor("#b2df8a")<<QColor("#33a02c")
              <<QColor("#fb9a99")<<QColor("#e31a1c")
@@ -114,7 +113,30 @@ void treeMap::paintEvent(QPaintEvent *event)
     {
         if(this->getMapDifference()==false)
         {
-            rectlist=drawSqTreeMap(10,100,500,500,0,this->region()->healthData(),&painter,2);
+            if(this->getCgroup()==false)
+            {
+                rectlist=drawSqTreeMap(10,100,500,500,0,this->region()->healthData(),&painter,2);
+            }
+            else
+            {
+               QList<double> * dataTemp=new QList<double>;
+               double temp=0;
+               for(int k=0;k<5;k++)
+               {
+                   temp+=this->region()->healthData()->at(k);
+               }
+               dataTemp->append(temp);
+               for(int k=5;k<this->region()->healthData()->size();k++)
+               {
+                   dataTemp->append(this->region()->healthData()->at(k));
+               }
+               rectlist=drawSqTreeMap(10,
+                           100,
+                           500,
+                           500,0,
+                           dataTemp,
+                           &painter,2);
+            }
         }
         else
         {
@@ -153,6 +175,23 @@ void treeMap::paintEvent(QPaintEvent *event)
         this->setTotalAsp(this->getTotalAsp()+tempAsp);
     }
     tempString+="Average aspect ratio "+QString::number(this->getTotalAsp()/this->region()->healthData()->size());
+    if(this->getCgroup()==true)
+    {
+        QList <double>* dataTemp=new QList<double>;
+        QList<QColor>  *tempColor= new QList<QColor>;
+        for(int k=0;k<5;k++)
+        {
+            dataTemp->append(this->region()->healthData()->at(k));
+            tempColor->append(QColor::fromHsvF(dataColor.at(0).hueF(),
+                                               1,0.3+k*0.15));
+        }
+       this->dataColor=*tempColor;
+        drawSqTreeMap(rectlist->at(0)->X(),
+                      rectlist->at(0)->Y(),
+                      rectlist->at(0)->W(),
+                      rectlist->at(0)->L(),0,
+                      dataTemp,&painter,1);
+    }
     painter.drawText(rect,tempString);
 
 
@@ -269,11 +308,22 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                     p->fillRect(rect,grad);
                 }
             }
-            else
+            else if(layer==1)
             {
-                QPen pen(Qt::black);
-                pen.setWidth(this->getBorder());
-                p->setPen(pen);
+                p->fillRect(rect,dataColor.at(i));
+                if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
+                {
+                    QPen pen(QColor::fromRgb(255,0,0,100));
+                    pen.setWidth(this->getBorder());
+                    p->setPen(pen);
+
+                }
+                else
+                {
+                    QPen pen(QColor::fromRgb(0,255,0,100));
+                    pen.setWidth(this->getBorder());
+                    p->setPen(pen);
+                }
             }
             p->drawRect(rect);
             p->setPen(Qt::black);
@@ -453,6 +503,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
 
 
 }
+bool treeMap::getCgroup() const
+{
+    return m_Cgroup;
+}
+
+void treeMap::setCgroup(bool Cgroup)
+{
+    m_Cgroup = Cgroup;
+}
+
 
 bool treeMap::getFont() const
 {

@@ -58,6 +58,9 @@ public:
     bool getFont() const;
     void setFont(bool Font);
 
+    bool getCgroup() const;
+    void setCgroup(bool Cgroup);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -79,6 +82,7 @@ private:
     bool m_gradient;
     QList <double> * m_AveragePrevlance;
     bool m_Font;
+    bool m_Cgroup;
 
 };
 

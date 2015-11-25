@@ -28,6 +28,14 @@
      <height>28</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="text">
     <string>start</string>
    </property>
@@ -464,29 +472,29 @@
       </rect>
      </property>
      <property name="currentText">
-      <string>color1</string>
+      <string>DataVis book</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <item>
       <property name="text">
-       <string>color1</string>
+       <string>DiskInvetory</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Datavis</string>
+       <string>Colorbrewer</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DataVis book</string>
       </property>
      </item>
      <item>
       <property name="text">
        <string>QGIS</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>disk</string>
       </property>
      </item>
     </widget>
@@ -518,7 +526,7 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>90</y>
+       <y>140</y>
        <width>111</width>
        <height>23</height>
       </rect>
@@ -538,6 +546,25 @@
      </property>
      <property name="text">
       <string>Time Font</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_9">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>90</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CVD group</string>
      </property>
      <property name="checked">
       <bool>false</bool>
