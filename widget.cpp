@@ -114,6 +114,13 @@ Widget::Widget(QWidget *parent) :
              <<QColor("#cf1f9d")<<QColor("#53d179")
              <<QColor("#e02e0e")<<QColor("#5c5ce6")
              <<QColor("#000");
+    dataColor4<<QColor("#0000ff")<<QColor("#ffc0cb")<<QColor("#800080")
+             <<QColor("#32cd32")<<QColor("#ff0000")
+             <<QColor("#808080")<<QColor("#008080")
+             <<QColor("#ffa500")<<QColor("#ee82ee")
+             <<QColor("#40e0d0")<<QColor("#ff00ff")
+             <<QColor("#90ee90")<<QColor("#ffff00")
+             <<QColor("#000");
     count=0;
     timer=new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(animate()));
@@ -140,6 +147,9 @@ void Widget::paintEvent(QPaintEvent *event)
      case 3:
         this->dataColor=this->dataColor3;
         break;
+    case 4:
+        this->dataColor=this->dataColor4;
+        break;
 
     }
 
@@ -158,7 +168,7 @@ void Widget::paintEvent(QPaintEvent *event)
 
 void Widget::paintCCg(QPainter *painter)
 {
-    QFont font("font:Arial");
+    QFont font("Arial");
     font.setPixelSize(FONTSIZEA);
     painter->setFont(font);
 
@@ -213,12 +223,12 @@ void Widget::paintCCg(QPainter *painter)
                     {
                        QList<double> * dataTemp=new QList<double>;
                        double temp=0;
-                       for(int k=0;k<5;k++)
+                       for(int k=0;k<3;k++)
                        {
                            temp+=this->regionListV()->at(i)->healthData()->at(k);
                        }
                        dataTemp->append(temp);
-                       for(int k=5;k<this->regionListV()->at(i)->healthData()->size();k++)
+                       for(int k=3;k<this->regionListV()->at(i)->healthData()->size();k++)
                        {
                            dataTemp->append(this->regionListV()->at(i)->healthData()->at(k));
                        }
@@ -279,7 +289,7 @@ void Widget::paintCCg(QPainter *painter)
         for(int i=0;i<this->regionListV()->size();i++)
         {
             QPen pen;
-            pen.setBrush(QColor::fromRgb(255,255,193));
+            pen.setBrush(Qt::white);
             pen.setWidth(this->getBorder()+2);
             painter->setPen(pen);
             painter->drawRect(this->regionListV()->at(i)->X(),
@@ -339,12 +349,12 @@ void Widget::paintArea(QPainter *painter)
                     {
                         QList<double> * dataTemp=new QList<double>;
                         double temp=0;
-                        for(int k=0;k<5;k++)
+                        for(int k=0;k<3;k++)
                         {
                             temp+=this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->at(k);
                         }
                         dataTemp->append(temp);
-                        for(int k=5;k<this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->size();k++)
+                        for(int k=3;k<this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->size();k++)
                         {
                             dataTemp->append(
                                         this->getAreaGroup()->at(i)->RegionList()->at(j)->healthData()->at(k));
@@ -1183,38 +1193,76 @@ void Widget::drawSign(QPainter *p)
     QFont font("Arial",12,QFont::Bold);
     p->setFont(font);
     p->setPen(Qt::white);
-    for(int i=0;i<14;i++)
+    if(this->getCgroup()==false)
     {
-        if(this->getGradient()==false)
+        for(int i=0;i<14;i++)
         {
-            QLinearGradient temp(1780,400+i*40,1880,440+40*i);
-            //QRadialGradient temp(QPoint(1830,420+40*i),60);
-            temp.setColorAt(0,
-                            QColor::fromHsvF(dataColor[i].hueF(),
-                                             1,0.6));
-            temp.setColorAt(1,
-                            QColor::fromHsvF(dataColor[i].hueF(),
-                                             0.6,1));
-            p->fillRect(1780,400+i*40,100,40,temp);
-        }
-        else
-        {
-            QRadialGradient temp(QPoint(1830,420+40*i),60);
-            temp.setColorAt(0,
-                            QColor::fromHsvF(dataColor[i].hueF(),
-                                             0.3,1));
-            temp.setColorAt(1,
-                            QColor::fromHsvF(dataColor[i].hueF(),
-                                             1,0.7));
-            p->fillRect(1780,400+i*40,100,40,temp);
+            if(this->getGradient()==false)
+            {
+                QLinearGradient temp(1780,400+i*40,1880,440+40*i);
+                //QRadialGradient temp(QPoint(1830,420+40*i),60);
+                temp.setColorAt(0,
+                                QColor::fromHsvF(dataColor[i].hueF(),
+                                                 1,0.6));
+                temp.setColorAt(1,
+                                QColor::fromHsvF(dataColor[i].hueF(),
+                                                 0.6,1));
+                p->fillRect(1780,400+i*40,100,40,temp);
+            }
+            else
+            {
+                QRadialGradient temp(QPoint(1830,420+40*i),60);
+                temp.setColorAt(0,
+                                QColor::fromHsvF(dataColor[i].hueF(),
+                                                 0.3,1));
+                temp.setColorAt(1,
+                                QColor::fromHsvF(dataColor[i].hueF(),
+                                                 1,0.7));
+                p->fillRect(1780,400+i*40,100,40,temp);
 
+            }
+        }
+    }
+    else
+    {
+        for(int i=0;i<3;i++)
+        {
+            p->fillRect(1780,400+i*40,100,40,QColor::fromHsvF(dataColor.at(0).hueF(),
+                                                              1,0.3+i*0.15));
+        }
+        for(int i=3;i<14;i++)
+        {
+            if(this->getGradient()==false)
+            {
+                QLinearGradient temp(1780,400+i*40,1880,440+40*i);
+                //QRadialGradient temp(QPoint(1830,420+40*i),60);
+                temp.setColorAt(0,
+                                QColor::fromHsvF(dataColor[i-2].hueF(),
+                                                 1,0.6));
+                temp.setColorAt(1,
+                                QColor::fromHsvF(dataColor[i-2].hueF(),
+                                                 0.6,1));
+                p->fillRect(1780,400+i*40,100,40,temp);
+            }
+            else
+            {
+                QRadialGradient temp(QPoint(1830,420+40*i),60);
+                temp.setColorAt(0,
+                                QColor::fromHsvF(dataColor[i-2].hueF(),
+                                                 0.3,1));
+                temp.setColorAt(1,
+                                QColor::fromHsvF(dataColor[i-2].hueF(),
+                                                 1,0.7));
+                p->fillRect(1780,400+i*40,100,40,temp);
+
+            }
         }
     }
     p->drawText(QRect(1780,400,100,40),"Coronary-heart-disease");
-    p->drawText(QRect(1780,440,100,40),"Chronic-kidney-disease");
-    p->drawText(QRect(1780,480,100,40),"diabetes");
-    p->drawText(QRect(1780,520,100,40),"Heart Failure");
-    p->drawText(QRect(1780,560,100,40),"Stroke");
+    p->drawText(QRect(1780,440,100,40),"Heart Failure");
+    p->drawText(QRect(1780,480,100,40),"Stroke");
+    p->drawText(QRect(1780,520,100,40),"Chronic-kidney-disease");
+    p->drawText(QRect(1780,560,100,40),"diabetes");
     p->drawText(QRect(1780,600,100,40),"Hypertension");
     p->drawText(QRect(1780,640,100,40),"COPD");
     p->drawText(QRect(1780,680,100,40),"Mental-Health");

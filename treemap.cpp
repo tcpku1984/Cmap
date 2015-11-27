@@ -60,6 +60,13 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
              <<QColor("#cf1f9d")<<QColor("#53d179")
              <<QColor("#e02e0e")<<QColor("#5c5ce6")
              <<QColor("#000");
+    dataColor4<<QColor("#0000ff")<<QColor("#ffc0cb")<<QColor("#800080")
+             <<QColor("#32cd32")<<QColor("#ff0000")
+             <<QColor("#808080")<<QColor("#008080")
+             <<QColor("#ffa500")<<QColor("#ee82ee")
+             <<QColor("#40e0d0")<<QColor("#ff00ff")
+             <<QColor("#90ee90")<<QColor("#ffff00")
+             <<QColor("#000");
 }
 
 
@@ -84,6 +91,9 @@ void treeMap::paintEvent(QPaintEvent *event)
     case 3:
        this->dataColor=this->dataColor3;
        break;
+    case 4:
+        this->dataColor=this->dataColor4;
+        break;
 
     }
 
@@ -99,7 +109,7 @@ void treeMap::paintEvent(QPaintEvent *event)
     }
     font.setBold(true);
     painter.setFont(font);
-    QRect rect=QRect(10,0,500,100);
+    QRect rect=QRect(10,60,500,100);
     QString tempString=this->region()->ccgName()
             +this->region()->ccgCode()+"  "
             +QString::number(this->region()->poplation())+"  ";
@@ -121,12 +131,12 @@ void treeMap::paintEvent(QPaintEvent *event)
             {
                QList<double> * dataTemp=new QList<double>;
                double temp=0;
-               for(int k=0;k<5;k++)
+               for(int k=0;k<3;k++)
                {
                    temp+=this->region()->healthData()->at(k);
                }
                dataTemp->append(temp);
-               for(int k=5;k<this->region()->healthData()->size();k++)
+               for(int k=3;k<this->region()->healthData()->size();k++)
                {
                    dataTemp->append(this->region()->healthData()->at(k));
                }
@@ -179,11 +189,11 @@ void treeMap::paintEvent(QPaintEvent *event)
     {
         QList <double>* dataTemp=new QList<double>;
         QList<QColor>  *tempColor= new QList<QColor>;
-        for(int k=0;k<5;k++)
+        for(int k=0;k<3;k++)
         {
             dataTemp->append(this->region()->healthData()->at(k));
             tempColor->append(QColor::fromHsvF(dataColor.at(0).hueF(),
-                                               1,0.3+k*0.15));
+                                               1,0.5+k*0.15));
         }
        this->dataColor=*tempColor;
         drawSqTreeMap(rectlist->at(0)->X(),

@@ -200,6 +200,7 @@ private:
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     QList<QColor> dataColor3;
+    QList<QColor> dataColor4;
     bool m_samesize;
     bool m_algorithm;
     bool m_lookAhead;

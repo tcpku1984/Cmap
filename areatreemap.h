@@ -86,6 +86,7 @@ private:
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     QList<QColor> dataColor3;
+    QList<QColor> dataColor4;
     bool m_lookAhead;
     int m_Color;
     QList <double> * m_AveragePrevlance;
