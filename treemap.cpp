@@ -113,7 +113,7 @@ void treeMap::paintEvent(QPaintEvent *event)
     QString tempString=this->region()->ccgName()
             +this->region()->ccgCode()+"  "
             +QString::number(this->region()->poplation())+"  ";
-    QList <rectHolder *> * rectlist;
+
     if(this->getLookAhead()==true)
     {
         //cout<<"looking aheadddddddddddddddddddddddddddddddddddddddddddd"<<endl;
@@ -521,6 +521,23 @@ bool treeMap::getCgroup() const
 void treeMap::setCgroup(bool Cgroup)
 {
     m_Cgroup = Cgroup;
+}
+
+void treeMap::mouseMoveEvent(QMouseEvent *e)
+{
+    int x=e->pos().x();
+    int y=e->pos().y();
+    for(int i=0;i<rectlist->size();i++)
+    {
+        if(rectlist->at(i)->X()<x&&
+           rectlist->at(i)->X()+rectlist->at(i)->W()>x&&
+           rectlist->at(i)->Y()<y&&
+           rectlist->at(i)->Y()+rectlist->at(i)->L()>y)
+        {
+           //cout<<"moveEvent works"<<endl;
+        }
+
+    }
 }
 
 

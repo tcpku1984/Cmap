@@ -7,6 +7,7 @@
 #include<rectholder.h>
 #include<QGradient>
 #include <QLinearGradient>
+#include <QMouseEvent>
 namespace Ui {
 class treeMap;
 }
@@ -61,6 +62,8 @@ public:
     bool getCgroup() const;
     void setCgroup(bool Cgroup);
 
+    void mouseMoveEvent(QMouseEvent * e);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -68,6 +71,7 @@ private:
     QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p);
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<double> *data);
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
+
     QList<QColor> dataColor;
     QList<QColor> dataColor0;
     QList<QColor> dataColor1;
@@ -84,6 +88,7 @@ private:
     QList <double> * m_AveragePrevlance;
     bool m_Font;
     bool m_Cgroup;
+    QList <rectHolder *> * rectlist;
 
 };
 
