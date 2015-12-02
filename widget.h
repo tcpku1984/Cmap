@@ -128,6 +128,9 @@ public:
     bool getCgroup() const;
     void setCgroup(bool Cgroup);
 
+    int getFilter() const;
+    void setFilter(int Filter);
+
 public slots:
     void animate();
 
@@ -165,6 +168,8 @@ private slots:
     void on_checkBox_7_toggled(bool checked);
 
     void on_checkBox_9_toggled(bool checked);
+
+    void on_comboBox_2_currentIndexChanged(int index);
 
 private:
     Ui::Widget *ui;
@@ -215,6 +220,7 @@ private:
     QColor m_BorderColor;
     bool m_Font;
     bool m_Cgroup;
+    int m_Filter;
 
 
 };

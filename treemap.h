@@ -64,6 +64,9 @@ public:
 
     void mouseMoveEvent(QMouseEvent * e);
 
+    int getFilter() const;
+    void setFilter(int Filter);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -89,6 +92,7 @@ private:
     bool m_Font;
     bool m_Cgroup;
     QList <rectHolder *> * rectlist;
+    int m_Filter;
 
 };
 

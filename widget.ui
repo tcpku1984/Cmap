@@ -472,10 +472,10 @@
       </rect>
      </property>
      <property name="currentText">
-      <string>DataVis book</string>
+      <string>DiskInvetory</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <item>
       <property name="text">
@@ -521,7 +521,7 @@
       <string>Gradient</string>
      </property>
      <property name="checked">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="tristate">
       <bool>false</bool>
@@ -532,7 +532,7 @@
       <rect>
        <x>280</x>
        <y>50</y>
-       <width>111</width>
+       <width>121</width>
        <height>23</height>
       </rect>
      </property>
@@ -577,6 +577,31 @@
      <property name="tristate">
       <bool>false</bool>
      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_2">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>90</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>No filter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Above average</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Below average</string>
+      </property>
+     </item>
     </widget>
    </widget>
   </widget>

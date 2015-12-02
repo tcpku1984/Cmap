@@ -42,13 +42,14 @@ Widget::Widget(QWidget *parent) :
     m_searchRange=212;
     m_population=0;
     m_border=1;
-    this->setColor(2);
+    this->setColor(0);
+    this->setFilter(0);
     finished=false;
     m_samesize=false;
     m_algorithm=true;
     m_lookAhead=false;
     this->setMapDifference(false);
-    this->setGradient(true);
+    this->setGradient(false);
     this->setBorderColor(Qt::white);
     this->setFont(false);
     this->setCgroup(false);
@@ -424,7 +425,7 @@ void Widget::paintArea(QPainter *painter)
                                  rectList->at(j)->L());
 
             }
-            pen.setBrush(QColor::fromRgb(255,255,219));
+            pen.setBrush(Qt::white);
             pen.setWidth(this->getBorder()+4);
             painter->setPen(pen);
             painter->drawRect(this->getAreaGroup()->at(i)->X(),
@@ -652,6 +653,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setGeometry(10+530*this->Windowsnumber(),30,520,620);
               t->setFont(this->getFont());
               t->setCgroup(this->getCgroup());
+              t->setFilter(this->getFilter());
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
@@ -687,6 +689,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setBorderColor(this->getBorderColor());
               t->setFont(this->getFont());
               t->setCgroup(this->getCgroup());
+              t->setFilter(this->getFilter());
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
@@ -732,6 +735,7 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 
       }
     }
+    update();
 
 
 
@@ -818,8 +822,11 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         QPen pen(QColor::fromRgb(255,0,0,100));
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
-                        p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                        if(this->getFilter()==2)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
                                                           0.5,0.2));
+                        }
 
                     }
                     else
@@ -827,6 +834,11 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         QPen pen(QColor::fromRgb(0,255,0,100));
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
+                        if(this->getFilter()==1)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
                     }
                 }
                 else
@@ -836,6 +848,11 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         QPen pen(QColor::fromRgb(255,0,0,100));
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
+                        if(this->getFilter()==2)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
 
                     }
                     else
@@ -843,6 +860,11 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         QPen pen(QColor::fromRgb(0,255,0,100));
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
+                        if(this->getFilter()==1)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
                     }
                 }
 
@@ -1040,7 +1062,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
+    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1337,6 +1359,16 @@ int Widget::searchAreaCode(QString code)
         }
     }
     return -1;
+}
+
+int Widget::getFilter() const
+{
+    return m_Filter;
+}
+
+void Widget::setFilter(int Filter)
+{
+    m_Filter = Filter;
 }
 bool Widget::getCgroup() const
 {
@@ -1808,4 +1840,9 @@ void Widget::on_checkBox_9_toggled(bool checked)
     {
         this->setCgroup(false);
     }
+}
+
+void Widget::on_comboBox_2_currentIndexChanged(int index)
+{
+    this->setFilter(index);
 }

@@ -308,38 +308,6 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
             if(layer==2)
             {
-                if(this->getMapDifference()==false)
-                {
-                    if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
-                    {
-                        QPen pen(QColor::fromRgb(255,0,0,100));
-                        pen.setWidth(this->getBorder());
-                        p->setPen(pen);
-
-                    }
-                    else
-                    {
-                        QPen pen(QColor::fromRgb(0,255,0,100));
-                        pen.setWidth(this->getBorder());
-                        p->setPen(pen);
-                    }
-                }
-                else
-                {
-                    if(data->at(i)>0)
-                    {
-                        QPen pen(QColor::fromRgb(255,0,0,100));
-                        pen.setWidth(this->getBorder());
-                        p->setPen(pen);
-
-                    }
-                    else
-                    {
-                        QPen pen(QColor::fromRgb(0,255,0,100));
-                        pen.setWidth(this->getBorder());
-                        p->setPen(pen);
-                    }
-                }
                 if(this->getGradient()==false)
                 {
                     QLinearGradient grad(tempx,y,
@@ -367,6 +335,59 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
                                                      1,0.7));
                     p->fillRect(rect,grad);
                 }
+                if(this->getMapDifference()==false)
+                {
+                    if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
+                    {
+                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                        if(this->getFilter()==2)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
+
+                    }
+                    else
+                    {
+                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                        if(this->getFilter()==1)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
+                    }
+                }
+                else
+                {
+                    if(data->at(i)>0)
+                    {
+                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                        if(this->getFilter()==2)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
+
+                    }
+                    else
+                    {
+                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                        if(this->getFilter()==1)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
+                    }
+                }
+
             }
             else
             {
@@ -424,6 +445,16 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<double>
     sum=sum/(number+1);
     ratio=sum;
     return ratio;
+}
+
+int areaTreemap::getFilter() const
+{
+    return m_Filter;
+}
+
+void areaTreemap::setFilter(int Filter)
+{
+    m_Filter = Filter;
 }
 bool areaTreemap::getCgroup() const
 {
@@ -554,6 +585,7 @@ void areaTreemap::mousePressEvent(QMouseEvent *e)
           t->setCgroup(this->getCgroup());
           t->setAttribute(Qt::WA_DeleteOnClose);
           t->setWindowFlags(Qt::WindowStaysOnTopHint);
+          t->setFilter(this->getFilter());
           connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
           t->show();
           this->setWindowsnumber(this->getWindowsnumber()+1);

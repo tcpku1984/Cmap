@@ -74,6 +74,9 @@ public:
     bool getCgroup() const;
     void setCgroup(bool Cgroup);
 
+    int getFilter() const;
+    void setFilter(int Filter);
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;
@@ -98,6 +101,7 @@ private:
     QColor m_BorderColor;
     bool m_Font;
     bool m_Cgroup;
+    int m_Filter;
 private slots:
     void windowClose();
 

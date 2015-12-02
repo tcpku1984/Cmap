@@ -258,38 +258,6 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
             if(layer==2)
             {
-                if(this->getMapDifference()==false)
-                {
-                    if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
-                    {
-                        QPen pen(QColor::fromRgb(255,0,0,100));
-                        pen.setWidth(this->getBorder());
-                        p->setPen(pen);
-
-                    }
-                    else
-                    {
-                        QPen pen(QColor::fromRgb(0,255,0,100));
-                        pen.setWidth(this->getBorder());
-                        p->setPen(pen);
-                    }
-                }
-                else
-                {
-                    if(data->at(i)>0)
-                    {
-                        QPen pen(QColor::fromRgb(255,0,0,100));
-                        pen.setWidth(this->getBorder());
-                        p->setPen(pen);
-
-                    }
-                    else
-                    {
-                        QPen pen(QColor::fromRgb(0,255,0,100));
-                        pen.setWidth(this->getBorder());
-                        p->setPen(pen);
-                    }
-                }
                 if(this->getGradient()==false)
                 {
                     QLinearGradient grad(tempx,y,
@@ -317,6 +285,59 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                                      1,0.7));
                     p->fillRect(rect,grad);
                 }
+                if(this->getMapDifference()==false)
+                {
+                    if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
+                    {
+                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                        if(this->getFilter()==2)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
+
+                    }
+                    else
+                    {
+                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                        if(this->getFilter()==1)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
+                    }
+                }
+                else
+                {
+                    if(data->at(i)>0)
+                    {
+                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                        if(this->getFilter()==2)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
+
+                    }
+                    else
+                    {
+                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
+                        if(this->getFilter()==1)
+                        {
+                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
+                                                          0.5,0.2));
+                        }
+                    }
+                }
+
             }
             else if(layer==1)
             {
@@ -512,6 +533,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
     return ratio;
 
 
+}
+
+int treeMap::getFilter() const
+{
+    return m_Filter;
+}
+
+void treeMap::setFilter(int Filter)
+{
+    m_Filter = Filter;
 }
 bool treeMap::getCgroup() const
 {
