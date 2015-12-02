@@ -540,15 +540,17 @@ void Widget::regionIncrease2()
         {
             max=this->regionMaxsize();
         }
-
-        if(this->regionListV()->at(i)->stopIncrease()==false)
+        for(int k=0;k<this->increaseSize();k++)
         {
-           this->regionListV()->at(i)->increase();
-            if(this->regionListV()->at(i)->getSize()
-                    >max)
+            if(this->regionListV()->at(i)->stopIncrease()==false)
             {
-                this->regionListV()->at(i)->stop();
-                count++;
+               this->regionListV()->at(i)->increase();
+                if(this->regionListV()->at(i)->getSize()
+                        >max)
+                {
+                    this->regionListV()->at(i)->stop();
+                    count++;
+                }
             }
         }
      }

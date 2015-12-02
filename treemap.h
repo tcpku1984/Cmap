@@ -62,10 +62,22 @@ public:
     bool getCgroup() const;
     void setCgroup(bool Cgroup);
 
-    void mouseMoveEvent(QMouseEvent * e);
+    //void mouseMoveEvent(QMouseEvent * e);
 
     int getFilter() const;
     void setFilter(int Filter);
+
+    bool getMouseOver() const;
+    void setMouseOver(bool mouseOver);
+
+    qreal getMouseX() const;
+    void setMouseX(const qreal &mouseX);
+
+    qreal getMouseY() const;
+    void setMouseY(const qreal &mouseY);
+
+    int getMouseIndex() const;
+    void setMouseIndex(int mouseIndex);
 
 private:
     Ui::treeMap *ui;
@@ -93,6 +105,10 @@ private:
     bool m_Cgroup;
     QList <rectHolder *> * rectlist;
     int m_Filter;
+    bool m_mouseOver;
+    qreal m_mouseX;
+    qreal m_mouseY;
+    int m_mouseIndex;
 
 };
 

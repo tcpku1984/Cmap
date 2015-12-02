@@ -19,6 +19,10 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setColor(color);
     this->setRegion(region);
     this->setAveragePrevlance(aver);
+    this->setMouseOver(false);
+    this->setMouseX(0);
+    this->setMouseY(0);
+    this->setMouseIndex(0);
     dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
              <<QColor("#00F3F3")<<QColor("#F400F4")
              <<QColor("#F7F700")<<QColor("#000")<<QColor("#8181DB")
@@ -116,7 +120,6 @@ void treeMap::paintEvent(QPaintEvent *event)
 
     if(this->getLookAhead()==true)
     {
-        //cout<<"looking aheadddddddddddddddddddddddddddddddddddddddddddd"<<endl;
         rectlist=drawSqTreeMap2(10,100,500,500,0,this->region()->healthData(),&painter);
     }
     else
@@ -357,7 +360,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                 }
             }
             p->drawRect(rect);
-            p->setPen(Qt::black);
+            p->setPen(Qt::white);
             p->drawText(rect,QString::number(data->at(i)));
             tempx=tempx+fabs(data->at(i))*width/value;
         }
@@ -535,6 +538,46 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
 
 }
 
+int treeMap::getMouseIndex() const
+{
+    return m_mouseIndex;
+}
+
+void treeMap::setMouseIndex(int mouseIndex)
+{
+    m_mouseIndex = mouseIndex;
+}
+
+qreal treeMap::getMouseY() const
+{
+    return m_mouseY;
+}
+
+void treeMap::setMouseY(const qreal &mouseY)
+{
+    m_mouseY = mouseY;
+}
+
+qreal treeMap::getMouseX() const
+{
+    return m_mouseX;
+}
+
+void treeMap::setMouseX(const qreal &mouseX)
+{
+    m_mouseX = mouseX;
+}
+
+bool treeMap::getMouseOver() const
+{
+    return m_mouseOver;
+}
+
+void treeMap::setMouseOver(bool mouseOver)
+{
+    m_mouseOver = mouseOver;
+}
+
 int treeMap::getFilter() const
 {
     return m_Filter;
@@ -554,24 +597,36 @@ void treeMap::setCgroup(bool Cgroup)
     m_Cgroup = Cgroup;
 }
 
+/*
 void treeMap::mouseMoveEvent(QMouseEvent *e)
 {
     int x=e->pos().x();
     int y=e->pos().y();
-    for(int i=0;i<rectlist->size();i++)
+    int i;
+    for(i=0;i<rectlist->size();i++)
     {
         if(rectlist->at(i)->X()<x&&
            rectlist->at(i)->X()+rectlist->at(i)->W()>x&&
            rectlist->at(i)->Y()<y&&
            rectlist->at(i)->Y()+rectlist->at(i)->L()>y)
         {
-           //cout<<"moveEvent works"<<endl;
+            this->setMouseOver(true);
+            this->setMouseX(e->pos().x());
+            this->setMouseY(e->pos().y());
+            this->setMouseIndex(i);
+            break;
+            update();
         }
 
     }
+    if(i==rectlist->size())
+    {
+        this->setMouseOver(false);
+        update();
+    }
 }
 
-
+*/
 bool treeMap::getFont() const
 {
     return m_Font;
