@@ -131,6 +131,9 @@ public:
     int getFilter() const;
     void setFilter(int Filter);
 
+    bool getColorFilter() const;
+    void setColorFilter(bool ColorFilter);
+
 public slots:
     void animate();
 
@@ -171,6 +174,8 @@ private slots:
 
     void on_comboBox_2_currentIndexChanged(int index);
 
+    void on_checkBox_8_toggled(bool checked);
+
 private:
     Ui::Widget *ui;
     void fileRead();
@@ -185,6 +190,7 @@ private:
     void overlapRemove();
     void overlapRemoveArea();
     int searchAreaCode(QString code);
+    void refreshColor();
     //void moveWest();
 
 
@@ -221,6 +227,8 @@ private:
     bool m_Font;
     bool m_Cgroup;
     int m_Filter;
+    bool m_ColorFilter;
+    QList <bool> *colorlegend;
     QList<QColor> regionColor;
 
 

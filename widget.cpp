@@ -56,6 +56,8 @@ Widget::Widget(QWidget *parent) :
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
+    this->setColorFilter(false);
+    refreshColor();
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
     {
@@ -641,8 +643,6 @@ void Widget::setPressed(bool value)
 
 void Widget::mousePressEvent(QMouseEvent *e)
 {
-    //cout<<e->pos().x()<<" : "<<e->pos().y()<<endl;
-    //egion * temp;
     int x=e->pos().x();
     int y=e->pos().y();
     this->setPressed(true);
@@ -716,6 +716,21 @@ void Widget::mousePressEvent(QMouseEvent *e)
               update();
               break;
           }
+        }
+    }
+    if(this->getColorFilter()==true)
+    {
+        if(x>1610&&x<1750&&y>400&&y<400+400*13)
+        {
+            int i=(y-400)/40;
+            if(this->colorlegend->at(i)==true)
+            {
+                this->colorlegend->replace(i, false);
+            }
+            else
+            {
+                this->colorlegend->replace(i,true);
+            }
         }
     }
 
@@ -821,10 +836,6 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                     QColor::fromHsvF(dataColor.at(i).hueF(),
                                                      1,0.7));
                     p->fillRect(rect,grad);
-                    if(data->at(i)<this->getAveragePrevlance()->at(i))
-                    {
-
-                    }
                 }
                 if(this->getMapDifference()==false)
                 {
@@ -835,8 +846,8 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
-                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                          0.5,0.2));
+                            p->fillRect(rect,QColor::fromHsvF(0,
+                                                          0,0.7-i*0.03));
                         }
 
                     }
@@ -847,8 +858,8 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
-                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                          0.5,0.2));
+                            p->fillRect(rect,QColor::fromHsvF(0,
+                                                          0,0.7-i*0.03));
                         }
                     }
                 }
@@ -861,8 +872,8 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
-                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                          0.5,0.2));
+                            p->fillRect(rect,QColor::fromHsvF(0,
+                                                          0,0.7-i*0.03));
                         }
 
                     }
@@ -873,9 +884,20 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
-                            p->fillRect(rect,QColor::fromHsvF(dataColor.at(i).hueF(),
-                                                          0.5,0.2));
+                            p->fillRect(rect,QColor::fromHsvF(0,
+                                                          0,0.7-i*0.03));
                         }
+                    }
+                }
+                if(this->getColorFilter()==true)
+                {
+                    if(this->colorlegend->at(i)==true)
+                    {
+
+                    }
+                    else
+                    {
+                        p->fillRect(rect,Qt::white);
                     }
                 }
 
@@ -1073,7 +1095,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
+    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1299,11 +1321,23 @@ void Widget::drawSign(QPainter *p)
             }
         }
     }
+    if(this->getFilter()==0)
+    {
+
+    }
+    else
+    {
+        for(int i=0;i<14;i++)
+        {
+            p->fillRect(1750,400+i*40,140,40,QColor::fromHsvF(0,
+                                                              0,0.7-i*0.03));
+        }
+    }
     p->drawText(QRect(1610,400,140,40),"Coronary-heart-disease");
     p->drawText(QRect(1610,440,140,40),"Heart Failure");
     p->drawText(QRect(1610,480,140,40),"Stroke");
     p->drawText(QRect(1610,520,140,40),"Chronic-kidney-disease");
-    p->drawText(QRect(1610,560,140,40),"diabetes");
+    p->drawText(QRect(1610,560,140,40),"Diabetes");
     p->drawText(QRect(1610,600,140,40),"Hypertension");
     p->drawText(QRect(1610,640,140,40),"COPD");
     p->drawText(QRect(1610,680,140,40),"Mental-Health");
@@ -1312,7 +1346,20 @@ void Widget::drawSign(QPainter *p)
     p->drawText(QRect(1610,800,140,40),"Cancer");
     p->drawText(QRect(1610,840,140,40),"Epilepsy");
     p->drawText(QRect(1610,880,140,40),"Hypothyroidism");
-    p->drawText(QRect(1610,920,140,40),"Palliative");
+    p->drawText(QRect(1610,920,140,40),"Asthma");
+    if(this->getColorFilter()==true)
+    {
+        for(int i=0;i<14;i++)
+        {
+            if(this->colorlegend->at(i)==true)
+            {
+                QPen pen(Qt::black);
+                pen.setWidth(4);
+                p->setPen(pen);
+                p->drawRect(1610,400+40*i,140,40);
+            }
+        }
+    }
     font.setPixelSize(FONTSIZEA);
     font.setBold(false);
     p->setFont(font);
@@ -1371,6 +1418,25 @@ int Widget::searchAreaCode(QString code)
         }
     }
     return -1;
+}
+
+void Widget::refreshColor()
+{
+    colorlegend=new QList<bool>;
+    for(int i=0;i<14;i++)
+    {
+        colorlegend->append(false);
+    }
+}
+
+bool Widget::getColorFilter() const
+{
+    return m_ColorFilter;
+}
+
+void Widget::setColorFilter(bool ColorFilter)
+{
+    m_ColorFilter = ColorFilter;
 }
 
 int Widget::getFilter() const
@@ -1857,4 +1923,18 @@ void Widget::on_checkBox_9_toggled(bool checked)
 void Widget::on_comboBox_2_currentIndexChanged(int index)
 {
     this->setFilter(index);
+}
+
+void Widget::on_checkBox_8_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        refreshColor();
+        this->setColorFilter(true);
+    }
+    else
+    {
+        refreshColor();
+        this->setColorFilter(false);
+    }
 }
