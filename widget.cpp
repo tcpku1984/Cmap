@@ -74,6 +74,13 @@ Widget::Widget(QWidget *parent) :
           horizontalOrder);
     qSort(this->regionListV()->begin(),this->regionListV()->end(),
           verticalOrder);
+    regionColor<<QColor("#2acae6")<<QColor("#deb274")<<QColor("#518adb")
+             <<QColor("#c240d6")<<QColor("#2ecc16")
+             <<QColor("#afef5a")<<QColor("#9163cd")
+             <<QColor("#d26685")<<QColor("#72e6c5")
+             <<QColor("#cf1f9d")<<QColor("#53d179")
+             <<QColor("#e02e0e")<<QColor("#5c5ce6")
+             <<QColor("#000");
     dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
              <<QColor("#00F3F3")<<QColor("#F400F4")
              <<QColor("#F7F700")<<QColor("#000")<<QColor("#8181DB")
@@ -179,9 +186,10 @@ void Widget::paintCCg(QPainter *painter)
                      QPoint(1520,this->regionListV()->at(z)->Y()));
     painter->drawLine(QPoint(this->regionListH()->at(z)->X(),0),
                      QPoint(this->regionListH()->at(z)->X(),1920));
-    painter->setPen(Qt::black);
+    painter->setPen(Qt::white);
     for(int i=0;i<this->regionListV()->size();i++)
     {
+        /*
         if(this->regionListV()->at(i)->color()==1)
         {
             painter->setBrush(Qt::red);
@@ -193,7 +201,8 @@ void Widget::paintCCg(QPainter *painter)
         else
         {
             painter->setBrush(Qt::blue);
-        }
+        }*/
+        painter->setBrush(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
 
         painter->drawRect(
                     QRectF(this->regionListV()->at(i)->X(),
@@ -1064,7 +1073,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1119,7 +1128,8 @@ void Widget::fileRead()
             areaTemp=this->getAreaGroup()->at(index);
             getline(inFlow,input, ',');
         }
-
+        getline(inFlow,input, ',');
+        temp->setColorIndex(atoi(input.c_str()));
         int a;
         inFlow>>a;
         addPopulation(a);

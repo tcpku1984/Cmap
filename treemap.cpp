@@ -205,6 +205,7 @@ void treeMap::paintEvent(QPaintEvent *event)
                       rectlist->at(0)->L(),0,
                       dataTemp,&painter,1);
     }
+    painter.setPen(Qt::black);
     painter.drawText(rect,tempString);
 
 

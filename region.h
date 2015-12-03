@@ -57,6 +57,9 @@ public:
     QList<double> *healthData() const;
     void setHealthData(QList<double> *healthData);
 
+    int getColorIndex() const;
+    void setColorIndex(int ColorIndex);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -79,6 +82,8 @@ private:
     /**
      * @brief m_X information of x position on map
      */
+
+    int m_ColorIndex;
 
     QList <double> * m_healthData;
 

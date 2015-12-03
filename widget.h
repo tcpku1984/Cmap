@@ -221,6 +221,7 @@ private:
     bool m_Font;
     bool m_Cgroup;
     int m_Filter;
+    QList<QColor> regionColor;
 
 
 };

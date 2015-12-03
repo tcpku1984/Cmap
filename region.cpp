@@ -12,6 +12,7 @@ Region::Region()
     size=1;
     m_color=0;
     m_detail=false;
+    this->setColorIndex(0);
 }
 
 Region::~Region()
@@ -172,6 +173,16 @@ void Region::setHealthData(QList<double> *healthData)
 {
     m_healthData = healthData;
 }
+int Region::getColorIndex() const
+{
+    return m_ColorIndex;
+}
+
+void Region::setColorIndex(int ColorIndex)
+{
+    m_ColorIndex = ColorIndex;
+}
+
 
 
 

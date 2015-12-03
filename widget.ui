@@ -44,7 +44,7 @@
    <property name="geometry">
     <rect>
      <x>1460</x>
-     <y>0</y>
+     <y>10</y>
      <width>451</width>
      <height>311</height>
     </rect>
@@ -58,7 +58,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -503,16 +503,11 @@
       </property>
      </item>
     </widget>
-   </widget>
-   <widget class="QWidget" name="tab_3">
-    <attribute name="title">
-     <string>Rendering options</string>
-    </attribute>
     <widget class="QCheckBox" name="checkBox_4">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>30</y>
+       <x>290</x>
+       <y>150</y>
        <width>111</width>
        <height>16</height>
       </rect>
@@ -527,11 +522,16 @@
       <bool>false</bool>
      </property>
     </widget>
+   </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Rendering Options</string>
+    </attribute>
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
-       <x>280</x>
-       <y>50</y>
+       <x>270</x>
+       <y>60</y>
        <width>121</width>
        <height>23</height>
       </rect>
@@ -544,7 +544,7 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>60</y>
+       <y>30</y>
        <width>111</width>
        <height>16</height>
       </rect>
@@ -582,7 +582,7 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>90</y>
+       <y>60</y>
        <width>101</width>
        <height>21</height>
       </rect>
