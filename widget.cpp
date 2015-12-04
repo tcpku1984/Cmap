@@ -891,12 +891,12 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 }
                 if(this->getColorFilter()==true)
                 {
-                    if(this->colorlegend->at(i)==true)
-                    {
 
-                    }
-                    else
+                    if(this->colorlegend->at(i)==false)
                     {
+                        QPen pen(Qt::white);
+                        pen.setWidth(this->getBorder());
+                        p->setPen(pen);
                         p->fillRect(rect,Qt::white);
                     }
                 }
@@ -1327,12 +1327,15 @@ void Widget::drawSign(QPainter *p)
     }
     else
     {
+        p->setPen(Qt::black);
+        p->drawText(QRect(1770,380,120,20),"Filtered Color");
         for(int i=0;i<14;i++)
         {
             p->fillRect(1750,400+i*40,140,40,QColor::fromHsvF(0,
                                                               0,0.7-i*0.03));
         }
     }
+    p->setPen(Qt::white);
     p->drawText(QRect(1610,400,140,40),"Coronary-heart-disease");
     p->drawText(QRect(1610,440,140,40),"Heart Failure");
     p->drawText(QRect(1610,480,140,40),"Stroke");

@@ -111,7 +111,7 @@ void areaTreemap::paintEvent(QPaintEvent *event)
     }
     font.setBold(true);
     painter.setFont(font);
-    QRect rect=QRect(10,50,600,100);
+    QRect rect=QRect(10,40,600,100);
     QString tempString=this->Area()->AreaName()+"  "
             +this->Area()->AreaCode()+" \nCCG list :";
     for(int i=0;i<this->Area()->RegionList()->size();i++)
