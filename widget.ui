@@ -16,8 +16,15 @@
     <height>1080</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <family>Arial</family>
+    <weight>75</weight>
+    <bold>true</bold>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>Widget</string>
+   <string>Cartographic Treemap</string>
   </property>
   <widget class="QPushButton" name="start">
    <property name="geometry">

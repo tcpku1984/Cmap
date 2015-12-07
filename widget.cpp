@@ -1673,10 +1673,12 @@ void Widget::on_checkBox_5_toggled(bool checked)
     if(checked==true)
     {
         this->setGroup(true);
+        this->setRegionMaxsize(48);
     }
     else
     {
         this->setGroup(false);
+        this->setRegionMaxsize(110);
     }
 
 }
