@@ -50,6 +50,7 @@ public:
     QList<Region *> * overlap(int k);
     void mousePressEvent(QMouseEvent * e);
     void mouseReleaseEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent * e);
 
     void drawTreeMap(qreal x,qreal y,qreal width,qreal length,QList<double> * data, QPainter * p);
     QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p,int layer);
@@ -133,6 +134,12 @@ public:
 
     bool getColorFilter() const;
     void setColorFilter(bool ColorFilter);
+
+    bool getMouseOver() const;
+    void setMouseOver(bool MouseOver);
+
+    int getMouseOverIndex() const;
+    void setMouseOverIndex(int MouseOverIndex);
 
 public slots:
     void animate();
@@ -230,6 +237,8 @@ private:
     bool m_ColorFilter;
     QList <bool> *colorlegend;
     QList<QColor> regionColor;
+    bool m_MouseOver;
+    int m_MouseOverIndex;
 
 
 };

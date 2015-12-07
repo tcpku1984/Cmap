@@ -23,6 +23,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setMouseX(0);
     this->setMouseY(0);
     this->setMouseIndex(0);
+    this->setMouseTracking(true);
     dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
              <<QColor("#00F3F3")<<QColor("#F400F4")
              <<QColor("#F7F700")<<QColor("#000")<<QColor("#8181DB")
@@ -71,6 +72,10 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
              <<QColor("#40e0d0")<<QColor("#ff00ff")
              <<QColor("#90ee90")<<QColor("#ffff00")
              <<QColor("#000");
+    m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
+               <<"Chronic-kidney-disease"<<"Diabetes"<<"Hypertension"
+              <<"COPD"<<"Mental-Health"<<"Osteoporosis"<<"Rheumatoid-Arthritis"
+             <<"Cancer"<<"Epilepsy"<<"Hypothyroidism"<<"Asthma";
 }
 
 
@@ -178,7 +183,7 @@ void treeMap::paintEvent(QPaintEvent *event)
     qreal tempAsp;
     for(int i=0;i<rectlist->size();i++)
     {
-        cout<<rectlist->at(i)->W()<<" "<<rectlist->at(i)->L()<<endl;
+        //cout<<rectlist->at(i)->W()<<" "<<rectlist->at(i)->L()<<endl;
         tempAsp=rectlist->at(i)->W()/rectlist->at(i)->L();
 
         if(tempAsp<1)
@@ -207,6 +212,12 @@ void treeMap::paintEvent(QPaintEvent *event)
     }
     painter.setPen(Qt::black);
     painter.drawText(rect,tempString);
+    if(this->getMouseOver()==true)
+    {
+        painter.drawText(QRect(300,60,200,40),
+                         m_HealthName.at(this->getMouseIndex())+" "+
+                         QString::number(this->region()->healthData()->at(this->getMouseIndex())));
+    }
 
 
 }
@@ -538,6 +549,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
 
 
 }
+QList<QString> treeMap::getHealthName() const
+{
+    return m_HealthName;
+}
+
+void treeMap::setHealthName(const QList<QString> &HealthName)
+{
+    m_HealthName = HealthName;
+}
+
 
 int treeMap::getMouseIndex() const
 {
@@ -598,7 +619,7 @@ void treeMap::setCgroup(bool Cgroup)
     m_Cgroup = Cgroup;
 }
 
-/*
+
 void treeMap::mouseMoveEvent(QMouseEvent *e)
 {
     int x=e->pos().x();
@@ -611,23 +632,23 @@ void treeMap::mouseMoveEvent(QMouseEvent *e)
            rectlist->at(i)->Y()<y&&
            rectlist->at(i)->Y()+rectlist->at(i)->L()>y)
         {
+            //cout<<"tracking"<<endl;
             this->setMouseOver(true);
-            this->setMouseX(e->pos().x());
-            this->setMouseY(e->pos().y());
             this->setMouseIndex(i);
-            break;
             update();
+            break;
         }
 
     }
     if(i==rectlist->size())
     {
+        //cout<<"out bonder"<<endl;
         this->setMouseOver(false);
         update();
     }
 }
 
-*/
+
 bool treeMap::getFont() const
 {
     return m_Font;

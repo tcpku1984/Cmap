@@ -62,7 +62,7 @@ public:
     bool getCgroup() const;
     void setCgroup(bool Cgroup);
 
-    //void mouseMoveEvent(QMouseEvent * e);
+    void mouseMoveEvent(QMouseEvent * e);
 
     int getFilter() const;
     void setFilter(int Filter);
@@ -78,6 +78,9 @@ public:
 
     int getMouseIndex() const;
     void setMouseIndex(int mouseIndex);
+
+    QList<QString> getHealthName() const;
+    void setHealthName(const QList<QString> &HealthName);
 
 private:
     Ui::treeMap *ui;
@@ -109,6 +112,7 @@ private:
     qreal m_mouseX;
     qreal m_mouseY;
     int m_mouseIndex;
+    QList<QString> m_HealthName;
 
 };
 

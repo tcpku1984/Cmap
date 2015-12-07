@@ -53,10 +53,12 @@ Widget::Widget(QWidget *parent) :
     this->setBorderColor(Qt::white);
     this->setFont(false);
     this->setCgroup(false);
+    this->setMouseOver(false);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
     this->setColorFilter(false);
+    this->setMouseTracking(true);
     refreshColor();
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
@@ -310,6 +312,14 @@ void Widget::paintCCg(QPainter *painter)
                               this->regionListV()->at(i)->getSize());
         }
         drawSign(painter);
+        if(this->getMouseOver()==true)
+        {
+            QFont font("Arial");
+            painter->setFont(font);
+            painter->drawText(QRect(50,50,200,100),
+                              this->regionListV()->at(
+                                  this->getMouseOverIndex())->ccgName());
+        }
     }
 }
 
@@ -445,6 +455,13 @@ void Widget::paintArea(QPainter *painter)
                               this->getAreaGroup()->at(i)->Size());
         }
         drawSign(painter);
+        if(this->getMouseOver()==true)
+        {
+            QFont font("Arial");
+            painter->setFont(font);
+            painter->drawText(QRect(50,50,200,100),
+                              this->getAreaGroup()->at(this->getMouseOverIndex())->AreaName());
+        }
     }
 
 }
@@ -765,6 +782,58 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 
 
 
+}
+
+void Widget::mouseMoveEvent(QMouseEvent *e)
+{
+    int x=e->pos().x();
+    int y=e->pos().y();
+    if(this->getGroup()==false)
+    {
+        int i=0;
+        for(i;i<this->regionListV()->size();i++)
+        {
+          if(this->regionListV()->at(i)->X()<x&&
+             this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()>x&&
+             this->regionListV()->at(i)->Y()<y&&
+             this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()>y)
+          {
+              this->setMouseOver(true);
+              this->setMouseOverIndex(i);
+              update();
+              break;
+          }
+        }
+        if(i>=this->regionListV()->size())
+        {
+            this->setMouseOver(false);
+            this->setMouseOverIndex(0);
+            update();
+        }
+    }
+    else
+    {
+        int i=0;
+        for(i=0;i<this->getAreaGroup()->size();i++)
+        {
+          if(this->getAreaGroup()->at(i)->X()<x&&
+             this->getAreaGroup()->at(i)->X()+this->getAreaGroup()->at(i)->Size()>x&&
+             this->getAreaGroup()->at(i)->Y()<y&&
+             this->getAreaGroup()->at(i)->Y()+this->getAreaGroup()->at(i)->Size()>y)
+          {
+              this->setMouseOver(true);
+              this->setMouseOverIndex(i);
+              update();
+              break;
+          }
+        }
+        if(i>=this->getAreaGroup()->size())
+        {
+            this->setMouseOver(false);
+            this->setMouseOverIndex(0);
+            update();
+        }
+    }
 }
 
 
@@ -1095,7 +1164,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1431,6 +1500,26 @@ void Widget::refreshColor()
         colorlegend->append(false);
     }
 }
+int Widget::getMouseOverIndex() const
+{
+    return m_MouseOverIndex;
+}
+
+void Widget::setMouseOverIndex(int MouseOverIndex)
+{
+    m_MouseOverIndex = MouseOverIndex;
+}
+
+bool Widget::getMouseOver() const
+{
+    return m_MouseOver;
+}
+
+void Widget::setMouseOver(bool MouseOver)
+{
+    m_MouseOver = MouseOver;
+}
+
 
 bool Widget::getColorFilter() const
 {
