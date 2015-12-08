@@ -38,7 +38,7 @@ Widget::Widget(QWidget *parent) :
     m_regionListH= new QList<Region *>;
     index=0;
     m_increaseSize=1;
-    m_regionMaxsize=10;
+    m_regionMaxsize=110;
     m_searchRange=212;
     m_population=0;
     m_border=1;
@@ -133,6 +133,10 @@ Widget::Widget(QWidget *parent) :
              <<QColor("#40e0d0")<<QColor("#ff00ff")
              <<QColor("#90ee90")<<QColor("#ffff00")
              <<QColor("#000");
+    m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
+               <<"Chronic-kidney-disease"<<"Diabetes"<<"Hypertension"
+              <<"COPD"<<"Mental-Health"<<"Osteoporosis"<<"Rheumatoid-Arthritis"
+             <<"Cancer"<<"Epilepsy"<<"Hypothyroidism"<<"Asthma";
     count=0;
     timer=new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(animate()));
@@ -315,10 +319,21 @@ void Widget::paintCCg(QPainter *painter)
         if(this->getMouseOver()==true)
         {
             QFont font("Arial");
+            font.setPixelSize(16);
             painter->setFont(font);
-            painter->drawText(QRect(50,50,200,100),
-                              this->regionListV()->at(
-                                  this->getMouseOverIndex())->ccgName());
+            QString output;
+            output+=this->regionListV()->at(
+                        this->getMouseOverIndex())->ccgName()+"\n";
+            for(int i=0;i<14;i++)
+            {
+                output+=m_HealthName.at(i)+" "+
+                        QString::number(this->regionListV()->at(
+                                                this->getMouseOverIndex())
+                        ->healthData()->at(i))+" \n";
+
+            }
+            painter->drawText(QRect(50,50,300,500),
+                              output);
         }
     }
 }
@@ -1719,10 +1734,12 @@ void Widget::on_checkBox_toggled(bool checked)
     if(checked==true)
     {
         this->setSamesize(true);
+        this->setRegionMaxsize(37);
     }
     else
     {
         this->setSamesize(false);
+        this->setRegionMaxsize(110);
     }
 }
 

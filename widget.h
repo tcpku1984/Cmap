@@ -239,6 +239,7 @@ private:
     QList<QColor> regionColor;
     bool m_MouseOver;
     int m_MouseOverIndex;
+    QList <QString> m_HealthName;
 
 
 };
