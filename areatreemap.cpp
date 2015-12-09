@@ -1,7 +1,9 @@
 #include "areatreemap.h"
 #include "ui_areatreemap.h"
 
-
+enum{
+    GRAY=85
+};
 
 areaTreemap::areaTreemap(QWidget *parent, int color, AreaTeam * area,QList <double>* aver) :
     QWidget(parent),
@@ -339,25 +341,27 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
                 {
                     if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
                     {
-                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        //QPen pen(QColor::fromRgb(255,0,0,100));
+                        QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.7-i*0.03));
+                                                          0,0.9));
                         }
 
                     }
                     else
                     {
-                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        //QPen pen(QColor::fromRgb(0,255,0,100));
+                        QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.7-i*0.03));
+                                                          0,0.9));
                         }
                     }
                 }
@@ -365,25 +369,27 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
                 {
                     if(data->at(i)>0)
                     {
-                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        //QPen pen(QColor::fromRgb(255,0,0,100));
+                        QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.7-i*0.03));
+                                                          0,0.9));
                         }
 
                     }
                     else
                     {
-                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        //QPen pen(QColor::fromRgb(0,255,0,100));
+                        QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.7-i*0.03));
+                                                          0,0.9));
                         }
                     }
                 }

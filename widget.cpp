@@ -14,7 +14,8 @@ enum{
     TEXTW=80,
     RECTSIZE=500,
     FONTSIZEA=15,
-    FONTSIZEB=14
+    FONTSIZEB=14,
+    GRAY=85
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -324,6 +325,9 @@ void Widget::paintCCg(QPainter *painter)
             QString output;
             output+=this->regionListV()->at(
                         this->getMouseOverIndex())->ccgName()+"\n";
+            output+="population "+
+                    QString::number(this->regionListV()->at(
+                        this->getMouseOverIndex())->poplation())+"\n";
             for(int i=0;i<14;i++)
             {
                 output+=m_HealthName.at(i)+" "+
@@ -925,25 +929,27 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 {
                     if(fabs(data->at(i))>this->getAveragePrevlance()->at(i))
                     {
-                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        //QPen pen(QColor::fromRgb(255,0,0,100));
+                        QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.7-i*0.03));
+                                                          0,0.9));
                         }
 
                     }
                     else
                     {
-                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        //QPen pen(QColor::fromRgb(0,255,0,100));
+                        QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.7-i*0.03));
+                                                          0,0.9));
                         }
                     }
                 }
@@ -951,25 +957,27 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 {
                     if(data->at(i)>0)
                     {
-                        QPen pen(QColor::fromRgb(255,0,0,100));
+                        //QPen pen(QColor::fromRgb(255,0,0,100));
+                        QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.7-i*0.03));
+                                                          0,0.9));
                         }
 
                     }
                     else
                     {
-                        QPen pen(QColor::fromRgb(0,255,0,100));
+                        //QPen pen(QColor::fromRgb(0,255,0,100));
+                        QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.7-i*0.03));
+                                                          0,0.9));
                         }
                     }
                 }
@@ -981,7 +989,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         QPen pen(Qt::white);
                         pen.setWidth(this->getBorder());
                         p->setPen(pen);
-                        p->fillRect(rect,Qt::white);
+                        p->fillRect(rect,QColor::fromHsvF(0,0,0.9));
                     }
                 }
 
@@ -1179,7 +1187,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
+    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1412,11 +1420,12 @@ void Widget::drawSign(QPainter *p)
     else
     {
         p->setPen(Qt::black);
-        p->drawText(QRect(1770,380,120,20),"Filtered Color");
+        p->drawText(QRect(1640,380,120,20),"Focus");
+        p->drawText(QRect(1750,380,120,20),"Context");
         for(int i=0;i<14;i++)
         {
-            p->fillRect(1750,400+i*40,140,40,QColor::fromHsvF(0,
-                                                              0,0.7-i*0.03));
+            p->fillRect(1750,400+i*40,70,40,QColor::fromHsvF(0,
+                                                              0,0.9));
         }
     }
     p->setPen(Qt::white);
