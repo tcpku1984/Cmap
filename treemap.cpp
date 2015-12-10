@@ -313,7 +313,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.9));
+                                                          0,0.97));
                         }
 
                     }
@@ -326,7 +326,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.9));
+                                                          0,0.97));
                         }
                     }
                 }
@@ -341,7 +341,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.9));
+                                                          0,0.97));
                         }
 
                     }
@@ -354,7 +354,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.9));
+                                                          0,0.97));
                         }
                     }
                 }

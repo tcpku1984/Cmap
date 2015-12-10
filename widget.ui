@@ -620,7 +620,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>color filter</string>
+      <string>Color filter</string>
      </property>
      <property name="checked">
       <bool>false</bool>

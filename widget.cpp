@@ -60,6 +60,7 @@ Widget::Widget(QWidget *parent) :
     this->setGroup(false);
     this->setColorFilter(false);
     this->setMouseTracking(true);
+    this->setPercent(0);
     refreshColor();
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
@@ -347,6 +348,7 @@ void Widget::paintArea(QPainter *painter)
     //cout<<"paintArea"<<endl;
     for(int i=0;i<this->getAreaGroup()->size();i++)
     {
+        painter->setBrush(regionColor.at(i%13));
         painter->drawRect(
                     QRectF(this->getAreaGroup()->at(i)->X(),
                            this->getAreaGroup()->at(i)->Y(),
@@ -936,7 +938,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.9));
+                                                          0,0.97));
                         }
 
                     }
@@ -949,7 +951,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.9));
+                                                          0,0.97));
                         }
                     }
                 }
@@ -964,7 +966,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.9));
+                                                          0,0.97));
                         }
 
                     }
@@ -977,7 +979,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.9));
+                                                          0,0.97));
                         }
                     }
                 }
@@ -1187,7 +1189,7 @@ void Widget::on_start_pressed()
 void Widget::fileRead()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
@@ -1425,7 +1427,7 @@ void Widget::drawSign(QPainter *p)
         for(int i=0;i<14;i++)
         {
             p->fillRect(1750,400+i*40,70,40,QColor::fromHsvF(0,
-                                                              0,0.9));
+                                                              0,0.97));
         }
     }
     p->setPen(Qt::white);
@@ -1524,6 +1526,16 @@ void Widget::refreshColor()
         colorlegend->append(false);
     }
 }
+int Widget::getPercent() const
+{
+    return m_Percent;
+}
+
+void Widget::setPercent(int Percent)
+{
+    m_Percent = Percent;
+}
+
 int Widget::getMouseOverIndex() const
 {
     return m_MouseOverIndex;
@@ -2058,3 +2070,4 @@ void Widget::on_checkBox_8_toggled(bool checked)
         this->setColorFilter(false);
     }
 }
+

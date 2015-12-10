@@ -141,6 +141,9 @@ public:
     int getMouseOverIndex() const;
     void setMouseOverIndex(int MouseOverIndex);
 
+    int getPercent() const;
+    void setPercent(int Percent);
+
 public slots:
     void animate();
 
@@ -182,6 +185,7 @@ private slots:
     void on_comboBox_2_currentIndexChanged(int index);
 
     void on_checkBox_8_toggled(bool checked);
+
 
 private:
     Ui::Widget *ui;
@@ -240,6 +244,7 @@ private:
     bool m_MouseOver;
     int m_MouseOverIndex;
     QList <QString> m_HealthName;
+    int m_Percent;
 
 
 };
