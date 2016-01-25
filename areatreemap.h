@@ -13,7 +13,14 @@
 namespace Ui {
 class areaTreemap;
 }
-
+/**
+  *@file areaTreemap.h
+  * @author Chao Tong
+  * @date 10 Jan 2016
+ * @brief The AreaTreemap class
+ * This class is to display a detail treemap of one area group node
+ * It work as similar as treemap class for single region node
+  */
 class areaTreemap : public QWidget
 {
     Q_OBJECT

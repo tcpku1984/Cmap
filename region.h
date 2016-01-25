@@ -1,3 +1,13 @@
+/**
+  *@file areateam.h
+  * @author Chao Tong
+  * @date 10 Jan 2016
+ * @brief The region class
+ * This class is to represent a single region node on the layout.
+ * It contains all the information of a single CCG region
+ * latitude,longtitude,X,Y position on the layout
+ * population, and healthcare data
+  */
 #ifndef REGION_H
 #define REGION_H
 #include <QString>
@@ -83,16 +93,6 @@ private:
      * @brief m_X information of x position on map
      */
 
-    int m_ColorIndex;
-
-    QList <double> * m_healthData;
-
-
-
-
-
-
-
     int m_X;
     /**
      * @brief m_Oy information of horizontal order
@@ -103,6 +103,16 @@ private:
      * can do increment or not
      */
     bool m_stopIncrease;
+    /**
+     * @brief m_ColorIndex define the color of region
+     */
+    int m_ColorIndex;
+    /**
+     * @brief m_healthData list of health care data
+     */
+
+    QList <double> * m_healthData;
+
     int size;
     int m_color;
     bool m_detail;

@@ -1,3 +1,12 @@
+/**
+  *@file areateam.h
+  * @author Chao Tong
+  * @date 10 Jan 2016
+ * @brief The treemap class
+ * This class is area group function that put several region nodes
+ * with same name and area code into one group and work as one node in the layout
+ * It is similar with region class having latitude,longtitude,x,y,population
+  */
 #ifndef TREEMAP_H
 #define TREEMAP_H
 

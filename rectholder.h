@@ -1,3 +1,12 @@
+/**
+  *@file areateam.h
+  * @author Chao Tong
+  * @date 10 Jan 2016
+ * @brief The rectHolder class
+ * This class is a alternative class for defalut rectF class in QT
+ * This class just record four parameter of rectF class
+ * X position, Y position , W width and L length
+  */
 #ifndef RECTHOLDER_H
 #define RECTHOLDER_H
 #include<QtGlobal>

@@ -199,19 +199,6 @@ void Widget::paintCCg(QPainter *painter)
     painter->setPen(Qt::white);
     for(int i=0;i<this->regionListV()->size();i++)
     {
-        /*
-        if(this->regionListV()->at(i)->color()==1)
-        {
-            painter->setBrush(Qt::red);
-        }
-        else if(this->regionListV()->at(i)->color()==2)
-        {
-            painter->setBrush(Qt::green);
-        }
-        else
-        {
-            painter->setBrush(Qt::blue);
-        }*/
         painter->setBrush(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
 
         painter->drawRect(
