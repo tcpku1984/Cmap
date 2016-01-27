@@ -1,3 +1,11 @@
+/**
+  *@file areateam.h
+  * @author Chao Tong
+  * @date 10 Jan 2016
+ * @brief The widget class is to layout the region node, includes
+ * cartergraphy map generation and treemap display
+ * with different user options
+  */
 #ifndef WIDGET_H
 #define WIDGET_H
 
@@ -41,11 +49,32 @@ public:
 
     QList<Region *> *regionListH() const;
     void setRegionListH(QList<Region *> *regionListH);
+    /**
+     * @brief paintEvent main painting method that draw the whole layout
+     * @param event
+     */
     void paintEvent(QPaintEvent * event);
+    /**
+     * @brief paintCCg draw for region node display
+     * @param painter from main paintevent class
+     */
     void paintCCg(QPainter * painter);
+    /**
+     * @brief paintArea draw for area group display
+     * @param painter from main paintevent class
+     */
     void paintArea(QPainter * painter);
+    /**
+     * @brief regionIncrease for region node increase
+     */
     void regionIncrease();
+    /**
+     * @brief regionIncrease2 for region node increase in one loop
+     */
     void regionIncrease2();
+    /**
+     * @brief areaIncrease for area group increase
+     */
     void areaIncrease();
     QList<Region *> * overlap(int k);
     void mousePressEvent(QMouseEvent * e);
@@ -198,7 +227,13 @@ private:
     bool testWestOverlap(int k);
     bool testEastOverlap(int k);
     void drawSign(QPainter * p);
+    /**
+     * @brief overlapRemove using overlap removal to remove region node overlaop
+     */
     void overlapRemove();
+    /**
+     * @brief overlapRemoveArea using overlap removal to remove area group overlap
+     */
     void overlapRemoveArea();
     int searchAreaCode(QString code);
     void refreshColor();

@@ -2,10 +2,7 @@
   *@file areateam.h
   * @author Chao Tong
   * @date 10 Jan 2016
- * @brief The treemap class
- * This class is area group function that put several region nodes
- * with same name and area code into one group and work as one node in the layout
- * It is similar with region class having latitude,longtitude,x,y,population
+ * @brief The treemap class is to draw a treemap of one node in a new window
   */
 #ifndef TREEMAP_H
 #define TREEMAP_H
@@ -94,9 +91,21 @@ public:
 private:
     Ui::treeMap *ui;
     Region *m_region;
+    /**
+     * @brief drawSqTreeMap draw treemap using strip algorithm
+     */
     QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p,int layer);
+    /**
+     * @brief drawSqTreeMap2 draw treemap using strip algorithm and looking back algorithm
+     */
     QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p);
+    /**
+     * @brief calRatio calculate aspect ration by 1 algorithm
+     */
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<double> *data);
+    /**
+     * @brief calRatio2 calculate aspect ration by 2 algorithm
+     */
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
 
     QList<QColor> dataColor;

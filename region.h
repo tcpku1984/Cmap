@@ -51,7 +51,13 @@ public:
 
     int getSize() const;
     void setSize(int value);
+    /**
+     * @brief increase increase region node by 1 piexl
+     */
     void increase();
+    /**
+     * @brief stop stop region node increment when it reach the maximum size
+     */
     void stop();
     void moveNorth();
     void moveSouth();
@@ -75,6 +81,9 @@ private:
      * @brief m_ccgCode information of ccg code
      */
     QString m_ccgCode;
+    /**
+     * @brief m_ccgName information of ccg name
+     */
     QString m_ccgName;
     /**
      * @brief m_Lati information of latitude
