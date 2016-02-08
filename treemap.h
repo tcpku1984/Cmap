@@ -1,5 +1,5 @@
 /**
-  *@file areateam.h
+  *@file treemap.h
   * @author Chao Tong
   * @date 10 Jan 2016
  * @brief The treemap class is to draw a treemap of one node in a new window

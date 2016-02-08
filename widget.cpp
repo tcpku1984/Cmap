@@ -69,7 +69,14 @@ Widget::Widget(QWidget *parent) :
     }
 
     ui->setupUi(this);
-    fileRead();
+    regionFile* file=new regionFile();
+    file->readfile();
+    this->setRegionListH(file->regionList());
+    this->setRegionListV(file->regionList());
+    this->setPopulation(file->populiation());
+    this->setAreaGroup(file->AreaGroup());
+    this->setAveragePrevlance(file->AveragePrevlance());
+    //fileRead();
     cout<<"ccg size:"<<this->regionListH()->size()<<endl;
     cout<<"area number :"<<this->getAreaGroup()->size()<<endl;
     for(int i=0; i<this->getAreaGroup()->size();i++)
@@ -1172,91 +1179,6 @@ void Widget::on_start_pressed()
     }
 }
 
-
-void Widget::fileRead()
-{
-    ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
-    string input;
-    int i = 0;
-
-    if (!inFlow)
-    {
-        cout << "widegt::fileRead() inFlow ERRor"<<endl;
-    }
-    else
-    {
-    cout << "\n Reading" <<endl;
-
-
-    /**
-      using while to read each line of csv file
-     */
-    while (!inFlow.eof())
-    {
-        //cout<<i<<"region"<<endl;
-        QList<double> *tempList=new QList<double>;
-        Region * temp=new Region();
-        AreaTeam * areaTemp;
-        getline(inFlow,input, ',');
-        temp->setCcgCode(QString::fromStdString(input));
-        getline(inFlow,input, ',');
-        temp->setCcgName(QString::fromStdString(input));
-        getline(inFlow,input, ',');
-        temp->setLati(atof(input.c_str()));
-        getline(inFlow,input, ',');
-        temp->setLongti(atof(input.c_str()));
-        for(int j=0;j<14;j++)
-        {
-            getline(inFlow,input, ',');
-            double b=atof(input.c_str());
-            this->getAveragePrevlance()->replace(j,
-                   this->getAveragePrevlance()->at(j)+b);
-            tempList->append(b);
-        }
-        temp->setHealthData(tempList);
-        getline(inFlow,input, ',');
-        QString areaCode=QString::fromStdString(input);
-        int index=this->searchAreaCode(areaCode);
-        if(index<0)
-        {
-            areaTemp=new AreaTeam();
-            areaTemp->setAreaCode(areaCode);
-            getline(inFlow,input, ',');
-            areaTemp->setAreaName(QString::fromStdString(input));
-            this->getAreaGroup()->append(areaTemp);
-        }
-        else
-        {
-            areaTemp=this->getAreaGroup()->at(index);
-            getline(inFlow,input, ',');
-        }
-        getline(inFlow,input, ',');
-        temp->setColorIndex(atoi(input.c_str()));
-        int a;
-        inFlow>>a;
-        addPopulation(a);
-        temp->setPoplation(a);
-        temp->setX(temp->Lati()/RATHH+HH);
-        temp->setY(-temp->Longti()/RATHV+VV);
-        this->regionListH()->append(temp);
-        this->regionListV()->append(temp);
-        areaTemp->addRegion(temp);
-        i++;
-
-    }
-    inFlow.close();
-
-    for(int i=0;i<14;i++)
-    {
-        this->getAveragePrevlance()->replace(i,
-             this->getAveragePrevlance()->at(i)/this->regionListV()->size());
-        cout<<"average data: "<<this->getAveragePrevlance()->at(i)<<endl;
-    }
-    }
-
-}
-
 void Widget::on_horizontalSlider_valueChanged(int value)
 {
     this->setIncreaseSize(value);
@@ -1493,17 +1415,6 @@ void Widget::overlapRemoveArea()
 
 }
 
-int Widget::searchAreaCode(QString code)
-{
-    for(int i=0;i<this->getAreaGroup()->size();i++)
-    {
-        if(this->getAreaGroup()->at(i)->AreaCode()==code)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
 
 void Widget::refreshColor()
 {

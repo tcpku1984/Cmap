@@ -1,5 +1,5 @@
 /**
-  *@file areateam.h
+  *@file region.h
   * @author Chao Tong
   * @date 10 Jan 2016
  * @brief The region class

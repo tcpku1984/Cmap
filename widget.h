@@ -1,5 +1,5 @@
 /**
-  *@file areateam.h
+  *@file widget.h
   * @author Chao Tong
   * @date 10 Jan 2016
  * @brief The widget class is to layout the region node, includes
@@ -31,6 +31,7 @@
 #include<stdlib.h>
 #include<cmath>
 #include<QColorDialog>
+#include<regionfile.h>
 using namespace std;
 namespace Ui {
 class Widget;
@@ -218,7 +219,6 @@ private slots:
 
 private:
     Ui::Widget *ui;
-    void fileRead();
     void addPopulation(int population);
     bool testSouthOverlap(int k);
     void moveNorth(int vOrder);
@@ -235,7 +235,6 @@ private:
      * @brief overlapRemoveArea using overlap removal to remove area group overlap
      */
     void overlapRemoveArea();
-    int searchAreaCode(QString code);
     void refreshColor();
     //void moveWest();
 
