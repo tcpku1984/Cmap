@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     areateam.cpp \
     rectholder.cpp \
     areatreemap.cpp \
-    regionfile.cpp
+    regionfile.cpp \
+    datacolor.cpp
 
 HEADERS  += widget.h \
     region.h \
@@ -44,7 +45,8 @@ HEADERS  += widget.h \
     areateam.h \
     rectholder.h \
     areatreemap.h \
-    regionfile.h
+    regionfile.h \
+    datacolor.h
 
 FORMS    += widget.ui \
     treemap.ui \

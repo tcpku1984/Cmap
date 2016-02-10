@@ -1,3 +1,9 @@
+/**
+  * @file rectholder.cpp
+  * @author Chao Tong
+  * @date 10 Feb 2016
+  * @see rectholder.h
+  */
 #include "rectholder.h"
 
 rectHolder::rectHolder()

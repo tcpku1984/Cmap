@@ -10,6 +10,7 @@
 #include <QLinearGradient>
 #include <areateam.h>
 #include<QMouseEvent>
+#include<datacolor.h>
 namespace Ui {
 class areaTreemap;
 }
@@ -33,16 +34,6 @@ public:
 
     AreaTeam *Area() const;
     void setArea(AreaTeam *Area);
-
-    QList<QColor> getDataColor() const;
-    void setDataColor(const QList<QColor> &value);
-
-    QList<QColor> getDataColor1() const;
-    void setDataColor1(const QList<QColor> &value);
-
-    QList<QColor> getDataColor2() const;
-    void setDataColor2(const QList<QColor> &value);
-
 
 
 
@@ -91,12 +82,7 @@ private:
     QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p);
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<double> *data);
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
-    QList<QColor> dataColor;
     QList<QColor> dataColor0;
-    QList<QColor> dataColor1;
-    QList<QColor> dataColor2;
-    QList<QColor> dataColor3;
-    QList<QColor> dataColor4;
     bool m_lookAhead;
     int m_Color;
     QList <double> * m_AveragePrevlance;
@@ -109,6 +95,7 @@ private:
     bool m_Font;
     bool m_Cgroup;
     int m_Filter;
+    dataColor *m_Datacolor;
 private slots:
     void windowClose();
 

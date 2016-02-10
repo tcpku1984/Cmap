@@ -1,3 +1,9 @@
+/**
+  * @file areatreemap.cpp
+  * @author Chao Tong
+  * @date 10 Feb 2016
+  * @see areatreemap.h
+  */
 #include "areatreemap.h"
 #include "ui_areatreemap.h"
 
@@ -23,55 +29,8 @@ areaTreemap::areaTreemap(QWidget *parent, int color, AreaTeam * area,QList <doub
     this->setBorder(3);
     this->setBorderColor(Qt::gray);
     this->setCgroup(false);
-    dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
-             <<QColor("#00F3F3")<<QColor("#F400F4")
-             <<QColor("#F7F700")<<QColor("#000")<<QColor("#8181DB")
-             <<QColor("#DE8383")<<QColor("#7BD17B")
-             <<QColor("#6DB9B9")<<QColor("#BE70BE")
-             <<QColor("#BCBC6E")<<QColor("#989898");
+    m_Datacolor=new dataColor();
 
-    dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
-             <<QColor("#b2df8a")<<QColor("#33a02c")
-             <<QColor("#fb9a99")<<QColor("#e31a1c")
-             <<QColor("#fdbf6f")<<QColor("#ff7f00")
-             <<QColor("#cab2d6")<<QColor("#6a3d9a")
-             <<QColor("#ffff99")<<QColor("#b15928")
-             <<QColor("#000");
-    for(int i=0;i<4;i++)
-    {
-        this->dataColor2.append(QColor::fromHsvF(qreal(i)*90/qreal(4)/qreal(360),1,1));
-
-    }
-    for(int i=4;i<6;i++)
-    {
-        this->dataColor2.append(QColor::fromHsvF((qreal(90)+qreal(i-4)*90/qreal(2))/qreal(360),1,1));
-        //cout<<(qreal(90)+qreal(i)*90/qreal(2))<<endl;
-    }
-    for(int i=6;i<10;i++)
-    {
-        this->dataColor2.append(QColor::fromHsvF((qreal(180)+qreal(i-6)*90/qreal(4))/qreal(360),1,1));
-        //cout<<(qreal(180)+qreal(i)*90/qreal(4))<<endl;
-    }
-    for(int i=10;i<14;i++)
-    {
-        this->dataColor2.append(QColor::fromHsvF((qreal(270)+qreal(i-10)*90/qreal(4))/qreal(360),1,1));
-        //cout<<(qreal(270)+qreal(i)*90/qreal(4))<<endl;
-
-    }
-    dataColor3<<QColor("#2acae6")<<QColor("#deb274")<<QColor("#518adb")
-             <<QColor("#c240d6")<<QColor("#2ecc16")
-             <<QColor("#afef5a")<<QColor("#9163cd")
-             <<QColor("#d26685")<<QColor("#72e6c5")
-             <<QColor("#cf1f9d")<<QColor("#53d179")
-             <<QColor("#e02e0e")<<QColor("#5c5ce6")
-             <<QColor("#000");
-    dataColor4<<QColor("#0000ff")<<QColor("#ffc0cb")<<QColor("#800080")
-             <<QColor("#32cd32")<<QColor("#ff0000")
-             <<QColor("#808080")<<QColor("#008080")
-             <<QColor("#ffa500")<<QColor("#ee82ee")
-             <<QColor("#40e0d0")<<QColor("#ff00ff")
-             <<QColor("#90ee90")<<QColor("#ffff00")
-             <<QColor("#000");
 }
 
 areaTreemap::~areaTreemap()
@@ -81,26 +40,7 @@ areaTreemap::~areaTreemap()
 
 void areaTreemap::paintEvent(QPaintEvent *event)
 {
-    switch(this->getColor())
-    {
-    case 0:
-        this->dataColor=this->dataColor0;
-        break;
-    case 1:
-        this->dataColor=this->dataColor1;
-        break;
-    case 2:
-        this->dataColor=this->dataColor2;
-        break;
-    case 3:
-       this->dataColor=this->dataColor3;
-       break;
-    case 4:
-        this->dataColor=this->dataColor4;
-        break;
-
-    }
-
+    this->dataColor0=m_Datacolor->getColor(this->getColor());
     QPainter painter(this);
     QFont font;
     if(this->getFont()==false)
@@ -240,33 +180,6 @@ void areaTreemap::setArea(AreaTeam *Area)
 {
     m_Area = Area;
 }
-QList<QColor> areaTreemap::getDataColor() const
-{
-    return dataColor;
-}
-
-void areaTreemap::setDataColor(const QList<QColor> &value)
-{
-    dataColor = value;
-}
-QList<QColor> areaTreemap::getDataColor1() const
-{
-    return dataColor1;
-}
-
-void areaTreemap::setDataColor1(const QList<QColor> &value)
-{
-    dataColor1 = value;
-}
-QList<QColor> areaTreemap::getDataColor2() const
-{
-    return dataColor2;
-}
-
-void areaTreemap::setDataColor2(const QList<QColor> &value)
-{
-    dataColor2 = value;
-}
 
 QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, qreal length, int pos, QList<double> *data, QPainter *p, int layer)
 {
@@ -316,10 +229,10 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
                                          tempx+fabs(data->at(i))*width/value,
                                          y+value*length/total);
                     grad.setColorAt(0,
-                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                    QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.5));
                     grad.setColorAt(1,
-                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                    QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      0.5,1));
                     p->fillRect(rect,grad);
                 }
@@ -330,10 +243,10 @@ QList<rectHolder *> *areaTreemap::drawSqTreeMap(qreal x, qreal y, qreal width, q
                                          fabs(data->at(i))*width/value/2+
                                          value*length/total/2);
                     grad.setColorAt(0,
-                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                    QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      0.3,1));
                     grad.setColorAt(1,
-                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                    QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.7));
                     p->fillRect(rect,grad);
                 }

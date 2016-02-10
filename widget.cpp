@@ -1,3 +1,9 @@
+/**
+  * @file widget.cpp
+  * @author Chao Tong
+  * @date 10 Feb 2016
+  * @see widget.h
+  */
 #include "widget.h"
 #include "ui_widget.h"
 
@@ -87,61 +93,8 @@ Widget::Widget(QWidget *parent) :
           horizontalOrder);
     qSort(this->regionListV()->begin(),this->regionListV()->end(),
           verticalOrder);
-    regionColor<<QColor("#2acae6")<<QColor("#deb274")<<QColor("#518adb")
-             <<QColor("#c240d6")<<QColor("#2ecc16")
-             <<QColor("#afef5a")<<QColor("#9163cd")
-             <<QColor("#d26685")<<QColor("#72e6c5")
-             <<QColor("#cf1f9d")<<QColor("#53d179")
-             <<QColor("#e02e0e")<<QColor("#5c5ce6")
-             <<QColor("#000");
-    dataColor0<<QColor("#7373FF")<<QColor("#FF7272")<<QColor("#70FF70")
-             <<QColor("#00F3F3")<<QColor("#F400F4")
-             <<QColor("#F7F700")<<QColor("#000")<<QColor("#8181DB")
-             <<QColor("#DE8383")<<QColor("#7BD17B")
-             <<QColor("#6DB9B9")<<QColor("#BE70BE")
-             <<QColor("#BCBC6E")<<QColor("#989898");
-    dataColor1<<QColor("#86a6af")<<QColor("#a6cee3")<<QColor("#1f78b4")
-             <<QColor("#b2df8a")<<QColor("#33a02c")
-             <<QColor("#fb9a99")<<QColor("#e31a1c")
-             <<QColor("#fdbf6f")<<QColor("#ff7f00")
-             <<QColor("#cab2d6")<<QColor("#6a3d9a")
-             <<QColor("#ffff99")<<QColor("#b15928")
-             <<QColor("#000");
-    for(int i=0;i<4;i++)
-    {
-        this->dataColor2.append(QColor::fromHsvF(qreal(i)*90/qreal(4)/qreal(360),1,1));
-
-    }
-    for(int i=4;i<6;i++)
-    {
-        this->dataColor2.append(QColor::fromHsvF((qreal(90)+qreal(i-4)*90/qreal(2))/qreal(360),1,1));
-        //cout<<(qreal(90)+qreal(i)*90/qreal(2))<<endl;
-    }
-    for(int i=6;i<10;i++)
-    {
-        this->dataColor2.append(QColor::fromHsvF((qreal(180)+qreal(i-6)*90/qreal(4))/qreal(360),1,1));
-        //cout<<(qreal(180)+qreal(i)*90/qreal(4))<<endl;
-    }
-    for(int i=10;i<14;i++)
-    {
-        this->dataColor2.append(QColor::fromHsvF((qreal(270)+qreal(i-10)*90/qreal(4))/qreal(360),1,1));
-        //cout<<(qreal(270)+qreal(i)*90/qreal(4))<<endl;
-
-    }
-    dataColor3<<QColor("#2acae6")<<QColor("#deb274")<<QColor("#518adb")
-             <<QColor("#c240d6")<<QColor("#2ecc16")
-             <<QColor("#afef5a")<<QColor("#9163cd")
-             <<QColor("#d26685")<<QColor("#72e6c5")
-             <<QColor("#cf1f9d")<<QColor("#53d179")
-             <<QColor("#e02e0e")<<QColor("#5c5ce6")
-             <<QColor("#000");
-    dataColor4<<QColor("#0000ff")<<QColor("#ffc0cb")<<QColor("#800080")
-             <<QColor("#32cd32")<<QColor("#ff0000")
-             <<QColor("#808080")<<QColor("#008080")
-             <<QColor("#ffa500")<<QColor("#ee82ee")
-             <<QColor("#40e0d0")<<QColor("#ff00ff")
-             <<QColor("#90ee90")<<QColor("#ffff00")
-             <<QColor("#000");
+    m_Datacolor=new dataColor();
+    this->regionColor=m_Datacolor->getRegionColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
                <<"Chronic-kidney-disease"<<"Diabetes"<<"Hypertension"
               <<"COPD"<<"Mental-Health"<<"Osteoporosis"<<"Rheumatoid-Arthritis"
@@ -158,26 +111,7 @@ Widget::~Widget()
 
 void Widget::paintEvent(QPaintEvent *event)
 {
-    switch(this->getColor())
-    {
-    case 0:
-        this->dataColor=this->dataColor0;
-        break;
-    case 1:
-        this->dataColor=this->dataColor1;
-        break;
-    case 2:
-        this->dataColor=this->dataColor2;
-        break;
-     case 3:
-        this->dataColor=this->dataColor3;
-        break;
-    case 4:
-        this->dataColor=this->dataColor4;
-        break;
-
-    }
-
+    this->dataColor0=m_Datacolor->getColor(this->getColor());
     QPainter painter(this);
     if(this->getGroup()==false)
     {
@@ -900,10 +834,10 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                          tempx+fabs(data->at(i))*width/value,
                                          y+value*length/total);
                     grad.setColorAt(0,
-                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                    QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.5));
                     grad.setColorAt(1,
-                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                    QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      0.5,1));
                     p->fillRect(rect,grad);
                 }
@@ -914,10 +848,10 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                          fabs(data->at(i))*width/value/2+
                                          value*length/total/2);
                     grad.setColorAt(0,
-                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                    QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      0.3,1));
                     grad.setColorAt(1,
-                                    QColor::fromHsvF(dataColor.at(i).hueF(),
+                                    QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.7));
                     p->fillRect(rect,grad);
                 }
@@ -1089,7 +1023,7 @@ QList <rectHolder *> * Widget::drawSqTreeMap2(qreal x, qreal y, qreal width, qre
             QRectF rect=QRectF(tempx,y,fabs(data->at(i))*width/value,value*length/total);
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
 
-            p->fillRect(rect,dataColor.at(i));
+            p->fillRect(rect,dataColor0.at(i));
             tempx=tempx+fabs(data->at(i))*width/value;
         }
         y=y+value*length/total;
@@ -1268,10 +1202,10 @@ void Widget::drawSign(QPainter *p)
                 QLinearGradient temp(1610,400+i*40,1750,440+40*i);
                 //QRadialGradient temp(QPoint(1830,420+40*i),60);
                 temp.setColorAt(0,
-                                QColor::fromHsvF(dataColor[i].hueF(),
+                                QColor::fromHsvF(dataColor0[i].hueF(),
                                                  1,0.6));
                 temp.setColorAt(1,
-                                QColor::fromHsvF(dataColor[i].hueF(),
+                                QColor::fromHsvF(dataColor0[i].hueF(),
                                                  0.6,1));
                 p->fillRect(1610,400+i*40,140,40,temp);
             }
@@ -1279,10 +1213,10 @@ void Widget::drawSign(QPainter *p)
             {
                 QRadialGradient temp(QPoint(1680,420+40*i),80);
                 temp.setColorAt(0,
-                                QColor::fromHsvF(dataColor[i].hueF(),
+                                QColor::fromHsvF(dataColor0[i].hueF(),
                                                  0.3,1));
                 temp.setColorAt(1,
-                                QColor::fromHsvF(dataColor[i].hueF(),
+                                QColor::fromHsvF(dataColor0[i].hueF(),
                                                  1,0.7));
                 p->fillRect(1610,400+i*40,140,40,temp);
 
@@ -1293,7 +1227,7 @@ void Widget::drawSign(QPainter *p)
     {
         for(int i=0;i<3;i++)
         {
-            p->fillRect(1610,400+i*40,140,40,QColor::fromHsvF(dataColor.at(0).hueF(),
+            p->fillRect(1610,400+i*40,140,40,QColor::fromHsvF(dataColor0.at(0).hueF(),
                                                               1,0.3+i*0.15));
         }
         for(int i=3;i<14;i++)
@@ -1303,10 +1237,10 @@ void Widget::drawSign(QPainter *p)
                 QLinearGradient temp(1610,400+i*40,1750,440+40*i);
                 //QRadialGradient temp(QPoint(1830,420+40*i),60);
                 temp.setColorAt(0,
-                                QColor::fromHsvF(dataColor[i-2].hueF(),
+                                QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  1,0.6));
                 temp.setColorAt(1,
-                                QColor::fromHsvF(dataColor[i-2].hueF(),
+                                QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  0.6,1));
                 p->fillRect(1610,400+i*40,140,40,temp);
             }
@@ -1314,10 +1248,10 @@ void Widget::drawSign(QPainter *p)
             {
                 QRadialGradient temp(QPoint(1680,420+40*i),80);
                 temp.setColorAt(0,
-                                QColor::fromHsvF(dataColor[i-2].hueF(),
+                                QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  0.3,1));
                 temp.setColorAt(1,
-                                QColor::fromHsvF(dataColor[i-2].hueF(),
+                                QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  1,0.7));
                 p->fillRect(1610,400+i*40,140,40,temp);
 
@@ -1606,25 +1540,6 @@ bool Widget::getAlgorithm() const
 void Widget::setAlgorithm(bool algorithm)
 {
     m_algorithm = algorithm;
-}
-QList<QColor> Widget::getDataColor1() const
-{
-    return dataColor1;
-}
-
-void Widget::setDataColor1(const QList<QColor> &value)
-{
-    dataColor1 = value;
-}
-
-QList<QColor> Widget::getDataColor2() const
-{
-    return dataColor2;
-}
-
-void Widget::setDataColor2(const QList<QColor> &value)
-{
-    dataColor2 = value;
 }
 
 int Widget::Windowsnumber() const

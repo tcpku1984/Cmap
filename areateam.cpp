@@ -1,3 +1,9 @@
+/**
+  * @file areateam.cpp
+  * @author Chao Tong
+  * @date 10 Feb 2016
+  * @see areateam.h
+  */
 #include "areateam.h"
 enum{
     RATHH=400,

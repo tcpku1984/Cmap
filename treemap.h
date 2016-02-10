@@ -14,6 +14,7 @@
 #include<QGradient>
 #include <QLinearGradient>
 #include <QMouseEvent>
+#include <datacolor.h>
 namespace Ui {
 class treeMap;
 }
@@ -33,11 +34,6 @@ public:
     Region *region() const;
     void setRegion(Region *region);
 
-    QList<QColor> getDataColor1() const;
-    void setDataColor1(const QList<QColor> &value);
-
-    QList<QColor> getDataColor2() const;
-    void setDataColor2(const QList<QColor> &value);
 
     bool getLookAhead() const;
     void setLookAhead(bool lookAhead);
@@ -108,12 +104,7 @@ private:
      */
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
 
-    QList<QColor> dataColor;
     QList<QColor> dataColor0;
-    QList<QColor> dataColor1;
-    QList<QColor> dataColor2;
-    QList<QColor> dataColor3;
-    QList<QColor> dataColor4;
     bool m_lookAhead;
     int m_Color;
     qreal m_ratioTemp;
@@ -131,6 +122,7 @@ private:
     qreal m_mouseY;
     int m_mouseIndex;
     QList<QString> m_HealthName;
+    dataColor * m_Datacolor;
 
 };
 

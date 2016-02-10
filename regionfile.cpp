@@ -1,3 +1,9 @@
+/**
+  * @file regionfile.cpp
+  * @author Chao Tong
+  * @date 10 Feb 2016
+  * @see regionfile.h
+  */
 #include "regionfile.h"
 enum{
     ATTNUM=14,
@@ -22,7 +28,7 @@ regionFile::regionFile()
 void regionFile::readfile()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 

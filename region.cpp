@@ -1,3 +1,9 @@
+/**
+  * @file region.cpp
+  * @author Chao Tong
+  * @date 10 Feb 2016
+  * @see region.h
+  */
 #include "region.h"
 enum{
     NORTHBOUND=1,

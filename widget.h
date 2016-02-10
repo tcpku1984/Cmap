@@ -32,6 +32,7 @@
 #include<cmath>
 #include<QColorDialog>
 #include<regionfile.h>
+#include<datacolor.h>
 using namespace std;
 namespace Ui {
 class Widget;
@@ -251,12 +252,13 @@ private:
     QElapsedTimer tCount;
     bool pressed;
     bool finished;
-    QList<QColor> dataColor;
+    QList<QColor> dataColor0;
+    /*
     QList<QColor> dataColor0;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     QList<QColor> dataColor3;
-    QList<QColor> dataColor4;
+    QList<QColor> dataColor4;*/
     bool m_samesize;
     bool m_algorithm;
     bool m_lookAhead;
@@ -279,6 +281,7 @@ private:
     int m_MouseOverIndex;
     QList <QString> m_HealthName;
     int m_Percent;
+    dataColor * m_Datacolor;
 
 
 };
