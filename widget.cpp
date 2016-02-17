@@ -21,7 +21,12 @@ enum{
     RECTSIZE=500,
     FONTSIZEA=15,
     FONTSIZEB=14,
-    GRAY=85
+    GRAY=85,
+    NORTHBOUND=1,
+    SOUTHBOUND=950,
+    WESTBOUND=10,
+    EASTBOUND=1600,
+    HALFSIZE=106
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -31,7 +36,7 @@ bool verticalOrder(Region * r1, Region * r2)
 
 bool horizontalOrder(Region * r1, Region * r2)
 {
-    return r1->Lati()<r2->Lati();
+    return r1->Lati()>r2->Lati();
 }
 
 Widget::Widget(QWidget *parent) :
@@ -91,8 +96,22 @@ Widget::Widget(QWidget *parent) :
     }
     qSort(this->regionListH()->begin(),this->regionListH()->end(),
           horizontalOrder);
+    for(int i=0;i<this->regionListH()->size();i++)
+    {
+        this->regionListH()->at(i)->setHOrder(i);
+    }
     qSort(this->regionListV()->begin(),this->regionListV()->end(),
           verticalOrder);
+    for(int i=0;i<this->regionListV()->size();i++)
+    {
+        this->regionListV()->at(i)->setVOrder(i);
+    }
+    /*
+    for(int i=0;i<this->regionListV()->size();i++)
+    {
+        cout<<this->regionListV()->at(i)->getVOrder()<<" Horder : "<<
+        this->regionListV()->at(i)->getHOrder()<<endl;
+    }*/
     m_Datacolor=new dataColor();
     this->regionColor=m_Datacolor->getRegionColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
@@ -519,6 +538,64 @@ void Widget::regionIncrease2()
         }
         for(int k=0;k<this->increaseSize();k++)
         {
+            if(this->regionListV()->at(i)->Y()<NORTHBOUND
+                    &this->regionListV()->at(i)->getHOrder()<HALFSIZE)
+            {
+                qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
+                this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()-temp);
+                this->regionListV()->at(i)->setY(NORTHBOUND);
+            }
+            if(this->regionListV()->at(i)->Y()<NORTHBOUND
+                    &this->regionListV()->at(i)->getHOrder()>=HALFSIZE)
+            {
+                qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
+                this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()+temp);
+                this->regionListV()->at(i)->setY(NORTHBOUND);
+
+            }
+            if(this->regionListV()->at(i)->Y()>SOUTHBOUND
+                    &this->regionListV()->at(i)->getHOrder()<HALFSIZE)
+            {
+                qreal temp=this->regionListV()->at(i)->Y()-SOUTHBOUND;
+                this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()-temp);
+                this->regionListV()->at(i)->setY(SOUTHBOUND);
+
+            }
+            if(this->regionListV()->at(i)->Y()>SOUTHBOUND
+                    &this->regionListV()->at(i)->getHOrder()>=HALFSIZE)
+            {
+                qreal temp=this->regionListV()->at(i)->Y()-SOUTHBOUND;
+                this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()+temp);
+                this->regionListV()->at(i)->setY(SOUTHBOUND);
+            }
+            if(this->regionListV()->at(i)->X()<WESTBOUND
+                    &this->regionListV()->at(i)->getVOrder()<HALFSIZE)
+            {
+                qreal temp=NORTHBOUND-this->regionListV()->at(i)->X();
+                this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()+temp);
+                this->regionListV()->at(i)->setX(WESTBOUND);
+            }
+            if(this->regionListV()->at(i)->X()<WESTBOUND
+                    &this->regionListV()->at(i)->getVOrder()>=HALFSIZE)
+            {
+                qreal temp=NORTHBOUND-this->regionListV()->at(i)->X();
+                this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-temp);
+                this->regionListV()->at(i)->setX(WESTBOUND);
+            }
+            if(this->regionListV()->at(i)->X()>EASTBOUND
+                    &this->regionListV()->at(i)->getVOrder()<HALFSIZE)
+            {
+                qreal temp=this->regionListV()->at(i)->X()-EASTBOUND;
+                this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()+temp);
+                this->regionListV()->at(i)->setX(EASTBOUND);
+            }
+            if(this->regionListV()->at(i)->X()>EASTBOUND
+                    &this->regionListV()->at(i)->getVOrder()>=HALFSIZE)
+            {
+                qreal temp=this->regionListV()->at(i)->X()-EASTBOUND;
+                this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-temp);
+                this->regionListV()->at(i)->setX(EASTBOUND);
+            }
             if(this->regionListV()->at(i)->stopIncrease()==false)
             {
                this->regionListV()->at(i)->increase();

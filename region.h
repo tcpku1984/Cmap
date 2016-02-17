@@ -12,7 +12,8 @@
 #define REGION_H
 #include <QString>
 #include <QList>
-
+#include <iostream>
+using namespace std;
 class Region
 {
 public:
@@ -76,6 +77,12 @@ public:
     int getColorIndex() const;
     void setColorIndex(int ColorIndex);
 
+    int getVOrder() const;
+    void setVOrder(int value);
+
+    int getHOrder() const;
+    void setHOrder(int value);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -125,6 +132,8 @@ private:
     int size;
     int m_color;
     bool m_detail;
+    int vOrder;
+    int hOrder;
 };
 
 #endif // Region_H

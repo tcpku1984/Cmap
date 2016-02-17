@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -176,7 +176,7 @@
       <number>10</number>
      </property>
      <property name="maximum">
-      <number>160</number>
+      <number>200</number>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -195,7 +195,7 @@
       <number>10</number>
      </property>
      <property name="maximum">
-      <number>160</number>
+      <number>200</number>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">

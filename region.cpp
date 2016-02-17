@@ -9,7 +9,8 @@ enum{
     NORTHBOUND=1,
     SOUTHBOUND=950,
     WESTBOUND=100,
-    EASTBOUND=1900
+    EASTBOUND=1900,
+    HALFSIZE=106
 };
 Region::Region()
 {
@@ -111,6 +112,7 @@ void Region::setSize(int value)
 void Region::increase()
 {
     this->setSize(this->getSize()+1);
+
 }
 
 void Region::stop()
@@ -187,6 +189,26 @@ int Region::getColorIndex() const
 void Region::setColorIndex(int ColorIndex)
 {
     m_ColorIndex = ColorIndex;
+}
+
+int Region::getVOrder() const
+{
+    return vOrder;
+}
+
+void Region::setVOrder(int value)
+{
+    vOrder = value;
+}
+
+int Region::getHOrder() const
+{
+    return hOrder;
+}
+
+void Region::setHOrder(int value)
+{
+    hOrder = value;
 }
 
 
