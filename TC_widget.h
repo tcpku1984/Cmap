@@ -12,9 +12,9 @@
 #include <QWidget>
 #include <QWidget>
 #include<QGraphicsScene>
-#include<areateam.h>
-#include<region.h>
-#include<treemap.h>
+#include<TC_areateam.h>
+#include<TC_region.h>
+#include<TC_treemap.h>
 #include<iostream>
 #include<fstream>
 #include<QDesktopWidget>
@@ -25,14 +25,14 @@
 #include<QPainter>
 #include<generate-constraints.h>
 #include<remove_rectangle_overlap.h>
-#include<rectholder.h>
+#include<TC_rectholder.h>
 #include<QGradient>
-#include<areatreemap.h>
+#include<TC_areatreemap.h>
 #include<stdlib.h>
 #include<cmath>
 #include<QColorDialog>
-#include<regionfile.h>
-#include<datacolor.h>
+#include<TC_regionfile.h>
+#include<TC_datacolor.h>
 using namespace std;
 namespace Ui {
 class Widget;
@@ -175,6 +175,9 @@ public:
     int getPercent() const;
     void setPercent(int Percent);
 
+    bool getScreen() const;
+    void setScreen(bool Screen);
+
 public slots:
     void animate();
 
@@ -217,6 +220,8 @@ private slots:
 
     void on_checkBox_8_toggled(bool checked);
 
+
+    void on_checkBox_10_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -282,6 +287,7 @@ private:
     QList <QString> m_HealthName;
     int m_Percent;
     dataColor * m_Datacolor;
+    bool m_Screen;
 
 
 };

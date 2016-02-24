@@ -8,13 +8,13 @@
 #define TREEMAP_H
 
 #include <QWidget>
-#include <widget.h>
-#include<region.h>
-#include<rectholder.h>
+#include <TC_widget.h>
+#include<TC_region.h>
+#include<TC_rectholder.h>
 #include<QGradient>
 #include <QLinearGradient>
 #include <QMouseEvent>
-#include <datacolor.h>
+#include <TC_datacolor.h>
 namespace Ui {
 class treeMap;
 }

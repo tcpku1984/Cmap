@@ -7,8 +7,8 @@
 #ifndef REGIONFILE_H
 #define REGIONFILE_H
 #include<fstream>
-#include<region.h>
-#include<areateam.h>
+#include<TC_region.h>
+#include<TC_areateam.h>
 #include<QString>
 #include<QList>
 #include<string>

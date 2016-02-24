@@ -4,7 +4,7 @@
   * @date 10 Feb 2016
   * @see region.h
   */
-#include "region.h"
+#include "TC_region.h"
 enum{
     NORTHBOUND=1,
     SOUTHBOUND=950,
@@ -111,13 +111,17 @@ void Region::setSize(int value)
 
 void Region::increase()
 {
-    this->setSize(this->getSize()+1);
+    this->setX(this->X()-1);
+    this->setY(this->Y()-1);
+    this->setSize(this->getSize()+2);
 
 }
 
 void Region::stop()
 {
-    this->setSize(this->getSize()-1);
+    this->setSize(this->getSize()-2);
+    this->setX(this->X()+1);
+    this->setY(this->Y()+1);
     this->setStopIncrease(true);
     this->setColor(1);
 }

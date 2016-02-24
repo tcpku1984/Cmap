@@ -2,15 +2,15 @@
 #define AREATREEMAP_H
 
 #include <QWidget>
-#include <widget.h>
-#include<region.h>
+#include <TC_widget.h>
+#include<TC_region.h>
 
-#include<rectholder.h>
+#include<TC_rectholder.h>
 #include<QGradient>
 #include <QLinearGradient>
-#include <areateam.h>
+#include <TC_areateam.h>
 #include<QMouseEvent>
-#include<datacolor.h>
+#include<TC_datacolor.h>
 namespace Ui {
 class areaTreemap;
 }

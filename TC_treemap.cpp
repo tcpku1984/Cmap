@@ -4,7 +4,7 @@
   * @date 10 Feb 2016
   * @see treemap.h
   */
-#include "treemap.h"
+#include "TC_treemap.h"
 #include "ui_treemap.h"
 enum{
     GRAY=85

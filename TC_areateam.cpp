@@ -4,7 +4,7 @@
   * @date 10 Feb 2016
   * @see areateam.h
   */
-#include "areateam.h"
+#include "TC_areateam.h"
 enum{
     RATHH=400,
     RATHV=600,

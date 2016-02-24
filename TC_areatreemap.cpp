@@ -4,7 +4,7 @@
   * @date 10 Feb 2016
   * @see areatreemap.h
   */
-#include "areatreemap.h"
+#include "TC_areatreemap.h"
 #include "ui_areatreemap.h"
 
 enum{

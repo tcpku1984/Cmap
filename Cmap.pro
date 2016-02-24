@@ -13,9 +13,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        widget.cpp \
-    region.cpp \
-    treemap.cpp \
     block.cpp \
     blocks.cpp \
     constraint.cpp \
@@ -23,15 +20,16 @@ SOURCES += main.cpp\
     remove_rectangle_overlap.cpp \
     solve_VPSC.cpp \
     variable.cpp \
-    areateam.cpp \
-    rectholder.cpp \
-    areatreemap.cpp \
-    regionfile.cpp \
-    datacolor.cpp
+    TC_datacolor.cpp \
+    TC_areateam.cpp \
+    TC_areatreemap.cpp \
+    TC_rectholder.cpp \
+    TC_region.cpp \
+    TC_regionfile.cpp \
+    TC_treemap.cpp \
+    TC_widget.cpp
 
-HEADERS  += widget.h \
-    region.h \
-    treemap.h \
+HEADERS  += \
     block.h \
     blocks.h \
     constraint.h \
@@ -42,11 +40,14 @@ HEADERS  += widget.h \
     remove_rectangle_overlap.h \
     solve_VPSC.h \
     variable.h \
-    areateam.h \
-    rectholder.h \
-    areatreemap.h \
-    regionfile.h \
-    datacolor.h
+    TC_datacolor.h \
+    TC_areateam.h \
+    TC_areatreemap.h \
+    TC_treemap.h \
+    TC_widget.h \
+    TC_rectholder.h \
+    TC_region.h \
+    TC_regionfile.h
 
 FORMS    += widget.ui \
     treemap.ui \

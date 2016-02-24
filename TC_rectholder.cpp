@@ -4,7 +4,7 @@
   * @date 10 Feb 2016
   * @see rectholder.h
   */
-#include "rectholder.h"
+#include "TC_rectholder.h"
 
 rectHolder::rectHolder()
 {

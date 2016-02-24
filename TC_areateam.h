@@ -11,7 +11,7 @@
 #define AREATEAM_H
 #include <QString>
 #include <QList>
-#include<region.h>
+#include<TC_region.h>
 class AreaTeam
 {
 public:

@@ -4,7 +4,7 @@
   * @date 10 Feb 2016
   * @see datacolor.h
   */
-#include "datacolor.h"
+#include "TC_datacolor.h"
 
 dataColor::dataColor()
 {

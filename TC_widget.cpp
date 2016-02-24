@@ -4,7 +4,7 @@
   * @date 10 Feb 2016
   * @see widget.h
   */
-#include "widget.h"
+#include "TC_widget.h"
 #include "ui_widget.h"
 
 
@@ -26,7 +26,7 @@ enum{
     SOUTHBOUND=950,
     WESTBOUND=10,
     EASTBOUND=1600,
-    HALFSIZE=106
+    HALFSIZE=105
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -72,6 +72,7 @@ Widget::Widget(QWidget *parent) :
     this->setColorFilter(false);
     this->setMouseTracking(true);
     this->setPercent(0);
+    this->setScreen(false);
     refreshColor();
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
@@ -87,7 +88,6 @@ Widget::Widget(QWidget *parent) :
     this->setPopulation(file->populiation());
     this->setAreaGroup(file->AreaGroup());
     this->setAveragePrevlance(file->AveragePrevlance());
-    //fileRead();
     cout<<"ccg size:"<<this->regionListH()->size()<<endl;
     cout<<"area number :"<<this->getAreaGroup()->size()<<endl;
     for(int i=0; i<this->getAreaGroup()->size();i++)
@@ -160,12 +160,22 @@ void Widget::paintCCg(QPainter *painter)
     for(int i=0;i<this->regionListV()->size();i++)
     {
         painter->setBrush(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
-
-        painter->drawRect(
-                    QRectF(this->regionListV()->at(i)->X(),
-                           this->regionListV()->at(i)->Y(),
-                           this->regionListV()->at(i)->getSize(),
-                           this->regionListV()->at(i)->getSize()));
+        if(this->getScreen()==false)
+        {
+            painter->drawRect(
+                        QRectF(this->regionListV()->at(i)->X(),
+                               this->regionListV()->at(i)->Y(),
+                               this->regionListV()->at(i)->getSize(),
+                               this->regionListV()->at(i)->getSize()));
+        }
+        else
+        {
+            painter->drawRect(
+                        QRectF(this->regionListV()->at(i)->X(),
+                               this->regionListV()->at(i)->Y(),
+                               this->regionListV()->at(i)->getSize(),
+                               this->regionListV()->at(i)->getSize()*9/16));
+        }
     }
 
     if(this->getFinished())
@@ -179,12 +189,25 @@ void Widget::paintCCg(QPainter *painter)
                 {
                     if(this->getCgroup()==false)
                     {
-                        drawSqTreeMap(this->regionListV()->at(i)->X(),
-                                    this->regionListV()->at(i)->Y(),
-                                    this->regionListV()->at(i)->getSize(),
-                                    this->regionListV()->at(i)->getSize(),0,
-                                    this->regionListV()->at(i)->healthData(),
-                                    painter,2);
+                        if(this->getScreen()==false)
+                        {
+                            drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                        this->regionListV()->at(i)->Y(),
+                                        this->regionListV()->at(i)->getSize(),
+                                        this->regionListV()->at(i)->getSize(),0,
+                                        this->regionListV()->at(i)->healthData(),
+                                        painter,2);
+                        }
+                        else
+                        {
+                            drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                        this->regionListV()->at(i)->Y(),
+                                        this->regionListV()->at(i)->getSize(),
+                                        this->regionListV()->at(i)->getSize()*9/16,0,
+                                        this->regionListV()->at(i)->healthData(),
+                                        painter,2);
+
+                        }
                     }
                     else
                     {
@@ -259,10 +282,20 @@ void Widget::paintCCg(QPainter *painter)
             pen.setBrush(Qt::white);
             pen.setWidth(this->getBorder()+2);
             painter->setPen(pen);
-            painter->drawRect(this->regionListV()->at(i)->X(),
-                              this->regionListV()->at(i)->Y(),
-                              this->regionListV()->at(i)->getSize(),
-                              this->regionListV()->at(i)->getSize());
+            if(this->getScreen()==false)
+            {
+                painter->drawRect(this->regionListV()->at(i)->X(),
+                                  this->regionListV()->at(i)->Y(),
+                                  this->regionListV()->at(i)->getSize(),
+                                  this->regionListV()->at(i)->getSize());
+            }
+            else
+            {
+                painter->drawRect(this->regionListV()->at(i)->X(),
+                                  this->regionListV()->at(i)->Y(),
+                                  this->regionListV()->at(i)->getSize(),
+                                  this->regionListV()->at(i)->getSize()*9/16);
+            }
         }
         drawSign(painter);
         if(this->getMouseOver()==true)
@@ -539,14 +572,14 @@ void Widget::regionIncrease2()
         for(int k=0;k<this->increaseSize();k++)
         {
             if(this->regionListV()->at(i)->Y()<NORTHBOUND
-                    &this->regionListV()->at(i)->getHOrder()<HALFSIZE)
+                    &this->regionListV()->at(i)->X()<this->regionListH()->at(HALFSIZE)->X())
             {
                 qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
                 this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()-temp);
                 this->regionListV()->at(i)->setY(NORTHBOUND);
             }
             if(this->regionListV()->at(i)->Y()<NORTHBOUND
-                    &this->regionListV()->at(i)->getHOrder()>=HALFSIZE)
+                    &this->regionListV()->at(i)->X()>=this->regionListH()->at(HALFSIZE)->X())
             {
                 qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
                 this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()+temp);
@@ -554,7 +587,7 @@ void Widget::regionIncrease2()
 
             }
             if(this->regionListV()->at(i)->Y()>SOUTHBOUND
-                    &this->regionListV()->at(i)->getHOrder()<HALFSIZE)
+                    &this->regionListV()->at(i)->X()<this->regionListH()->at(HALFSIZE)->X())
             {
                 qreal temp=this->regionListV()->at(i)->Y()-SOUTHBOUND;
                 this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()-temp);
@@ -562,40 +595,26 @@ void Widget::regionIncrease2()
 
             }
             if(this->regionListV()->at(i)->Y()>SOUTHBOUND
-                    &this->regionListV()->at(i)->getHOrder()>=HALFSIZE)
+                    &this->regionListV()->at(i)->X()>=this->regionListH()->at(HALFSIZE)->X())
             {
                 qreal temp=this->regionListV()->at(i)->Y()-SOUTHBOUND;
                 this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()+temp);
                 this->regionListV()->at(i)->setY(SOUTHBOUND);
             }
-            if(this->regionListV()->at(i)->X()<WESTBOUND
-                    &this->regionListV()->at(i)->getVOrder()<HALFSIZE)
+            /*
+            if(this->regionListV()->at(i)->X()<WESTBOUND)
             {
-                qreal temp=NORTHBOUND-this->regionListV()->at(i)->X();
-                this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()+temp);
-                this->regionListV()->at(i)->setX(WESTBOUND);
+                overlapRemove();
+                timer->stop();
+                this->setFinished(true);
             }
-            if(this->regionListV()->at(i)->X()<WESTBOUND
-                    &this->regionListV()->at(i)->getVOrder()>=HALFSIZE)
+            if(this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()>EASTBOUND)
             {
-                qreal temp=NORTHBOUND-this->regionListV()->at(i)->X();
-                this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-temp);
-                this->regionListV()->at(i)->setX(WESTBOUND);
-            }
-            if(this->regionListV()->at(i)->X()>EASTBOUND
-                    &this->regionListV()->at(i)->getVOrder()<HALFSIZE)
-            {
-                qreal temp=this->regionListV()->at(i)->X()-EASTBOUND;
-                this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()+temp);
-                this->regionListV()->at(i)->setX(EASTBOUND);
-            }
-            if(this->regionListV()->at(i)->X()>EASTBOUND
-                    &this->regionListV()->at(i)->getVOrder()>=HALFSIZE)
-            {
-                qreal temp=this->regionListV()->at(i)->X()-EASTBOUND;
-                this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-temp);
-                this->regionListV()->at(i)->setX(EASTBOUND);
-            }
+                overlapRemove();
+                timer->stop();
+                this->setFinished(true);
+            }*/
+
             if(this->regionListV()->at(i)->stopIncrease()==false)
             {
                this->regionListV()->at(i)->increase();
@@ -1395,7 +1414,15 @@ void Widget::overlapRemove()
         int minX=this->regionListV()->at(i)->X();
         int maxX=minX+this->regionListV()->at(i)->getSize();
         int minY=this->regionListV()->at(i)->Y();
-        int maxY=minY+this->regionListV()->at(i)->getSize();
+        int maxY;
+        if(this->getScreen()==false)
+        {
+            maxY=minY+this->regionListV()->at(i)->getSize();
+        }
+        else
+        {
+            maxY=minY+this->regionListV()->at(i)->getSize()*9/16;
+        }
         nodeRect[i]=new vpsc::Rectangle(minX,maxX,minY,maxY);
     }
     removeRectangleOverlap(this->regionListV()->size(),nodeRect,1e-3,1e-3);
@@ -1434,6 +1461,16 @@ void Widget::refreshColor()
     {
         colorlegend->append(false);
     }
+}
+
+bool Widget::getScreen() const
+{
+    return m_Screen;
+}
+
+void Widget::setScreen(bool Screen)
+{
+    m_Screen = Screen;
 }
 int Widget::getPercent() const
 {
@@ -1961,3 +1998,15 @@ void Widget::on_checkBox_8_toggled(bool checked)
     }
 }
 
+
+void Widget::on_checkBox_10_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setScreen(true);
+    }
+    else
+    {
+        this->setScreen(false);
+    }
+}
