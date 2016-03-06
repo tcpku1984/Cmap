@@ -11,7 +11,7 @@
 enum{
     RATHH=400,
     RATHV=600,
-    HH=-200,
+    HH=-400,
     VV=1050,
     MAXSIZE=65,
     HALF=2,
@@ -25,7 +25,7 @@ enum{
     NORTHBOUND=1,
     SOUTHBOUND=950,
     WESTBOUND=10,
-    EASTBOUND=1600,
+    EASTBOUND=1650,
     HALFSIZE=105
 };
 
@@ -66,6 +66,7 @@ Widget::Widget(QWidget *parent) :
     this->setFont(false);
     this->setCgroup(false);
     this->setMouseOver(false);
+    this->setConer(false);
     m_Windowsnumber=0;
     m_AreaGroup=new QList<AreaTeam *>;
     this->setGroup(false);
@@ -176,6 +177,26 @@ void Widget::paintCCg(QPainter *painter)
                                this->regionListV()->at(i)->getSize(),
                                this->regionListV()->at(i)->getSize()*9/16));
         }
+        double size;
+        for(int i=0;i<this->regionListV()->size();i++)
+        {
+            if(this->getScreen()==false)
+            {
+                size+=this->regionListV()->at(i)->getSize()*
+                        this->regionListV()->at(i)->getSize();
+            }
+            else
+            {
+                size+=this->regionListV()->at(i)->getSize()*
+                        this->regionListV()->at(i)->getSize()*9/16;
+            }
+        }
+        size=size*100/(SOUTHBOUND-NORTHBOUND)/(EASTBOUND-WESTBOUND);
+        painter->setPen(QPen(Qt::black));
+        painter->eraseRect(QRect(1600,360,200,20));
+        painter->drawText(QRect(1600,360,200,20),"Original percentage : 18.5");
+        painter->eraseRect(QRect(1600,380,200,20));
+        painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
     }
 
     if(this->getFinished())
@@ -297,6 +318,26 @@ void Widget::paintCCg(QPainter *painter)
                                   this->regionListV()->at(i)->getSize()*9/16);
             }
         }
+        double size;
+        for(int i=0;i<this->regionListV()->size();i++)
+        {
+            if(this->getScreen()==false)
+            {
+                size+=this->regionListV()->at(i)->getSize()*
+                        this->regionListV()->at(i)->getSize();
+            }
+            else
+            {
+                size+=this->regionListV()->at(i)->getSize()*
+                        this->regionListV()->at(i)->getSize()*9/16;
+            }
+        }
+        size=size*100/(SOUTHBOUND-NORTHBOUND)/(EASTBOUND-WESTBOUND);
+        painter->setPen(QPen(Qt::black));
+        painter->eraseRect(QRect(1600,360,200,20));
+        painter->drawText(QRect(1600,360,200,20),"Original percentage : 18.5");
+        painter->eraseRect(QRect(1600,380,200,20));
+        painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         drawSign(painter);
         if(this->getMouseOver()==true)
         {
@@ -571,50 +612,6 @@ void Widget::regionIncrease2()
         }
         for(int k=0;k<this->increaseSize();k++)
         {
-            if(this->regionListV()->at(i)->Y()<NORTHBOUND
-                    &this->regionListV()->at(i)->X()<this->regionListH()->at(HALFSIZE)->X())
-            {
-                qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
-                this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()-temp);
-                this->regionListV()->at(i)->setY(NORTHBOUND);
-            }
-            if(this->regionListV()->at(i)->Y()<NORTHBOUND
-                    &this->regionListV()->at(i)->X()>=this->regionListH()->at(HALFSIZE)->X())
-            {
-                qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
-                this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()+temp);
-                this->regionListV()->at(i)->setY(NORTHBOUND);
-
-            }
-            if(this->regionListV()->at(i)->Y()>SOUTHBOUND
-                    &this->regionListV()->at(i)->X()<this->regionListH()->at(HALFSIZE)->X())
-            {
-                qreal temp=this->regionListV()->at(i)->Y()-SOUTHBOUND;
-                this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()-temp);
-                this->regionListV()->at(i)->setY(SOUTHBOUND);
-
-            }
-            if(this->regionListV()->at(i)->Y()>SOUTHBOUND
-                    &this->regionListV()->at(i)->X()>=this->regionListH()->at(HALFSIZE)->X())
-            {
-                qreal temp=this->regionListV()->at(i)->Y()-SOUTHBOUND;
-                this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()+temp);
-                this->regionListV()->at(i)->setY(SOUTHBOUND);
-            }
-            /*
-            if(this->regionListV()->at(i)->X()<WESTBOUND)
-            {
-                overlapRemove();
-                timer->stop();
-                this->setFinished(true);
-            }
-            if(this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()>EASTBOUND)
-            {
-                overlapRemove();
-                timer->stop();
-                this->setFinished(true);
-            }*/
-
             if(this->regionListV()->at(i)->stopIncrease()==false)
             {
                this->regionListV()->at(i)->increase();
@@ -627,6 +624,128 @@ void Widget::regionIncrease2()
             }
         }
      }
+    overlapRemove();
+    for(int i=0;i<this->regionListV()->size();i++)
+    {
+        if(this->regionListV()->at(i)->Y()<NORTHBOUND
+                &this->regionListV()->at(i)->X()<this->regionListH()->at(HALFSIZE)->X())
+        {
+            qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
+            this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()-temp);
+            this->regionListV()->at(i)->setY(NORTHBOUND);
+        }
+        if(this->regionListV()->at(i)->Y()<NORTHBOUND
+                &this->regionListV()->at(i)->X()>=this->regionListH()->at(HALFSIZE)->X())
+        {
+            qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
+            this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()+temp);
+            this->regionListV()->at(i)->setY(NORTHBOUND);
+
+        }
+        if(this->regionListV()->at(i)->Y()>SOUTHBOUND
+                &this->regionListV()->at(i)->X()<this->regionListH()->at(HALFSIZE)->X())
+        {
+            qreal temp=this->regionListV()->at(i)->Y()-SOUTHBOUND;
+            this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()-temp);
+            this->regionListV()->at(i)->setY(SOUTHBOUND);
+
+        }
+        if(this->regionListV()->at(i)->Y()>SOUTHBOUND
+                &this->regionListV()->at(i)->X()>=this->regionListH()->at(HALFSIZE)->X())
+        {
+            qreal temp=this->regionListV()->at(i)->Y()-SOUTHBOUND;
+            this->regionListV()->at(i)->setX(this->regionListV()->at(i)->X()+temp);
+            this->regionListV()->at(i)->setY(SOUTHBOUND);
+        }
+
+        if(this->regionListV()->at(i)->X()<WESTBOUND)
+        {
+            if(this->getConer()==false)
+            {
+                overlapRemove();
+                timer->stop();
+                this->setFinished(true);
+            }
+            else
+            {
+                if(this->regionListV()->at(i)->Y()<this->regionListV()->at(HALFSIZE)->Y())
+                {
+                    if(this->regionListV()->at(i)->Y()<=NORTHBOUND)
+                    {
+                        overlapRemove();
+                        timer->stop();
+                        this->setFinished(true);
+                    }
+                    else
+                    {
+                        qreal temp=this->regionListV()->at(i)->X()-WESTBOUND;
+                        this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()+temp);
+                        this->regionListV()->at(i)->setX(WESTBOUND);
+                    }
+                }
+                else
+                {
+                    if(this->regionListV()->at(i)->Y()>=SOUTHBOUND)
+                    {
+                        overlapRemove();
+                        timer->stop();
+                        this->setFinished(true);
+                    }
+                    else
+                    {
+                        qreal temp=this->regionListV()->at(i)->X()-WESTBOUND;
+                        this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-temp);
+                        this->regionListV()->at(i)->setX(WESTBOUND);
+                    }
+                }
+
+            }
+        }
+        if(this->regionListV()->at(i)->X()>EASTBOUND)
+        {
+            if(this->getConer()==false)
+            {
+                overlapRemove();
+                timer->stop();
+                this->setFinished(true);
+            }
+            else
+            {
+                if(this->regionListV()->at(i)->Y()<this->regionListV()->at(HALFSIZE)->Y())
+                {
+                    if(this->regionListV()->at(i)->Y()<=NORTHBOUND)
+                    {
+                        overlapRemove();
+                        timer->stop();
+                        this->setFinished(true);
+                    }
+                    else
+                    {
+                        qreal temp=this->regionListV()->at(i)->X()-EASTBOUND;
+                        this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-temp);
+                        this->regionListV()->at(i)->setX(EASTBOUND);
+                    }
+                }
+                else
+                {
+                    if(this->regionListV()->at(i)->Y()>=SOUTHBOUND)
+                    {
+                        overlapRemove();
+                        timer->stop();
+                        this->setFinished(true);
+                    }
+                    else
+                    {
+                        qreal temp=this->regionListV()->at(i)->X()-EASTBOUND;
+                        this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()+temp);
+                        this->regionListV()->at(i)->setX(EASTBOUND);
+                    }
+                }
+
+            }
+
+        }
+    }
     overlapRemove();
     if(count>=this->regionListV()->size())
     {
@@ -1462,6 +1581,16 @@ void Widget::refreshColor()
         colorlegend->append(false);
     }
 }
+bool Widget::getConer() const
+{
+    return m_Coner;
+}
+
+void Widget::setConer(bool Coner)
+{
+    m_Coner = Coner;
+}
+
 
 bool Widget::getScreen() const
 {
@@ -2008,5 +2137,17 @@ void Widget::on_checkBox_10_toggled(bool checked)
     else
     {
         this->setScreen(false);
+    }
+}
+
+void Widget::on_checkBox_11_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setConer(true);
+    }
+    else
+    {
+        this->setConer(false);
     }
 }

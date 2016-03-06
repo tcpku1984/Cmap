@@ -178,6 +178,9 @@ public:
     bool getScreen() const;
     void setScreen(bool Screen);
 
+    bool getConer() const;
+    void setConer(bool Coner);
+
 public slots:
     void animate();
 
@@ -222,6 +225,8 @@ private slots:
 
 
     void on_checkBox_10_toggled(bool checked);
+
+    void on_checkBox_11_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -288,6 +293,7 @@ private:
     int m_Percent;
     dataColor * m_Datacolor;
     bool m_Screen;
+    bool m_Coner;
 
 
 };
