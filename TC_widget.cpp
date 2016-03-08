@@ -26,7 +26,9 @@ enum{
     SOUTHBOUND=950,
     WESTBOUND=10,
     EASTBOUND=1650,
-    HALFSIZE=105
+    HALFSIZE=105,
+    TEXTX=1760,
+    SIGNX=1680
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -901,7 +903,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
     }
     if(this->getColorFilter()==true)
     {
-        if(x>1610&&x<1750&&y>400&&y<400+400*13)
+        if(x>1680&&x<1750&&y>400&&y<400+400*13)
         {
             int i=(y-400)/40;
             if(this->colorlegend->at(i)==true)
@@ -1083,7 +1085,6 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                             p->fillRect(rect,QColor::fromHsvF(0,
                                                           0,0.97));
                         }
-
                     }
                     else
                     {
@@ -1414,7 +1415,7 @@ void Widget::drawSign(QPainter *p)
         {
             if(this->getGradient()==false)
             {
-                QLinearGradient temp(1610,400+i*40,1750,440+40*i);
+                QLinearGradient temp(1680,400+i*40,1750,440+40*i);
                 //QRadialGradient temp(QPoint(1830,420+40*i),60);
                 temp.setColorAt(0,
                                 QColor::fromHsvF(dataColor0[i].hueF(),
@@ -1422,18 +1423,18 @@ void Widget::drawSign(QPainter *p)
                 temp.setColorAt(1,
                                 QColor::fromHsvF(dataColor0[i].hueF(),
                                                  0.6,1));
-                p->fillRect(1610,400+i*40,140,40,temp);
+                p->fillRect(1680,400+i*40,70,40,temp);
             }
             else
             {
-                QRadialGradient temp(QPoint(1680,420+40*i),80);
+                QRadialGradient temp(QPoint(1715,420+40*i),40);
                 temp.setColorAt(0,
                                 QColor::fromHsvF(dataColor0[i].hueF(),
                                                  0.3,1));
                 temp.setColorAt(1,
                                 QColor::fromHsvF(dataColor0[i].hueF(),
                                                  1,0.7));
-                p->fillRect(1610,400+i*40,140,40,temp);
+                p->fillRect(1680,400+i*40,70,40,temp);
 
             }
         }
@@ -1442,14 +1443,14 @@ void Widget::drawSign(QPainter *p)
     {
         for(int i=0;i<3;i++)
         {
-            p->fillRect(1610,400+i*40,140,40,QColor::fromHsvF(dataColor0.at(0).hueF(),
+            p->fillRect(1680,400+i*40,140,40,QColor::fromHsvF(dataColor0.at(0).hueF(),
                                                               1,0.3+i*0.15));
         }
         for(int i=3;i<14;i++)
         {
             if(this->getGradient()==false)
             {
-                QLinearGradient temp(1610,400+i*40,1750,440+40*i);
+                QLinearGradient temp(1680,400+i*40,1750,440+40*i);
                 //QRadialGradient temp(QPoint(1830,420+40*i),60);
                 temp.setColorAt(0,
                                 QColor::fromHsvF(dataColor0[i-2].hueF(),
@@ -1457,18 +1458,18 @@ void Widget::drawSign(QPainter *p)
                 temp.setColorAt(1,
                                 QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  0.6,1));
-                p->fillRect(1610,400+i*40,140,40,temp);
+                p->fillRect(1610,400+i*40,70,40,temp);
             }
             else
             {
-                QRadialGradient temp(QPoint(1680,420+40*i),80);
+                QRadialGradient temp(QPoint(1715,420+40*i),40);
                 temp.setColorAt(0,
                                 QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  0.3,1));
                 temp.setColorAt(1,
                                 QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  1,0.7));
-                p->fillRect(1610,400+i*40,140,40,temp);
+                p->fillRect(1680,400+i*40,70,40,temp);
 
             }
         }
@@ -1488,21 +1489,21 @@ void Widget::drawSign(QPainter *p)
                                                               0,0.97));
         }
     }
-    p->setPen(Qt::white);
-    p->drawText(QRect(1610,400,140,40),"Coronary-heart-disease");
-    p->drawText(QRect(1610,440,140,40),"Heart Failure");
-    p->drawText(QRect(1610,480,140,40),"Stroke");
-    p->drawText(QRect(1610,520,140,40),"Chronic-kidney-disease");
-    p->drawText(QRect(1610,560,140,40),"Diabetes");
-    p->drawText(QRect(1610,600,140,40),"Hypertension");
-    p->drawText(QRect(1610,640,140,40),"COPD");
-    p->drawText(QRect(1610,680,140,40),"Mental-Health");
-    p->drawText(QRect(1610,720,140,40),"Osteoporosis");
-    p->drawText(QRect(1610,760,140,40),"Rheumatoid-Arthritis");
-    p->drawText(QRect(1610,800,140,40),"Cancer");
-    p->drawText(QRect(1610,840,140,40),"Epilepsy");
-    p->drawText(QRect(1610,880,140,40),"Hypothyroidism");
-    p->drawText(QRect(1610,920,140,40),"Asthma");
+    p->setPen(Qt::black);
+    p->drawText(QRect(TEXTX,400,140,40),"Coronary-heart-disease");
+    p->drawText(QRect(TEXTX,440,140,40),"Heart Failure");
+    p->drawText(QRect(TEXTX,480,140,40),"Stroke");
+    p->drawText(QRect(TEXTX,520,140,40),"Chronic-kidney-disease");
+    p->drawText(QRect(TEXTX,560,140,40),"Diabetes");
+    p->drawText(QRect(TEXTX,600,140,40),"Hypertension");
+    p->drawText(QRect(TEXTX,640,140,40),"COPD");
+    p->drawText(QRect(TEXTX,680,140,40),"Mental-Health");
+    p->drawText(QRect(TEXTX,720,140,40),"Osteoporosis");
+    p->drawText(QRect(TEXTX,760,140,40),"Rheumatoid-Arthritis");
+    p->drawText(QRect(TEXTX,800,140,40),"Cancer");
+    p->drawText(QRect(TEXTX,840,140,40),"Epilepsy");
+    p->drawText(QRect(TEXTX,880,140,40),"Hypothyroidism");
+    p->drawText(QRect(TEXTX,920,140,40),"Asthma");
     if(this->getColorFilter()==true)
     {
         for(int i=0;i<14;i++)
@@ -1512,7 +1513,7 @@ void Widget::drawSign(QPainter *p)
                 QPen pen(Qt::black);
                 pen.setWidth(4);
                 p->setPen(pen);
-                p->drawRect(1610,400+40*i,140,40);
+                p->drawRect(1680,400+40*i,70,40);
             }
         }
     }
