@@ -286,6 +286,9 @@
      <property name="text">
       <string>UniformSize</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QCheckBox" name="checkBox_11">
      <property name="geometry">
@@ -561,6 +564,25 @@
      </property>
      <property name="text">
       <string>Screen ratio</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_12">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>80</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>center lines</string>
      </property>
      <property name="checked">
       <bool>false</bool>

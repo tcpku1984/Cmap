@@ -41,6 +41,11 @@ bool horizontalOrder(Region * r1, Region * r2)
     return r1->Lati()>r2->Lati();
 }
 
+bool XOrder(Region *r1, Region * r2)
+{
+    return r1->X()>r2->X();
+}
+
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
@@ -50,6 +55,8 @@ Widget::Widget(QWidget *parent) :
     this->setPalette(pal);
     m_regionListV= new QList<Region *>;
     m_regionListH= new QList<Region *>;
+    m_Currentregion= new QList<Region *>;
+    m_Lastregion= new QList<Region *>;
     index=0;
     m_increaseSize=1;
     m_regionMaxsize=110;
@@ -59,7 +66,7 @@ Widget::Widget(QWidget *parent) :
     this->setColor(0);
     this->setFilter(0);
     finished=false;
-    m_samesize=false;
+    m_samesize=true;
     m_algorithm=true;
     m_lookAhead=false;
     this->setMapDifference(false);
@@ -76,6 +83,8 @@ Widget::Widget(QWidget *parent) :
     this->setMouseTracking(true);
     this->setPercent(0);
     this->setScreen(false);
+    this->setCenterLines(false);
+    this->setError(0);
     refreshColor();
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
@@ -86,8 +95,14 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     regionFile* file=new regionFile();
     file->readfile();
-    this->setRegionListH(file->regionList());
     this->setRegionListV(file->regionList());
+    for(int i=0;i<this->regionListV()->size();i++)
+    {
+       this->regionListH()->append(this->regionListV()->at(i));
+        this->getLastregion()->append(this->regionListV()->at(i));
+        this->getCurrentregion()->append(this->regionListV()->at(i));
+    }
+    //this->setRegionListH(file->regionList());
     this->setPopulation(file->populiation());
     this->setAreaGroup(file->AreaGroup());
     this->setAveragePrevlance(file->AveragePrevlance());
@@ -109,6 +124,11 @@ Widget::Widget(QWidget *parent) :
     {
         this->regionListV()->at(i)->setVOrder(i);
     }
+    qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
+          XOrder);
+    qSort(this->getLastregion()->begin(),this->getLastregion()->end(),
+          XOrder);
+    errorCount(this->getLastregion(),this->getCurrentregion());
     /*
     for(int i=0;i<this->regionListV()->size();i++)
     {
@@ -154,11 +174,7 @@ void Widget::paintCCg(QPainter *painter)
     painter->setFont(font);
 
     int z=this->regionListV()->size()/HALF;
-    painter->setPen(Qt::green);
-    painter->drawLine(QPoint(300,this->regionListV()->at(z)->Y()),
-                     QPoint(1520,this->regionListV()->at(z)->Y()));
-    painter->drawLine(QPoint(this->regionListH()->at(z)->X(),0),
-                     QPoint(this->regionListH()->at(z)->X(),1920));
+
     painter->setPen(Qt::white);
     for(int i=0;i<this->regionListV()->size();i++)
     {
@@ -199,8 +215,29 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1600,360,200,20),"Original percentage : 18.5");
         painter->eraseRect(QRect(1600,380,200,20));
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
+        painter->eraseRect(QRect(1800,380,200,20));
+        painter->drawText(QRect(1800,380,200,20),"Error :"+QString::number(this->getError()));
     }
-
+    painter->setPen(Qt::green);
+    painter->drawLine(QPointF(10,this->regionListV()->at(z)->Y()+
+                             this->regionListV()->at(z)->getSize()/2),
+                     QPoint(1600,this->regionListV()->at(z)->Y()
+                            +this->regionListV()->at(z)->getSize()/2));
+    painter->drawLine(QPointF(this->regionListH()->at(z)->X()+
+                             this->regionListH()->at(z)->getSize()/2,0),
+                     QPointF(this->regionListH()->at(z)->X()+
+                            this->regionListH()->at(z)->getSize()/2,1920));
+    if(this->getCenterLines()==true)
+    {
+        for(int i=0;i<this->regionListH()->size();i++)
+        {
+            painter->drawLine(QPointF(this->regionListH()->at(i)->X()+
+                                     this->regionListH()->at(i)->getSize()/2,0),
+                             QPointF(this->regionListH()->at(i)->X()+
+                                    this->regionListH()->at(i)->getSize()/2,1080));
+        }
+    }
+    painter->setPen(Qt::black);
     if(this->getFinished())
     {
         painter->setBrush(Qt::NoBrush);
@@ -340,6 +377,8 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1600,360,200,20),"Original percentage : 18.5");
         painter->eraseRect(QRect(1600,380,200,20));
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
+        painter->eraseRect(QRect(1800,380,200,20));
+        painter->drawText(QRect(1800,380,200,20),"error :"+QString::number(this->getError()));
         drawSign(painter);
         if(this->getMouseOver()==true)
         {
@@ -749,6 +788,16 @@ void Widget::regionIncrease2()
         }
     }
     overlapRemove();
+    qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
+          XOrder);
+    this->setError(this->getError()+
+                   errorCount(this->getLastregion(),this->getCurrentregion()));
+    this->getLastregion()->clear();
+    for(int i=0;i<this->getCurrentregion()->size();i++)
+    {
+        this->getLastregion()->append(
+                    this->getCurrentregion()->at(i));
+    }
     if(count>=this->regionListV()->size())
     {
         timer->stop();
@@ -1290,6 +1339,7 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *da
 
 void Widget::on_start_pressed()
 {
+    this->setError(0);
     if(this->getGroup()==false)
     {
 
@@ -1581,6 +1631,70 @@ void Widget::refreshColor()
     {
         colorlegend->append(false);
     }
+}
+
+int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
+{
+    int error=0;
+    for(int i=0;i<r1->size();i++)
+    {
+        if(r1->at(i)->ccgCode()==r2->at(i)->ccgCode())
+        {}
+        else
+        {
+            error=error+1;
+        }
+    }
+    if(error==0)
+    {
+        cout<<error<<endl;
+        return 0;
+    }
+    else
+    {
+        cout<<error<<endl;
+        return error-1;
+    }
+}
+
+QList<Region *> *Widget::getCurrentregion() const
+{
+    return m_Currentregion;
+}
+
+void Widget::setCurrentregion(QList<Region *> *Currentregion)
+{
+    m_Currentregion = Currentregion;
+}
+
+QList<Region *> *Widget::getLastregion() const
+{
+    return m_Lastregion;
+}
+
+void Widget::setLastregion(QList<Region *> *Lastregion)
+{
+    m_Lastregion = Lastregion;
+}
+
+int Widget::getError() const
+{
+    return m_Error;
+}
+
+void Widget::setError(int Error)
+{
+    m_Error = Error;
+}
+
+bool Widget::getCenterLines() const
+{
+    return m_CenterLines;
+}
+
+void Widget::setCenterLines(bool CenterLines)
+{
+    m_CenterLines = CenterLines;
 }
 bool Widget::getConer() const
 {
@@ -2150,5 +2264,17 @@ void Widget::on_checkBox_11_toggled(bool checked)
     else
     {
         this->setConer(false);
+    }
+}
+
+void Widget::on_checkBox_12_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setCenterLines(true);
+    }
+    else
+    {
+        this->setCenterLines(false);
     }
 }

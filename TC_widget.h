@@ -181,6 +181,18 @@ public:
     bool getConer() const;
     void setConer(bool Coner);
 
+    bool getCenterLines() const;
+    void setCenterLines(bool CenterLines);
+
+    int getError() const;
+    void setError(int Error);
+
+    QList<Region *> *getLastregion() const;
+    void setLastregion(QList<Region *> *Lastregion);
+
+    QList<Region *> *getCurrentregion() const;
+    void setCurrentregion(QList<Region *> *Currentregion);
+
 public slots:
     void animate();
 
@@ -228,6 +240,8 @@ private slots:
 
     void on_checkBox_11_toggled(bool checked);
 
+    void on_checkBox_12_toggled(bool checked);
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -247,12 +261,15 @@ private:
      */
     void overlapRemoveArea();
     void refreshColor();
+    int errorCount(QList<Region *> * r1, QList<Region *> * r2);
     //void moveWest();
 
 
     QTimer  *timer;
     QList <Region *> * m_regionListV;
     QList <Region *> * m_regionListH;
+    QList <Region *> * m_Lastregion;
+    QList <Region *> * m_Currentregion;
     int count;
     int index;
     int m_increaseSize;
@@ -294,6 +311,8 @@ private:
     dataColor * m_Datacolor;
     bool m_Screen;
     bool m_Coner;
+    bool m_CenterLines;
+    int m_Error;
 
 
 };

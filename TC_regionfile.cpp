@@ -9,7 +9,7 @@ enum{
     ATTNUM=14,
     RATHH=400,
     RATHV=600,
-    HH=-200,
+    HH=-400,
     VV=1050
 };
 regionFile::regionFile()
@@ -28,7 +28,7 @@ regionFile::regionFile()
 void regionFile::readfile()
 {
     ifstream inFlow;
-    inFlow.open("D:/Cmap/centerp3.csv");
+    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
     string input;
     int i = 0;
 
