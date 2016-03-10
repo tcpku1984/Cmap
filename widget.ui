@@ -295,7 +295,7 @@
       <rect>
        <x>170</x>
        <y>260</y>
-       <width>121</width>
+       <width>161</width>
        <height>21</height>
       </rect>
      </property>
@@ -308,7 +308,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Corner algorithm</string>
+      <string>Corner Boundaries</string>
      </property>
     </widget>
    </widget>

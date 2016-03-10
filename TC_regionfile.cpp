@@ -28,7 +28,7 @@ regionFile::regionFile()
 void regionFile::readfile()
 {
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    inFlow.open("D:/Cmap/centerp3.csv");
     string input;
     int i = 0;
 

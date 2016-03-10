@@ -193,6 +193,9 @@ public:
     QList<Region *> *getCurrentregion() const;
     void setCurrentregion(QList<Region *> *Currentregion);
 
+    int getLoopCount() const;
+    void setLoopCount(int LoopCount);
+
 public slots:
     void animate();
 
@@ -313,6 +316,7 @@ private:
     bool m_Coner;
     bool m_CenterLines;
     int m_Error;
+    int m_LoopCount;
 
 
 };

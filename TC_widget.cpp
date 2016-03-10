@@ -62,6 +62,7 @@ Widget::Widget(QWidget *parent) :
     m_regionMaxsize=110;
     m_searchRange=212;
     m_population=0;
+    this->setLoopCount(0);
     m_border=1;
     this->setColor(0);
     this->setFilter(0);
@@ -178,7 +179,15 @@ void Widget::paintCCg(QPainter *painter)
     painter->setPen(Qt::white);
     for(int i=0;i<this->regionListV()->size();i++)
     {
-        painter->setBrush(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+        if(this->getCenterLines()==false)
+        {
+            painter->setBrush(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+        }
+        else
+        {
+            painter->setBrush(QColor::fromHsvF(0,
+                                               0,0.97));
+        }
         if(this->getScreen()==false)
         {
             painter->drawRect(
@@ -213,31 +222,15 @@ void Widget::paintCCg(QPainter *painter)
         painter->setPen(QPen(Qt::black));
         painter->eraseRect(QRect(1600,360,200,20));
         painter->drawText(QRect(1600,360,200,20),"Original percentage : 18.5");
+        painter->eraseRect(QRect(1800,360,200,20));
+        painter->drawText(QRect(1800,360,200,20),"Max Error :"
+                          +QString::number(this->getLoopCount()*this->regionListH()->size()));
         painter->eraseRect(QRect(1600,380,200,20));
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         painter->eraseRect(QRect(1800,380,200,20));
         painter->drawText(QRect(1800,380,200,20),"Error :"+QString::number(this->getError()));
     }
-    painter->setPen(Qt::green);
-    painter->drawLine(QPointF(10,this->regionListV()->at(z)->Y()+
-                             this->regionListV()->at(z)->getSize()/2),
-                     QPoint(1600,this->regionListV()->at(z)->Y()
-                            +this->regionListV()->at(z)->getSize()/2));
-    painter->drawLine(QPointF(this->regionListH()->at(z)->X()+
-                             this->regionListH()->at(z)->getSize()/2,0),
-                     QPointF(this->regionListH()->at(z)->X()+
-                            this->regionListH()->at(z)->getSize()/2,1920));
-    if(this->getCenterLines()==true)
-    {
-        for(int i=0;i<this->regionListH()->size();i++)
-        {
-            painter->drawLine(QPointF(this->regionListH()->at(i)->X()+
-                                     this->regionListH()->at(i)->getSize()/2,0),
-                             QPointF(this->regionListH()->at(i)->X()+
-                                    this->regionListH()->at(i)->getSize()/2,1080));
-        }
-    }
-    painter->setPen(Qt::black);
+
     if(this->getFinished())
     {
         painter->setBrush(Qt::NoBrush);
@@ -403,6 +396,26 @@ void Widget::paintCCg(QPainter *painter)
                               output);
         }
     }
+    painter->setPen(Qt::green);
+    painter->drawLine(QPointF(10,this->regionListV()->at(z)->Y()+
+                             this->regionListV()->at(z)->getSize()/2),
+                     QPoint(1600,this->regionListV()->at(z)->Y()
+                            +this->regionListV()->at(z)->getSize()/2));
+    painter->drawLine(QPointF(this->regionListH()->at(z)->X()+
+                             this->regionListH()->at(z)->getSize()/2,0),
+                     QPointF(this->regionListH()->at(z)->X()+
+                            this->regionListH()->at(z)->getSize()/2,1920));
+    if(this->getCenterLines()==true)
+    {
+        for(int i=0;i<this->regionListH()->size();i++)
+        {
+            painter->drawLine(QPointF(this->regionListH()->at(i)->X()+
+                                     this->regionListH()->at(i)->getSize()/2,0),
+                             QPointF(this->regionListH()->at(i)->X()+
+                                    this->regionListH()->at(i)->getSize()/2,1080));
+        }
+    }
+    painter->setPen(Qt::black);
 }
 
 void Widget::paintArea(QPainter *painter)
@@ -573,6 +586,7 @@ void Widget::animate()
 
 void Widget::regionIncrease()
 {
+    this->setLoopCount(this->getLoopCount()+1);
     int k=index%this->regionListV()->size();
     if(k==0)
     {
@@ -638,6 +652,7 @@ void Widget::regionIncrease()
 
 void Widget::regionIncrease2()
 {
+    this->setLoopCount(this->getLoopCount()+1);
     for(int i=0;i<this->regionListV()->size();i++)
     {
         double max;
@@ -1339,6 +1354,7 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *da
 
 void Widget::on_start_pressed()
 {
+    this->setLoopCount(0);
     this->setError(0);
     if(this->getGroup()==false)
     {
@@ -1656,6 +1672,16 @@ int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
         return error-1;
     }
 }
+int Widget::getLoopCount() const
+{
+    return m_LoopCount;
+}
+
+void Widget::setLoopCount(int LoopCount)
+{
+    m_LoopCount = LoopCount;
+}
+
 
 QList<Region *> *Widget::getCurrentregion() const
 {
