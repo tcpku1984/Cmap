@@ -43,7 +43,7 @@ bool horizontalOrder(Region * r1, Region * r2)
 
 bool XOrder(Region *r1, Region * r2)
 {
-    return r1->X()>r2->X();
+    return r1->X()>=r2->X();
 }
 
 Widget::Widget(QWidget *parent) :
@@ -195,6 +195,11 @@ void Widget::paintCCg(QPainter *painter)
                                this->regionListV()->at(i)->Y(),
                                this->regionListV()->at(i)->getSize(),
                                this->regionListV()->at(i)->getSize()));
+            painter->drawText(QRectF(this->regionListV()->at(i)->X(),
+                                     this->regionListV()->at(i)->Y(),
+                                     this->regionListV()->at(i)->getSize(),
+                                     this->regionListV()->at(i)->getSize()), QString::number(
+                                  this->regionListV()->at(i)->getError()));
         }
         else
         {
@@ -818,6 +823,7 @@ void Widget::regionIncrease2()
         timer->stop();
         this->setFinished(true);
     }
+    timer->stop();
 }
 
 void Widget::areaIncrease()
@@ -1354,44 +1360,52 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *da
 
 void Widget::on_start_pressed()
 {
-    this->setLoopCount(0);
-    this->setError(0);
-    if(this->getGroup()==false)
+    if(this->getFinished()==true)
     {
-
-        for(int i=0;i<this->regionListV()->size();i++)
+        this->setLoopCount(0);
+        this->setError(0);
+        if(this->getGroup()==false)
         {
-            this->regionListV()->at(i)->setSize(1);
-            this->regionListV()->at(i)->setX(
-                        this->regionListV()->at(i)->Lati()/RATHH+HH);
-            this->regionListV()->at(i)->setY(-
-                        this->regionListV()->at(i)->Longti()/RATHV+VV);
-            this->regionListV()->at(i)->setColor(0);
-            this->regionListV()->at(i)->setStopIncrease(false);
-        }
-            this->setFinished(false);
+
+            for(int i=0;i<this->regionListV()->size();i++)
+            {
+                this->regionListV()->at(i)->setSize(1);
+                this->regionListV()->at(i)->setX(
+                            this->regionListV()->at(i)->Lati()/RATHH+HH);
+                this->regionListV()->at(i)->setY(-
+                            this->regionListV()->at(i)->Longti()/RATHV+VV);
+                this->regionListV()->at(i)->setColor(0);
+                this->regionListV()->at(i)->setError(0);
+                this->regionListV()->at(i)->setStopIncrease(false);
+            }
+                this->setFinished(false);
 
 
-        count=0;
-        index=0;
-        if(this->getAlgorithm()==false)
-        {
-            timer->start();
+            count=0;
+            index=0;
+            if(this->getAlgorithm()==false)
+            {
+                timer->start();
+            }
+            else
+            {
+                timer->start(100);
+            }
         }
         else
         {
-            timer->start(100);
+            for(int i=0;i<this->getAreaGroup()->size();i++)
+            {
+                this->getAreaGroup()->at(i)->initi();
+            }
+            this->setFinished(false);
+            count=0;
+            timer->start(20);
         }
     }
     else
     {
-        for(int i=0;i<this->getAreaGroup()->size();i++)
-        {
-            this->getAreaGroup()->at(i)->initi();
-        }
-        this->setFinished(false);
-        count=0;
-        timer->start(20);
+        timer->start(100);
     }
 }
 
@@ -1658,6 +1672,8 @@ int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
         {}
         else
         {
+            r1->at(i)->setError(r1->at(i)->getError()+1);
+            r2->at(i)->setError(r2->at(i)->getError()+1);
             error=error+1;
         }
     }

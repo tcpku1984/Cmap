@@ -83,6 +83,9 @@ public:
     int getHOrder() const;
     void setHOrder(int value);
 
+    int getError() const;
+    void setError(int Error);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -134,6 +137,7 @@ private:
     bool m_detail;
     int vOrder;
     int hOrder;
+    int m_Error;
 };
 
 #endif // Region_H

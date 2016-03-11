@@ -20,6 +20,7 @@ Region::Region()
     m_color=0;
     m_detail=false;
     this->setColorIndex(0);
+    this->setError(0);
 }
 
 Region::~Region()
@@ -214,6 +215,16 @@ void Region::setHOrder(int value)
 {
     hOrder = value;
 }
+int Region::getError() const
+{
+    return m_Error;
+}
+
+void Region::setError(int Error)
+{
+    m_Error = Error;
+}
+
 
 
 
