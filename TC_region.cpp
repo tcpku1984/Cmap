@@ -21,6 +21,7 @@ Region::Region()
     m_detail=false;
     this->setColorIndex(0);
     this->setError(0);
+    m_Crossing=new QList<Region *>;
 }
 
 Region::~Region()
@@ -159,6 +160,11 @@ void Region::moveEast()
     }
 }
 
+void Region::addCrossingRegion(Region *r)
+{
+    this->getCrossing()->append(r);
+}
+
 int Region::color() const
 {
     return m_color;
@@ -224,6 +230,18 @@ void Region::setError(int Error)
 {
     m_Error = Error;
 }
+
+QList<Region *> *Region::getCrossing() const
+{
+    return m_Crossing;
+}
+
+void Region::setCrossing(QList<Region *> *Crossing)
+{
+    m_Crossing = Crossing;
+}
+
+
 
 
 

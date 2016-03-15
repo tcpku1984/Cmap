@@ -65,6 +65,8 @@ public:
     void moveWest();
     void moveEast();
 
+    void addCrossingRegion(Region * r);
+
     int color() const;
     void setColor(int color);
 
@@ -85,6 +87,11 @@ public:
 
     int getError() const;
     void setError(int Error);
+
+
+
+    QList<Region *> *getCrossing() const;
+    void setCrossing(QList<Region *> *Crossing);
 
 private:
     /**
@@ -138,6 +145,8 @@ private:
     int vOrder;
     int hOrder;
     int m_Error;
+    QList<Region *> * m_Crossing;
+
 };
 
 #endif // Region_H

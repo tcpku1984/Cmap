@@ -195,6 +195,20 @@ void Widget::paintCCg(QPainter *painter)
                                      this->regionListV()->at(i)->getSize(),
                                      this->regionListV()->at(i)->getSize()), QString::number(
                                   this->regionListV()->at(i)->getError()));
+            if(this->regionListV()->at(i)->getCrossing()->size()>0)
+            {
+                for(int z=0;z<this->regionListV()->at(i)->getCrossing()->size();z++)
+                {
+                    painter->drawLine(QPointF(this->regionListV()->at(i)->X()+
+                                              this->regionListV()->at(i)->getSize()/2,
+                                              this->regionListV()->at(i)->Y()+
+                                              this->regionListV()->at(i)->getSize()/2),
+                                      QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
+                                              this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
+                                              this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
+                                              this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                }
+            }
         }
         else
         {
@@ -1678,6 +1692,7 @@ int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
             if(abs(r1->at(i)->X()-r2->at(i)->X())>1)
             {
                 r1->at(i)->setError(r1->at(i)->getError()+1);
+                r1->at(i)->addCrossingRegion(r2->at(i));
             //r2->at(i)->setError(r2->at(i)->getError()+1);
                 error=error+1;
             }
