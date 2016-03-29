@@ -196,6 +196,9 @@ public:
     int getLoopCount() const;
     void setLoopCount(int LoopCount);
 
+    bool getCenterPoints() const;
+    void setCenterPoints(bool CenterPoints);
+
 public slots:
     void animate();
 
@@ -244,6 +247,8 @@ private slots:
     void on_checkBox_11_toggled(bool checked);
 
     void on_checkBox_12_toggled(bool checked);
+
+    void on_checkBox_13_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -315,6 +320,7 @@ private:
     bool m_Screen;
     bool m_Coner;
     bool m_CenterLines;
+    bool m_CenterPoints;
     int m_Error;
     int m_LoopCount;
 

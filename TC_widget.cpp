@@ -85,6 +85,7 @@ Widget::Widget(QWidget *parent) :
     this->setPercent(0);
     this->setScreen(false);
     this->setCenterLines(false);
+    this->setCenterPoints(false);
     this->setError(0);
     refreshColor();
     m_AveragePrevlance=new QList<double>;
@@ -156,6 +157,7 @@ void Widget::paintEvent(QPaintEvent *event)
 {
     this->dataColor0=m_Datacolor->getColor(this->getColor());
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
     if(this->getGroup()==false)
     {
        paintCCg(&painter);
@@ -195,18 +197,21 @@ void Widget::paintCCg(QPainter *painter)
                                      this->regionListV()->at(i)->getSize(),
                                      this->regionListV()->at(i)->getSize()), QString::number(
                                   this->regionListV()->at(i)->getError()));
-            if(this->regionListV()->at(i)->getCrossing()->size()>0)
+            if(this->getCenterPoints()==true)
             {
-                for(int z=0;z<this->regionListV()->at(i)->getCrossing()->size();z++)
+                if(this->regionListV()->at(i)->getCrossing()->size()>0)
                 {
-                    painter->drawLine(QPointF(this->regionListV()->at(i)->X()+
-                                              this->regionListV()->at(i)->getSize()/2,
-                                              this->regionListV()->at(i)->Y()+
-                                              this->regionListV()->at(i)->getSize()/2),
-                                      QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
-                                              this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
-                                              this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
-                                              this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                    for(int z=0;z<this->regionListV()->at(i)->getCrossing()->size();z++)
+                    {
+                        painter->drawLine(QPointF(this->regionListV()->at(i)->X()+
+                                                  this->regionListV()->at(i)->getSize()/2,
+                                                  this->regionListV()->at(i)->Y()+
+                                                  this->regionListV()->at(i)->getSize()/2),
+                                          QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
+                                                  this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
+                                                  this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
+                                                  this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                    }
                 }
             }
         }
@@ -234,11 +239,11 @@ void Widget::paintCCg(QPainter *painter)
         }
         size=size*100/(SOUTHBOUND-NORTHBOUND)/(EASTBOUND-WESTBOUND);
         painter->setPen(QPen(Qt::black));
-        painter->eraseRect(QRect(1600,360,200,20));
-        painter->drawText(QRect(1600,360,200,20),"Original percentage : 18.5");
+        painter->eraseRect(QRect(1540,360,200,20));
+        painter->drawText(QRect(1540,360,200,20),"Original percentage : 18.5");
         painter->eraseRect(QRect(1800,360,200,20));
-        painter->drawText(QRect(1800,360,200,20),"Max Error :"
-                          +QString::number(this->getLoopCount()*this->regionListH()->size()));
+        painter->drawText(QRect(1800,360,200,20),"Loop :"
+                          +QString::number(this->getLoopCount()));
         painter->eraseRect(QRect(1600,380,200,20));
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         painter->eraseRect(QRect(1800,380,200,20));
@@ -380,8 +385,11 @@ void Widget::paintCCg(QPainter *painter)
         }
         size=size*100/(SOUTHBOUND-NORTHBOUND)/(EASTBOUND-WESTBOUND);
         painter->setPen(QPen(Qt::black));
-        painter->eraseRect(QRect(1600,360,200,20));
-        painter->drawText(QRect(1600,360,200,20),"Original percentage : 18.5");
+        painter->eraseRect(QRect(1540,360,200,20));
+        painter->drawText(QRect(1540,360,200,20),"Original percentage : 18.5");
+        painter->eraseRect(QRect(1800,360,200,20));
+        painter->drawText(QRect(1800,360,200,20),"Loop :"
+                          +QString::number(this->getLoopCount()));
         painter->eraseRect(QRect(1600,380,200,20));
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         painter->eraseRect(QRect(1800,380,200,20));
@@ -1387,6 +1395,7 @@ void Widget::on_start_pressed()
                             this->regionListV()->at(i)->Longti()/RATHV+VV);
                 this->regionListV()->at(i)->setColor(0);
                 this->regionListV()->at(i)->setError(0);
+                this->regionListV()->at(i)->getCrossing()->clear();
                 this->regionListV()->at(i)->setStopIncrease(false);
                 this->getCurrentregion()->append(this->regionListV()->at(i));
                 this->getLastregion()->append(this->regionListV()->at(i));
@@ -1706,9 +1715,19 @@ int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
     else
     {
         cout<<error<<endl;
-        return error-1;
+        return error;
     }
 }
+bool Widget::getCenterPoints() const
+{
+    return m_CenterPoints;
+}
+
+void Widget::setCenterPoints(bool CenterPoints)
+{
+    m_CenterPoints = CenterPoints;
+}
+
 int Widget::getLoopCount() const
 {
     return m_LoopCount;
@@ -2339,5 +2358,17 @@ void Widget::on_checkBox_12_toggled(bool checked)
     else
     {
         this->setCenterLines(false);
+    }
+}
+
+void Widget::on_checkBox_13_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setCenterPoints(true);
+    }
+    else
+    {
+        this->setCenterPoints(false);
     }
 }
