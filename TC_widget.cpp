@@ -87,6 +87,8 @@ Widget::Widget(QWidget *parent) :
     this->setCenterLines(false);
     this->setCenterPoints(false);
     this->setError(0);
+    this->setStep(false);
+    this->setLocalPercentage(0);
     refreshColor();
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
@@ -203,14 +205,18 @@ void Widget::paintCCg(QPainter *painter)
                 {
                     for(int z=0;z<this->regionListV()->at(i)->getCrossing()->size();z++)
                     {
-                        painter->drawLine(QPointF(this->regionListV()->at(i)->X()+
-                                                  this->regionListV()->at(i)->getSize()/2,
-                                                  this->regionListV()->at(i)->Y()+
-                                                  this->regionListV()->at(i)->getSize()/2),
-                                          QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
-                                                  this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
-                                                  this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
-                                                  this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                        if(this->regionListV()->at(i)->X()<this->regionListV()->at(i)->getCrossing()->at(z)->X())
+                        {
+                            painter->setPen(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+                            painter->drawLine(QPointF(this->regionListV()->at(i)->X()+
+                                                      this->regionListV()->at(i)->getSize()/2,
+                                                      this->regionListV()->at(i)->Y()+
+                                                      this->regionListV()->at(i)->getSize()/2),
+                                              QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
+                                                      this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
+                                                      this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
+                                                      this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                        }
                     }
                 }
             }
@@ -243,7 +249,7 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1540,360,200,20),"Original percentage : 18.5");
         painter->eraseRect(QRect(1800,360,200,20));
         painter->drawText(QRect(1800,360,200,20),"Loop :"
-                          +QString::number(this->getLoopCount()));
+                          +QString::number(this->getLocalError()));
         painter->eraseRect(QRect(1600,380,200,20));
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         painter->eraseRect(QRect(1800,380,200,20));
@@ -841,7 +847,10 @@ void Widget::regionIncrease2()
         timer->stop();
         this->setFinished(true);
     }
-    timer->stop();
+    if(this->getStep()==true)
+    {
+        timer->stop();
+     }
 }
 
 void Widget::areaIncrease()
@@ -1378,10 +1387,12 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *da
 
 void Widget::on_start_pressed()
 {
+    this->setStep(false);
     if(this->getFinished()==true)
     {
         this->setLoopCount(0);
         this->setError(0);
+        this->setLocalError(0);
         this->getCurrentregion()->clear();
         this->getLastregion()->clear();
         if(this->getGroup()==false)
@@ -1704,6 +1715,12 @@ int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
                 r1->at(i)->addCrossingRegion(r2->at(i));
             //r2->at(i)->setError(r2->at(i)->getError()+1);
                 error=error+1;
+                if(abs(r1->at(i)->Y()-r2->at(i)->Y())>
+                        this->getLocalPercentage()*
+                        (SOUTHBOUND-NORTHBOUND)/100)
+                {
+                    this->setLocalError(this->getLocalError()+1);
+                }
             }
         }
     }
@@ -1717,6 +1734,36 @@ int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
         cout<<error<<endl;
         return error;
     }
+}
+
+int Widget::getLocalError() const
+{
+    return m_LocalError;
+}
+
+void Widget::setLocalError(int LocalError)
+{
+    m_LocalError = LocalError;
+}
+
+int Widget::getLocalPercentage() const
+{
+    return m_LocalPercentage;
+}
+
+void Widget::setLocalPercentage(int LocalPercentage)
+{
+    m_LocalPercentage = LocalPercentage;
+}
+
+bool Widget::getStep() const
+{
+    return m_Step;
+}
+
+void Widget::setStep(bool Step)
+{
+    m_Step = Step;
 }
 bool Widget::getCenterPoints() const
 {
@@ -2371,4 +2418,70 @@ void Widget::on_checkBox_13_toggled(bool checked)
     {
         this->setCenterPoints(false);
     }
+}
+
+void Widget::on_start_2_pressed()
+{
+    this->setStep(true);
+    if(this->getFinished()==true)
+    {
+        this->setLoopCount(0);
+        this->setError(0);
+        this->setLocalError(0);
+        this->getCurrentregion()->clear();
+        this->getLastregion()->clear();
+        if(this->getGroup()==false)
+        {
+            for(int i=0;i<this->regionListV()->size();i++)
+            {
+                this->regionListV()->at(i)->setSize(1);
+                this->regionListV()->at(i)->setX(
+                            this->regionListV()->at(i)->Lati()/RATHH+HH);
+                this->regionListV()->at(i)->setY(-
+                            this->regionListV()->at(i)->Longti()/RATHV+VV);
+                this->regionListV()->at(i)->setColor(0);
+                this->regionListV()->at(i)->setError(0);
+                this->regionListV()->at(i)->getCrossing()->clear();
+                this->regionListV()->at(i)->setStopIncrease(false);
+                this->getCurrentregion()->append(this->regionListV()->at(i));
+                this->getLastregion()->append(this->regionListV()->at(i));
+            }
+            qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
+                  XOrder);
+            qSort(this->getLastregion()->begin(),this->getLastregion()->end(),
+                  XOrder);
+                this->setFinished(false);
+
+
+            count=0;
+            index=0;
+            if(this->getAlgorithm()==false)
+            {
+                timer->start();
+            }
+            else
+            {
+                timer->start(100);
+            }
+        }
+        else
+        {
+            for(int i=0;i<this->getAreaGroup()->size();i++)
+            {
+                this->getAreaGroup()->at(i)->initi();
+            }
+            this->setFinished(false);
+            count=0;
+            timer->start(20);
+        }
+    }
+    else
+    {
+        timer->start(100);
+    }
+}
+
+void Widget::on_horizontalSlider_5_valueChanged(int value)
+{
+    this->setLocalPercentage(value);
 }

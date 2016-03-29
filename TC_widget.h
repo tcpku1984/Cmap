@@ -199,6 +199,15 @@ public:
     bool getCenterPoints() const;
     void setCenterPoints(bool CenterPoints);
 
+    bool getStep() const;
+    void setStep(bool Step);
+
+    int getLocalPercentage() const;
+    void setLocalPercentage(int LocalPercentage);
+
+    int getLocalError() const;
+    void setLocalError(int LocalError);
+
 public slots:
     void animate();
 
@@ -249,6 +258,10 @@ private slots:
     void on_checkBox_12_toggled(bool checked);
 
     void on_checkBox_13_toggled(bool checked);
+
+    void on_start_2_pressed();
+
+    void on_horizontalSlider_5_valueChanged(int value);
 
 private:
     Ui::Widget *ui;
@@ -322,7 +335,10 @@ private:
     bool m_CenterLines;
     bool m_CenterPoints;
     int m_Error;
+    int m_LocalError;
     int m_LoopCount;
+    bool m_Step;
+    int m_LocalPercentage;
 
 
 };
