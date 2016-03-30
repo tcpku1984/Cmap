@@ -248,12 +248,12 @@ void Widget::paintCCg(QPainter *painter)
         painter->eraseRect(QRect(1540,360,200,20));
         painter->drawText(QRect(1540,360,200,20),"Original percentage : 18.5");
         painter->eraseRect(QRect(1800,360,200,20));
-        painter->drawText(QRect(1800,360,200,20),"Loop :"
+        painter->drawText(QRect(1800,360,200,20),"ErrorL :"
                           +QString::number(this->getLocalError()));
         painter->eraseRect(QRect(1600,380,200,20));
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         painter->eraseRect(QRect(1800,380,200,20));
-        painter->drawText(QRect(1800,380,200,20),"Error :"+QString::number(this->getError()));
+        painter->drawText(QRect(1800,380,200,20),"ErrorG :"+QString::number(this->getError()));
     }
 
     if(this->getFinished())
@@ -394,12 +394,12 @@ void Widget::paintCCg(QPainter *painter)
         painter->eraseRect(QRect(1540,360,200,20));
         painter->drawText(QRect(1540,360,200,20),"Original percentage : 18.5");
         painter->eraseRect(QRect(1800,360,200,20));
-        painter->drawText(QRect(1800,360,200,20),"Loop :"
-                          +QString::number(this->getLoopCount()));
+        painter->drawText(QRect(1800,360,200,20),"ErrorL :"
+                          +QString::number(this->getLocalError()));
         painter->eraseRect(QRect(1600,380,200,20));
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         painter->eraseRect(QRect(1800,380,200,20));
-        painter->drawText(QRect(1800,380,200,20),"error :"+QString::number(this->getError()));
+        painter->drawText(QRect(1800,380,200,20),"ErrorG :"+QString::number(this->getError()));
         drawSign(painter);
         if(this->getMouseOver()==true)
         {
@@ -1532,7 +1532,7 @@ void Widget::drawSign(QPainter *p)
         {
             if(this->getGradient()==false)
             {
-                QLinearGradient temp(1680,400+i*40,1750,440+40*i);
+                QLinearGradient temp(1680,440+i*40,1750,480+40*i);
                 //QRadialGradient temp(QPoint(1830,420+40*i),60);
                 temp.setColorAt(0,
                                 QColor::fromHsvF(dataColor0[i].hueF(),
@@ -1540,18 +1540,18 @@ void Widget::drawSign(QPainter *p)
                 temp.setColorAt(1,
                                 QColor::fromHsvF(dataColor0[i].hueF(),
                                                  0.6,1));
-                p->fillRect(1680,400+i*40,70,40,temp);
+                p->fillRect(1680,440+i*40,70,40,temp);
             }
             else
             {
-                QRadialGradient temp(QPoint(1715,420+40*i),40);
+                QRadialGradient temp(QPoint(1715,460+40*i),40);
                 temp.setColorAt(0,
                                 QColor::fromHsvF(dataColor0[i].hueF(),
                                                  0.3,1));
                 temp.setColorAt(1,
                                 QColor::fromHsvF(dataColor0[i].hueF(),
                                                  1,0.7));
-                p->fillRect(1680,400+i*40,70,40,temp);
+                p->fillRect(1680,440+i*40,70,40,temp);
 
             }
         }
@@ -1560,14 +1560,14 @@ void Widget::drawSign(QPainter *p)
     {
         for(int i=0;i<3;i++)
         {
-            p->fillRect(1680,400+i*40,140,40,QColor::fromHsvF(dataColor0.at(0).hueF(),
+            p->fillRect(1680,440+i*40,140,40,QColor::fromHsvF(dataColor0.at(0).hueF(),
                                                               1,0.3+i*0.15));
         }
         for(int i=3;i<14;i++)
         {
             if(this->getGradient()==false)
             {
-                QLinearGradient temp(1680,400+i*40,1750,440+40*i);
+                QLinearGradient temp(1680,440+i*40,1750,480+40*i);
                 //QRadialGradient temp(QPoint(1830,420+40*i),60);
                 temp.setColorAt(0,
                                 QColor::fromHsvF(dataColor0[i-2].hueF(),
@@ -1575,18 +1575,18 @@ void Widget::drawSign(QPainter *p)
                 temp.setColorAt(1,
                                 QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  0.6,1));
-                p->fillRect(1610,400+i*40,70,40,temp);
+                p->fillRect(1610,440+i*40,70,40,temp);
             }
             else
             {
-                QRadialGradient temp(QPoint(1715,420+40*i),40);
+                QRadialGradient temp(QPoint(1715,460+40*i),40);
                 temp.setColorAt(0,
                                 QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  0.3,1));
                 temp.setColorAt(1,
                                 QColor::fromHsvF(dataColor0[i-2].hueF(),
                                                  1,0.7));
-                p->fillRect(1680,400+i*40,70,40,temp);
+                p->fillRect(1680,440+i*40,70,40,temp);
 
             }
         }
@@ -1598,29 +1598,29 @@ void Widget::drawSign(QPainter *p)
     else
     {
         p->setPen(Qt::black);
-        p->drawText(QRect(1640,380,120,20),"Focus");
-        p->drawText(QRect(1750,380,120,20),"Context");
+        p->drawText(QRect(1640,420,120,20),"Focus");
+        p->drawText(QRect(1750,420,120,20),"Context");
         for(int i=0;i<14;i++)
         {
-            p->fillRect(1750,400+i*40,70,40,QColor::fromHsvF(0,
+            p->fillRect(1750,440+i*40,70,40,QColor::fromHsvF(0,
                                                               0,0.97));
         }
     }
     p->setPen(Qt::black);
-    p->drawText(QRect(TEXTX,400,140,40),"Coronary-heart-disease");
-    p->drawText(QRect(TEXTX,440,140,40),"Heart Failure");
-    p->drawText(QRect(TEXTX,480,140,40),"Stroke");
-    p->drawText(QRect(TEXTX,520,140,40),"Chronic-kidney-disease");
-    p->drawText(QRect(TEXTX,560,140,40),"Diabetes");
-    p->drawText(QRect(TEXTX,600,140,40),"Hypertension");
-    p->drawText(QRect(TEXTX,640,140,40),"COPD");
-    p->drawText(QRect(TEXTX,680,140,40),"Mental-Health");
-    p->drawText(QRect(TEXTX,720,140,40),"Osteoporosis");
-    p->drawText(QRect(TEXTX,760,140,40),"Rheumatoid-Arthritis");
-    p->drawText(QRect(TEXTX,800,140,40),"Cancer");
-    p->drawText(QRect(TEXTX,840,140,40),"Epilepsy");
-    p->drawText(QRect(TEXTX,880,140,40),"Hypothyroidism");
-    p->drawText(QRect(TEXTX,920,140,40),"Asthma");
+    p->drawText(QRect(TEXTX,440,140,40),"Coronary-heart-disease");
+    p->drawText(QRect(TEXTX,480,140,40),"Heart Failure");
+    p->drawText(QRect(TEXTX,520,140,40),"Stroke");
+    p->drawText(QRect(TEXTX,560,140,40),"Chronic-kidney-disease");
+    p->drawText(QRect(TEXTX,600,140,40),"Diabetes");
+    p->drawText(QRect(TEXTX,640,140,40),"Hypertension");
+    p->drawText(QRect(TEXTX,680,140,40),"COPD");
+    p->drawText(QRect(TEXTX,720,140,40),"Mental-Health");
+    p->drawText(QRect(TEXTX,760,140,40),"Osteoporosis");
+    p->drawText(QRect(TEXTX,800,140,40),"Rheumatoid-Arthritis");
+    p->drawText(QRect(TEXTX,840,140,40),"Cancer");
+    p->drawText(QRect(TEXTX,880,140,40),"Epilepsy");
+    p->drawText(QRect(TEXTX,920,140,40),"Hypothyroidism");
+    p->drawText(QRect(TEXTX,960,140,40),"Asthma");
     if(this->getColorFilter()==true)
     {
         for(int i=0;i<14;i++)
@@ -1630,7 +1630,7 @@ void Widget::drawSign(QPainter *p)
                 QPen pen(Qt::black);
                 pen.setWidth(4);
                 p->setPen(pen);
-                p->drawRect(1680,400+40*i,70,40);
+                p->drawRect(1680,440+40*i,70,40);
             }
         }
     }
