@@ -41,6 +41,7 @@ bool horizontalOrder(Region * r1, Region * r2)
     return r1->Lati()>r2->Lati();
 }
 
+
 bool XOrder(Region *r1, Region * r2)
 {
     return r1->X()>=r2->X();
@@ -62,7 +63,7 @@ Widget::Widget(QWidget *parent) :
     m_regionMaxsize=110;
     m_searchRange=212;
     m_population=0;
-    this->setLoopCount(0);
+    this->setLoopCount(1);
     m_border=1;
     this->setColor(0);
     this->setFilter(0);
@@ -87,6 +88,7 @@ Widget::Widget(QWidget *parent) :
     this->setCenterLines(false);
     this->setCenterPoints(false);
     this->setError(0);
+    this->setLocalError(0);
     this->setStep(false);
     this->setLocalPercentage(0);
     refreshColor();
@@ -208,14 +210,32 @@ void Widget::paintCCg(QPainter *painter)
                         if(this->regionListV()->at(i)->X()<this->regionListV()->at(i)->getCrossing()->at(z)->X())
                         {
                             painter->setPen(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
-                            painter->drawLine(QPointF(this->regionListV()->at(i)->X()+
-                                                      this->regionListV()->at(i)->getSize()/2,
-                                                      this->regionListV()->at(i)->Y()+
-                                                      this->regionListV()->at(i)->getSize()/2),
-                                              QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
-                                                      this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
-                                                      this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
-                                                      this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                            QLineF line=QLineF(QPointF(this->regionListV()->at(i)->X()+
+                                                       this->regionListV()->at(i)->getSize()/2,
+                                                       this->regionListV()->at(i)->Y()+
+                                                       this->regionListV()->at(i)->getSize()/2),
+                                               QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
+                                                       this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
+                                                       this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
+                                                       this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                            if(line.length()<double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100)
+                            {
+                                painter->setPen(Qt::red);
+                            }
+
+                            else
+                            {
+                                QLinearGradient grad;
+                                grad.setColorAt(0,Qt::red);
+                                grad.setColorAt(0.5,Qt::red);
+                                grad.setColorAt(0.5001,Qt::black);
+                                grad.setColorAt(1,Qt::black);
+                                QPen pen;
+                                pen.setWidth(1);
+                                pen.setBrush(grad);
+                                painter->setPen(pen);
+                            }
+                            painter->drawLine(line);
                         }
                     }
                 }
@@ -254,6 +274,14 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         painter->eraseRect(QRect(1800,380,200,20));
         painter->drawText(QRect(1800,380,200,20),"ErrorG :"+QString::number(this->getError()));
+        painter->eraseRect(QRect(1600,400,200,20));
+        painter->drawText(QRect(1600,400,200,20),"ErrorL :"
+                          +QString::number(double(100*this->getLocalError())/this->getLoopCount()/this->regionListV()->size()));
+
+        painter->eraseRect(QRect(1800,400,200,20));
+
+        painter->drawText(QRect(1800,400,200,20),"ErrorG :"
+                          +QString::number(double(100*this->getError())/this->regionListV()->size()/this->getLoopCount()));
     }
 
     if(this->getFinished())
@@ -400,6 +428,11 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
         painter->eraseRect(QRect(1800,380,200,20));
         painter->drawText(QRect(1800,380,200,20),"ErrorG :"+QString::number(this->getError()));
+        painter->drawText(QRect(1600,400,200,20),"ErrorL :"
+                          +QString::number(double(100*this->getLocalError())/this->getLoopCount()/this->regionListV()->size()));
+        painter->eraseRect(QRect(1800,400,200,20));
+        painter->drawText(QRect(1800,400,200,20),"ErrorG :"
+                          +QString::number(double(100*this->getError())/this->regionListV()->size()/this->getLoopCount()));
         drawSign(painter);
         if(this->getMouseOver()==true)
         {
@@ -1000,9 +1033,9 @@ void Widget::mousePressEvent(QMouseEvent *e)
     }
     if(this->getColorFilter()==true)
     {
-        if(x>1680&&x<1750&&y>400&&y<400+400*13)
+        if(x>1680&&x<1750&&y>440&&y<440+40*13)
         {
-            int i=(y-400)/40;
+            int i=(y-440)/40;
             if(this->colorlegend->at(i)==true)
             {
                 this->colorlegend->replace(i, false);
@@ -1390,7 +1423,7 @@ void Widget::on_start_pressed()
     this->setStep(false);
     if(this->getFinished()==true)
     {
-        this->setLoopCount(0);
+        this->setLoopCount(1);
         this->setError(0);
         this->setLocalError(0);
         this->getCurrentregion()->clear();
@@ -2425,7 +2458,7 @@ void Widget::on_start_2_pressed()
     this->setStep(true);
     if(this->getFinished()==true)
     {
-        this->setLoopCount(0);
+        this->setLoopCount(1);
         this->setError(0);
         this->setLocalError(0);
         this->getCurrentregion()->clear();
