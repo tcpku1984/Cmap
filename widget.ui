@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -225,20 +225,23 @@
     <widget class="QSlider" name="horizontalSlider_3">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>150</x>
        <y>180</y>
        <width>140</width>
        <height>19</height>
       </rect>
      </property>
      <property name="minimum">
-      <number>10</number>
+      <number>1</number>
      </property>
      <property name="maximum">
-      <number>212</number>
+      <number>209</number>
+     </property>
+     <property name="value">
+      <number>209</number>
      </property>
      <property name="sliderPosition">
-      <number>212</number>
+      <number>209</number>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -254,13 +257,13 @@
       </rect>
      </property>
      <property name="minimum">
-      <number>10</number>
+      <number>1</number>
      </property>
      <property name="maximum">
-      <number>212</number>
+      <number>209</number>
      </property>
      <property name="value">
-      <number>212</number>
+      <number>209</number>
      </property>
      <property name="displayIntegerBase">
       <number>10</number>

@@ -61,7 +61,7 @@ Widget::Widget(QWidget *parent) :
     index=0;
     m_increaseSize=1;
     m_regionMaxsize=110;
-    m_searchRange=212;
+    m_searchRange=209;
     m_population=0;
     this->setLoopCount(1);
     m_border=1;
@@ -105,10 +105,13 @@ Widget::Widget(QWidget *parent) :
     for(int i=0;i<this->regionListV()->size();i++)
     {
        this->regionListH()->append(this->regionListV()->at(i));
+
+    }
+    for(int i=0;i<this->searchRange();i++)
+    {
         this->getLastregion()->append(this->regionListV()->at(i));
         this->getCurrentregion()->append(this->regionListV()->at(i));
     }
-    //this->setRegionListH(file->regionList());
     this->setPopulation(file->populiation());
     this->setAreaGroup(file->AreaGroup());
     this->setAveragePrevlance(file->AveragePrevlance());
@@ -730,7 +733,7 @@ void Widget::regionIncrease()
 void Widget::regionIncrease2()
 {
     this->setLoopCount(this->getLoopCount()+1);
-    for(int i=0;i<this->regionListV()->size();i++)
+    for(int i=0;i<this->searchRange();i++)
     {
         double max;
         if(this->samesize()==false)
@@ -1456,6 +1459,9 @@ void Widget::on_start_pressed()
                 this->regionListV()->at(i)->setError(0);
                 this->regionListV()->at(i)->getCrossing()->clear();
                 this->regionListV()->at(i)->setStopIncrease(false);
+            }
+            for(int i=0;i<this->searchRange();i++)
+            {
                 this->getCurrentregion()->append(this->regionListV()->at(i));
                 this->getLastregion()->append(this->regionListV()->at(i));
             }
@@ -2491,6 +2497,9 @@ void Widget::on_start_2_pressed()
                 this->regionListV()->at(i)->setError(0);
                 this->regionListV()->at(i)->getCrossing()->clear();
                 this->regionListV()->at(i)->setStopIncrease(false);
+            }
+            for(int i=0;i<this->searchRange();i++)
+            {
                 this->getCurrentregion()->append(this->regionListV()->at(i));
                 this->getLastregion()->append(this->regionListV()->at(i));
             }
