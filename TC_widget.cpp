@@ -893,7 +893,7 @@ void Widget::regionIncrease2()
         this->getLastregion()->append(
                     this->getCurrentregion()->at(i));
     }
-    if(count>=this->regionListV()->size())
+    if(count>=this->searchRange())
     {
         timer->stop();
         this->setFinished(true);
