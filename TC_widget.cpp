@@ -90,7 +90,7 @@ Widget::Widget(QWidget *parent) :
     this->setError(0);
     this->setLocalError(0);
     this->setStep(false);
-    this->setLocalPercentage(0);
+    this->setLocalPercentage(20);
     refreshColor();
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
@@ -226,12 +226,23 @@ void Widget::paintCCg(QPainter *painter)
                             else
                             {
                                 QLinearGradient grad;
+                                grad.setStart(QPointF(this->regionListV()->at(i)->X()+
+                                                      this->regionListV()->at(i)->getSize()/2,
+                                                      this->regionListV()->at(i)->Y()+
+                                                      this->regionListV()->at(i)->getSize()/2));
+                                grad.setFinalStop(QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
+                                                          this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
+                                                          this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
+                                                          this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
                                 grad.setColorAt(0,Qt::red);
-                                grad.setColorAt(0.5,Qt::red);
-                                grad.setColorAt(0.5001,Qt::black);
-                                grad.setColorAt(1,Qt::black);
+                                grad.setColorAt(double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()
+                                                ,Qt::red);
+                                //cout<<double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()<<endl;
+                                grad.setColorAt(double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()+0.000001
+                                                ,regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+                                grad.setColorAt(1,regionColor.at(this->regionListV()->at(i)->getColorIndex()));
                                 QPen pen;
-                                pen.setWidth(1);
+                                pen.setWidth(0);
                                 pen.setBrush(grad);
                                 painter->setPen(pen);
                             }
@@ -276,12 +287,14 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1800,380,200,20),"ErrorG :"+QString::number(this->getError()));
         painter->eraseRect(QRect(1600,400,200,20));
         painter->drawText(QRect(1600,400,200,20),"ErrorL :"
-                          +QString::number(double(100*this->getLocalError())/this->getLoopCount()/this->regionListV()->size()));
+                          +QString::number(double(100*this->getLocalError())
+                                           /this->regionListV()->size()/this->regionListV()->size()));
 
         painter->eraseRect(QRect(1800,400,200,20));
 
         painter->drawText(QRect(1800,400,200,20),"ErrorG :"
-                          +QString::number(double(100*this->getError())/this->regionListV()->size()/this->getLoopCount()));
+                          +QString::number(double(100*this->getError())/this->regionListV()->size()
+                                           /this->regionListV()->size()));
     }
 
     if(this->getFinished())
@@ -429,10 +442,12 @@ void Widget::paintCCg(QPainter *painter)
         painter->eraseRect(QRect(1800,380,200,20));
         painter->drawText(QRect(1800,380,200,20),"ErrorG :"+QString::number(this->getError()));
         painter->drawText(QRect(1600,400,200,20),"ErrorL :"
-                          +QString::number(double(100*this->getLocalError())/this->getLoopCount()/this->regionListV()->size()));
+                          +QString::number(double(100*this->getLocalError())/this->regionListV()->size()/
+                                           this->regionListV()->size()));
         painter->eraseRect(QRect(1800,400,200,20));
         painter->drawText(QRect(1800,400,200,20),"ErrorG :"
-                          +QString::number(double(100*this->getError())/this->regionListV()->size()/this->getLoopCount()));
+                          +QString::number(double(100*this->getError())/this->regionListV()->size()/
+                                           this->regionListV()->size()));
         drawSign(painter);
         if(this->getMouseOver()==true)
         {
@@ -1748,7 +1763,7 @@ int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
                 r1->at(i)->addCrossingRegion(r2->at(i));
             //r2->at(i)->setError(r2->at(i)->getError()+1);
                 error=error+1;
-                if(abs(r1->at(i)->Y()-r2->at(i)->Y())>
+                if(abs(r1->at(i)->Y()-r2->at(i)->Y())<
                         this->getLocalPercentage()*
                         (SOUTHBOUND-NORTHBOUND)/100)
                 {
