@@ -47,6 +47,12 @@ bool XOrder(Region *r1, Region * r2)
     return r1->X()>=r2->X();
 }
 
+
+bool YOrder(Region *r1, Region * r2)
+{
+    return r1->Y()>=r2->Y();
+}
+
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
@@ -58,6 +64,8 @@ Widget::Widget(QWidget *parent) :
     m_regionListH= new QList<Region *>;
     m_Currentregion= new QList<Region *>;
     m_Lastregion= new QList<Region *>;
+    m_CurrentYregion= new QList<Region *>;
+    m_LastYregion= new QList<Region *>;
     index=0;
     m_increaseSize=1;
     m_regionMaxsize=110;
@@ -89,6 +97,8 @@ Widget::Widget(QWidget *parent) :
     this->setCenterPoints(false);
     this->setError(0);
     this->setLocalError(0);
+    this->setYError(0);
+    this->setLocalYError(0);
     this->setStep(false);
     this->setLocalPercentage(20);
     refreshColor();
@@ -111,6 +121,8 @@ Widget::Widget(QWidget *parent) :
     {
         this->getLastregion()->append(this->regionListV()->at(i));
         this->getCurrentregion()->append(this->regionListV()->at(i));
+        this->getLastYregion()->append(this->regionListV()->at(i));
+        this->getCurrentYregion()->append(this->regionListV()->at(i));
     }
     this->setPopulation(file->populiation());
     this->setAreaGroup(file->AreaGroup());
@@ -138,6 +150,11 @@ Widget::Widget(QWidget *parent) :
     qSort(this->getLastregion()->begin(),this->getLastregion()->end(),
           XOrder);
     errorCount(this->getLastregion(),this->getCurrentregion());
+    qSort(this->getCurrentYregion()->begin(),this->getCurrentYregion()->end(),
+          YOrder);
+    qSort(this->getLastYregion()->begin(),this->getLastYregion()->end(),
+          YOrder);
+    errorCount(this->getLastYregion(),this->getCurrentYregion());
     /*
     for(int i=0;i<this->regionListV()->size();i++)
     {
@@ -243,12 +260,16 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1600,400,200,20),"ErrorL :"
                           +QString::number(double(100*this->getLocalError())
                                            /this->regionListV()->size()/this->regionListV()->size()));
-
         painter->eraseRect(QRect(1800,400,200,20));
-
         painter->drawText(QRect(1800,400,200,20),"ErrorG :"
                           +QString::number(double(100*this->getError())/this->regionListV()->size()
                                            /this->regionListV()->size()));
+        painter->eraseRect(QRect(1600,420,200,20));
+        painter->drawText(QRect(1600,420,200,20),"ErrorL :"
+                          +QString::number(this->getLocalYError()));
+        painter->eraseRect(QRect(1800,420,200,20));
+        painter->drawText(QRect(1800,420,200,20),"ErrorG :"
+                          +QString::number(this->getYError()));
     }
     if(this->getCenterPoints()==true)
     {
@@ -258,7 +279,8 @@ void Widget::paintCCg(QPainter *painter)
             {
                 for(int z=0;z<this->regionListV()->at(i)->getCrossing()->size();z++)
                 {
-                    if(this->regionListV()->at(i)->X()<this->regionListV()->at(i)->getCrossing()->at(z)->X())
+                    if(true)
+                    //if(this->regionListV()->at(i)->X()<this->regionListV()->at(i)->getCrossing()->at(z)->X())
                     {
                         painter->setPen(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
                         QLineF line=QLineF(QPointF(this->regionListV()->at(i)->X()+
@@ -455,6 +477,12 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1800,400,200,20),"ErrorG :"
                           +QString::number(double(100*this->getError())/this->regionListV()->size()/
                                            this->regionListV()->size()));
+        painter->eraseRect(QRect(1600,420,200,20));
+        painter->drawText(QRect(1600,420,200,20),"ErrorL :"
+                          +QString::number(this->getLocalYError()));
+        painter->eraseRect(QRect(1800,420,200,20));
+        painter->drawText(QRect(1800,420,200,20),"ErrorG :"
+                          +QString::number(this->getYError()));
         drawSign(painter);
         if(this->getMouseOver()==true)
         {
@@ -889,14 +917,22 @@ void Widget::regionIncrease2()
     overlapRemove();
     qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
           XOrder);
+    qSort(this->getCurrentYregion()->begin(),this->getCurrentYregion()->end(),
+          YOrder);
     this->setError(this->getError()+
                    errorCount(this->getLastregion(),this->getCurrentregion()));
     this->getLastregion()->clear();
+    this->setYError(this->getYError()+
+                   errorYCount(this->getLastYregion(),this->getCurrentYregion()));
+    this->getLastYregion()->clear();
     for(int i=0;i<this->getCurrentregion()->size();i++)
     {
         this->getLastregion()->append(
                     this->getCurrentregion()->at(i));
+        this->getLastYregion()->append(
+                    this->getCurrentYregion()->at(i));
     }
+
     if(count>=this->searchRange())
     {
         timer->stop();
@@ -1448,8 +1484,12 @@ void Widget::on_start_pressed()
         this->setLoopCount(1);
         this->setError(0);
         this->setLocalError(0);
+        this->setYError(0);
+        this->setLocalYError(0);
         this->getCurrentregion()->clear();
         this->getLastregion()->clear();
+        this->getCurrentYregion()->clear();
+        this->getLastYregion()->clear();
         if(this->getGroup()==false)
         {
             for(int i=0;i<this->regionListV()->size();i++)
@@ -1468,11 +1508,17 @@ void Widget::on_start_pressed()
             {
                 this->getCurrentregion()->append(this->regionListV()->at(i));
                 this->getLastregion()->append(this->regionListV()->at(i));
+                this->getCurrentYregion()->append(this->regionListV()->at(i));
+                this->getLastYregion()->append(this->regionListV()->at(i));
             }
             qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
                   XOrder);
             qSort(this->getLastregion()->begin(),this->getLastregion()->end(),
                   XOrder);
+            qSort(this->getCurrentYregion()->begin(),this->getCurrentYregion()->end(),
+                  YOrder);
+            qSort(this->getLastYregion()->begin(),this->getLastYregion()->end(),
+                  YOrder);
                 this->setFinished(false);
 
 
@@ -1792,6 +1838,82 @@ int Widget::errorCount(QList<Region *> *r1, QList<Region *> *r2)
         cout<<error<<endl;
         return error;
     }
+}
+
+int Widget::errorYCount(QList<Region *> *r1, QList<Region *> *r2)
+{
+    int error=0;
+    for(int i=0;i<r1->size();i++)
+    {
+        if(r1->at(i)->ccgCode()==r2->at(i)->ccgCode())
+        {}
+        else
+        {
+            if(abs(r1->at(i)->Y()-r2->at(i)->Y())>1)
+            {
+                r1->at(i)->setError(r1->at(i)->getError()+1);
+                r1->at(i)->addCrossingRegion(r2->at(i));
+            //r2->at(i)->setError(r2->at(i)->getError()+1);
+                error=error+1;
+                if(abs(r1->at(i)->X()-r2->at(i)->X())<
+                        this->getLocalPercentage()*
+                        (SOUTHBOUND-NORTHBOUND)/100)
+                {
+                    this->setLocalYError(this->getLocalYError()+1);
+                }
+            }
+        }
+    }
+    if(error==0)
+    {
+        cout<<error<<endl;
+        return 0;
+    }
+    else
+    {
+        cout<<error<<endl;
+        return error;
+    }
+}
+
+int Widget::getYError() const
+{
+    return m_YError;
+}
+
+void Widget::setYError(int YError)
+{
+    m_YError = YError;
+}
+
+int Widget::getLocalYError() const
+{
+    return m_LocalYError;
+}
+
+void Widget::setLocalYError(int LocalYError)
+{
+    m_LocalYError = LocalYError;
+}
+
+QList<Region *> *Widget::getCurrentYregion() const
+{
+    return m_CurrentYregion;
+}
+
+void Widget::setCurrentYregion(QList<Region *> *CurrentYregion)
+{
+    m_CurrentYregion = CurrentYregion;
+}
+
+QList<Region *> *Widget::getLastYregion() const
+{
+    return m_LastYregion;
+}
+
+void Widget::setLastYregion(QList<Region *> *LastYregion)
+{
+    m_LastYregion = LastYregion;
 }
 
 int Widget::getLocalError() const
@@ -2486,8 +2608,12 @@ void Widget::on_start_2_pressed()
         this->setLoopCount(1);
         this->setError(0);
         this->setLocalError(0);
+        this->setYError(0);
+        this->setLocalYError(0);
         this->getCurrentregion()->clear();
         this->getLastregion()->clear();
+        this->getCurrentYregion()->clear();
+        this->getLastYregion()->clear();
         if(this->getGroup()==false)
         {
             for(int i=0;i<this->regionListV()->size();i++)
@@ -2506,11 +2632,17 @@ void Widget::on_start_2_pressed()
             {
                 this->getCurrentregion()->append(this->regionListV()->at(i));
                 this->getLastregion()->append(this->regionListV()->at(i));
+                this->getCurrentYregion()->append(this->regionListV()->at(i));
+                this->getLastYregion()->append(this->regionListV()->at(i));
             }
             qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
                   XOrder);
             qSort(this->getLastregion()->begin(),this->getLastregion()->end(),
                   XOrder);
+            qSort(this->getCurrentYregion()->begin(),this->getCurrentYregion()->end(),
+                  YOrder);
+            qSort(this->getLastYregion()->begin(),this->getLastYregion()->end(),
+                  YOrder);
                 this->setFinished(false);
 
 

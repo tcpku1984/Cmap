@@ -208,6 +208,18 @@ public:
     int getLocalError() const;
     void setLocalError(int LocalError);
 
+    QList<Region *> *getLastYregion() const;
+    void setLastYregion(QList<Region *> *LastYregion);
+
+    QList<Region *> *getCurrentYregion() const;
+    void setCurrentYregion(QList<Region *> *CurrentYregion);
+
+    int getLocalYError() const;
+    void setLocalYError(int LocalYError);
+
+    int getYError() const;
+    void setYError(int YError);
+
 public slots:
     void animate();
 
@@ -283,6 +295,7 @@ private:
     void overlapRemoveArea();
     void refreshColor();
     int errorCount(QList<Region *> * r1, QList<Region *> * r2);
+    int errorYCount(QList<Region *> * r1, QList<Region *> * r2);
     //void moveWest();
 
 
@@ -291,6 +304,8 @@ private:
     QList <Region *> * m_regionListH;
     QList <Region *> * m_Lastregion;
     QList <Region *> * m_Currentregion;
+    QList <Region *> * m_LastYregion;
+    QList <Region *> * m_CurrentYregion;
     int count;
     int index;
     int m_increaseSize;
@@ -301,12 +316,6 @@ private:
     bool pressed;
     bool finished;
     QList<QColor> dataColor0;
-    /*
-    QList<QColor> dataColor0;
-    QList<QColor> dataColor1;
-    QList<QColor> dataColor2;
-    QList<QColor> dataColor3;
-    QList<QColor> dataColor4;*/
     bool m_samesize;
     bool m_algorithm;
     bool m_lookAhead;
@@ -336,6 +345,8 @@ private:
     bool m_CenterPoints;
     int m_Error;
     int m_LocalError;
+    int m_LocalYError;
+    int m_YError;
     int m_LoopCount;
     bool m_Step;
     int m_LocalPercentage;
