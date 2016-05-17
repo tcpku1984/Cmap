@@ -204,56 +204,7 @@ void Widget::paintCCg(QPainter *painter)
                                      this->regionListV()->at(i)->getSize(),
                                      this->regionListV()->at(i)->getSize()), QString::number(
                                   this->regionListV()->at(i)->getError()));
-            if(this->getCenterPoints()==true)
-            {
-                if(this->regionListV()->at(i)->getCrossing()->size()>0)
-                {
-                    for(int z=0;z<this->regionListV()->at(i)->getCrossing()->size();z++)
-                    {
-                        if(this->regionListV()->at(i)->X()<this->regionListV()->at(i)->getCrossing()->at(z)->X())
-                        {
-                            painter->setPen(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
-                            QLineF line=QLineF(QPointF(this->regionListV()->at(i)->X()+
-                                                       this->regionListV()->at(i)->getSize()/2,
-                                                       this->regionListV()->at(i)->Y()+
-                                                       this->regionListV()->at(i)->getSize()/2),
-                                               QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
-                                                       this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
-                                                       this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
-                                                       this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
-                            if(line.length()<double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100)
-                            {
-                                painter->setPen(Qt::red);
-                            }
 
-                            else
-                            {
-                                QLinearGradient grad;
-                                grad.setStart(QPointF(this->regionListV()->at(i)->X()+
-                                                      this->regionListV()->at(i)->getSize()/2,
-                                                      this->regionListV()->at(i)->Y()+
-                                                      this->regionListV()->at(i)->getSize()/2));
-                                grad.setFinalStop(QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
-                                                          this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
-                                                          this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
-                                                          this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
-                                grad.setColorAt(0,Qt::red);
-                                grad.setColorAt(double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()
-                                                ,Qt::red);
-                                //cout<<double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()<<endl;
-                                grad.setColorAt(double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()+0.000001
-                                                ,regionColor.at(this->regionListV()->at(i)->getColorIndex()));
-                                grad.setColorAt(1,regionColor.at(this->regionListV()->at(i)->getColorIndex()));
-                                QPen pen;
-                                pen.setWidth(0);
-                                pen.setBrush(grad);
-                                painter->setPen(pen);
-                            }
-                            painter->drawLine(line);
-                        }
-                    }
-                }
-            }
         }
         else
         {
@@ -298,6 +249,59 @@ void Widget::paintCCg(QPainter *painter)
         painter->drawText(QRect(1800,400,200,20),"ErrorG :"
                           +QString::number(double(100*this->getError())/this->regionListV()->size()
                                            /this->regionListV()->size()));
+    }
+    if(this->getCenterPoints()==true)
+    {
+        for(int i=0;i<this->searchRange();i++)
+        {
+            if(this->regionListV()->at(i)->getCrossing()->size()>0)
+            {
+                for(int z=0;z<this->regionListV()->at(i)->getCrossing()->size();z++)
+                {
+                    if(this->regionListV()->at(i)->X()<this->regionListV()->at(i)->getCrossing()->at(z)->X())
+                    {
+                        painter->setPen(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+                        QLineF line=QLineF(QPointF(this->regionListV()->at(i)->X()+
+                                                   this->regionListV()->at(i)->getSize()/2,
+                                                   this->regionListV()->at(i)->Y()+
+                                                   this->regionListV()->at(i)->getSize()/2),
+                                           QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
+                                                   this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
+                                                   this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
+                                                   this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                        if(line.length()<double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100)
+                        {
+                            painter->setPen(Qt::red);
+                        }
+
+                        else
+                        {
+                            QLinearGradient grad;
+                            grad.setStart(QPointF(this->regionListV()->at(i)->X()+
+                                                  this->regionListV()->at(i)->getSize()/2,
+                                                  this->regionListV()->at(i)->Y()+
+                                                  this->regionListV()->at(i)->getSize()/2));
+                            grad.setFinalStop(QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
+                                                      this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
+                                                      this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
+                                                      this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
+                            grad.setColorAt(0,Qt::red);
+                            grad.setColorAt(double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()
+                                            ,Qt::red);
+                            //cout<<double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()<<endl;
+                            grad.setColorAt(double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()+0.000001
+                                            ,regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+                            grad.setColorAt(1,regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+                            QPen pen;
+                            pen.setWidth(0);
+                            pen.setBrush(grad);
+                            painter->setPen(pen);
+                        }
+                        painter->drawLine(line);
+                    }
+                }
+            }
+        }
     }
 
     if(this->getFinished())
