@@ -102,6 +102,9 @@ Widget::Widget(QWidget *parent) :
     this->setStep(false);
     this->setLocalPercentage(20);
     refreshColor();
+    sta=new TC_statistics();
+    sta->setWindowFlags(Qt::WindowStaysOnTopHint);
+    sta->setGeometry(QRect(10,600,400,200));
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
     {
@@ -231,7 +234,7 @@ void Widget::paintCCg(QPainter *painter)
                                this->regionListV()->at(i)->getSize(),
                                this->regionListV()->at(i)->getSize()*9/16));
         }
-        double size;
+        double size=0;
         for(int i=0;i<this->regionListV()->size();i++)
         {
             if(this->getScreen()==false)
@@ -246,30 +249,20 @@ void Widget::paintCCg(QPainter *painter)
             }
         }
         size=size*100/(SOUTHBOUND-NORTHBOUND)/(EASTBOUND-WESTBOUND);
-        painter->setPen(QPen(Qt::black));
-        painter->eraseRect(QRect(1540,360,200,20));
-        painter->drawText(QRect(1540,360,200,20),"Original percentage : 18.5");
-        painter->eraseRect(QRect(1800,360,200,20));
-        painter->drawText(QRect(1800,360,200,20),"ErrorL :"
-                          +QString::number(this->getLocalError()));
-        painter->eraseRect(QRect(1600,380,200,20));
-        painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
-        painter->eraseRect(QRect(1800,380,200,20));
-        painter->drawText(QRect(1800,380,200,20),"ErrorG :"+QString::number(this->getError()));
-        painter->eraseRect(QRect(1600,400,200,20));
-        painter->drawText(QRect(1600,400,200,20),"ErrorL :"
-                          +QString::number(double(100*this->getLocalError())
-                                           /this->regionListV()->size()/this->regionListV()->size()));
-        painter->eraseRect(QRect(1800,400,200,20));
-        painter->drawText(QRect(1800,400,200,20),"ErrorG :"
-                          +QString::number(double(100*this->getError())/this->regionListV()->size()
-                                           /this->regionListV()->size()));
-        painter->eraseRect(QRect(1600,420,200,20));
-        painter->drawText(QRect(1600,420,200,20),"ErrorL :"
-                          +QString::number(this->getLocalYError()));
-        painter->eraseRect(QRect(1800,420,200,20));
-        painter->drawText(QRect(1800,420,200,20),"ErrorG :"
-                          +QString::number(this->getYError()));
+        sta->setSize(QString::number(size));
+        sta->setLocalError(QString::number(this->getLocalError()));
+        sta->setLocalYError(QString::number(this->getLocalYError()));
+        sta->setGlobelError(QString::number(this->getError()));
+        sta->setGlobelYError(QString::number(this->getYError()));
+        sta->setLocalErrorP(QString::number(double(100*this->getLocalError())
+                                            /this->regionListV()->size()/this->regionListV()->size()));
+        sta->setLocalYErrorP(QString::number(double(100*this->getLocalYError())
+                                            /this->regionListV()->size()/this->regionListV()->size()));
+        sta->setGlobelErrorP(QString::number(double(100*this->getError())/this->regionListV()->size()
+                                             /this->regionListV()->size()));
+        sta->setGlobelYErrorP(QString::number(double(100*this->getYError())/this->regionListV()->size()
+                                             /this->regionListV()->size()));
+        sta->update();
     }
     if(this->getFinished())
     {
@@ -390,7 +383,7 @@ void Widget::paintCCg(QPainter *painter)
                                   this->regionListV()->at(i)->getSize()*9/16);
             }
         }
-        double size;
+        double size=0;
         for(int i=0;i<this->regionListV()->size();i++)
         {
             if(this->getScreen()==false)
@@ -404,30 +397,6 @@ void Widget::paintCCg(QPainter *painter)
                         this->regionListV()->at(i)->getSize()*9/16;
             }
         }
-        size=size*100/(SOUTHBOUND-NORTHBOUND)/(EASTBOUND-WESTBOUND);
-        painter->setPen(QPen(Qt::black));
-        painter->eraseRect(QRect(1540,360,200,20));
-        painter->drawText(QRect(1540,360,200,20),"Original percentage : 18.5");
-        painter->eraseRect(QRect(1800,360,200,20));
-        painter->drawText(QRect(1800,360,200,20),"ErrorL :"
-                          +QString::number(this->getLocalError()));
-        painter->eraseRect(QRect(1600,380,200,20));
-        painter->drawText(QRect(1600,380,200,20),"Percentage :"+QString::number(size));
-        painter->eraseRect(QRect(1800,380,200,20));
-        painter->drawText(QRect(1800,380,200,20),"ErrorG :"+QString::number(this->getError()));
-        painter->drawText(QRect(1600,400,200,20),"ErrorL :"
-                          +QString::number(double(100*this->getLocalError())/this->regionListV()->size()/
-                                           this->regionListV()->size()));
-        painter->eraseRect(QRect(1800,400,200,20));
-        painter->drawText(QRect(1800,400,200,20),"ErrorG :"
-                          +QString::number(double(100*this->getError())/this->regionListV()->size()/
-                                           this->regionListV()->size()));
-        painter->eraseRect(QRect(1600,420,200,20));
-        painter->drawText(QRect(1600,420,200,20),"ErrorL :"
-                          +QString::number(this->getLocalYError()));
-        painter->eraseRect(QRect(1800,420,200,20));
-        painter->drawText(QRect(1800,420,200,20),"ErrorG :"
-                          +QString::number(this->getYError()));
         drawSign(painter);
         if(this->getMouseOver()==true)
         {
@@ -2677,4 +2646,9 @@ void Widget::on_start_2_pressed()
 void Widget::on_horizontalSlider_5_valueChanged(int value)
 {
     this->setLocalPercentage(value);
+}
+
+void Widget::on_start_3_clicked()
+{
+    sta->show();
 }

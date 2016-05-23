@@ -33,6 +33,7 @@
 #include<QColorDialog>
 #include<TC_regionfile.h>
 #include<TC_datacolor.h>
+#include<TC_statistics.h>
 using namespace std;
 namespace Ui {
 class Widget;
@@ -275,6 +276,8 @@ private slots:
 
     void on_horizontalSlider_5_valueChanged(int value);
 
+    void on_start_3_clicked();
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -350,6 +353,7 @@ private:
     int m_LoopCount;
     bool m_Step;
     int m_LocalPercentage;
+    TC_statistics * sta;
 
 
 };

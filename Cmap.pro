@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     TC_region.cpp \
     TC_regionfile.cpp \
     TC_treemap.cpp \
-    TC_widget.cpp
+    TC_widget.cpp \
+    TC_statistics.cpp
 
 HEADERS  += \
     block.h \
@@ -47,8 +48,10 @@ HEADERS  += \
     TC_widget.h \
     TC_rectholder.h \
     TC_region.h \
-    TC_regionfile.h
+    TC_regionfile.h \
+    TC_statistics.h
 
 FORMS    += widget.ui \
     treemap.ui \
-    areatreemap.ui
+    areatreemap.ui \
+    TC_statistics.ui
