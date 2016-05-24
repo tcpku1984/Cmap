@@ -100,6 +100,8 @@ Widget::Widget(QWidget *parent) :
     this->setYError(0);
     this->setLocalYError(0);
     this->setStep(false);
+    this->setXcross(true);
+    this->setYcross(true);
     this->setLocalPercentage(20);
     refreshColor();
     sta=new TC_statistics();
@@ -884,22 +886,32 @@ void Widget::regionIncrease2()
         }
     }
     overlapRemove();
-    qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
-          XOrder);
-    qSort(this->getCurrentYregion()->begin(),this->getCurrentYregion()->end(),
-          YOrder);
-    this->setError(this->getError()+
-                   errorCount(this->getLastregion(),this->getCurrentregion()));
-    this->getLastregion()->clear();
-    this->setYError(this->getYError()+
-                   errorYCount(this->getLastYregion(),this->getCurrentYregion()));
-    this->getLastYregion()->clear();
-    for(int i=0;i<this->getCurrentregion()->size();i++)
+    if(this->getXcross()==true)
     {
-        this->getLastregion()->append(
-                    this->getCurrentregion()->at(i));
-        this->getLastYregion()->append(
-                    this->getCurrentYregion()->at(i));
+        qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
+              XOrder);
+        this->setError(this->getError()+
+                       errorCount(this->getLastregion(),this->getCurrentregion()));
+        this->getLastregion()->clear();
+        for(int i=0;i<this->getCurrentregion()->size();i++)
+        {
+            this->getLastregion()->append(
+                        this->getCurrentregion()->at(i));
+        }
+    }
+    if(this->getYcross()==true)
+    {
+        qSort(this->getCurrentYregion()->begin(),this->getCurrentYregion()->end(),
+              YOrder);
+
+        this->setYError(this->getYError()+
+                       errorYCount(this->getLastYregion(),this->getCurrentYregion()));
+        this->getLastYregion()->clear();
+        for(int i=0;i<this->getCurrentregion()->size();i++)
+        {
+            this->getLastYregion()->append(
+                        this->getCurrentYregion()->at(i));
+        }
     }
 
     if(count>=this->searchRange())
@@ -1845,6 +1857,26 @@ int Widget::errorYCount(QList<Region *> *r1, QList<Region *> *r2)
     }
 }
 
+bool Widget::getYcross() const
+{
+    return m_Ycross;
+}
+
+void Widget::setYcross(bool Ycross)
+{
+    m_Ycross = Ycross;
+}
+
+bool Widget::getXcross() const
+{
+    return m_Xcross;
+}
+
+void Widget::setXcross(bool Xcross)
+{
+    m_Xcross = Xcross;
+}
+
 int Widget::getYError() const
 {
     return m_YError;
@@ -2651,4 +2683,29 @@ void Widget::on_horizontalSlider_5_valueChanged(int value)
 void Widget::on_start_3_clicked()
 {
     sta->show();
+}
+
+void Widget::on_checkBox_14_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setXcross(true);
+    }
+    else
+    {
+        this->setXcross(false);
+    }
+}
+
+void Widget::on_checkBox_15_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setYcross(true);
+    }
+    else
+    {
+        this->setXcross(false);
+    }
+
 }

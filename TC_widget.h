@@ -221,6 +221,12 @@ public:
     int getYError() const;
     void setYError(int YError);
 
+    bool getXcross() const;
+    void setXcross(bool Xcross);
+
+    bool getYcross() const;
+    void setYcross(bool Ycross);
+
 public slots:
     void animate();
 
@@ -277,6 +283,10 @@ private slots:
     void on_horizontalSlider_5_valueChanged(int value);
 
     void on_start_3_clicked();
+
+    void on_checkBox_14_toggled(bool checked);
+
+    void on_checkBox_15_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -354,6 +364,8 @@ private:
     bool m_Step;
     int m_LocalPercentage;
     TC_statistics * sta;
+    bool m_Xcross;
+    bool m_Ycross;
 
 
 };
