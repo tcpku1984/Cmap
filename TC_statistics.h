@@ -45,6 +45,12 @@ public:
     QString getGlobelYErrorP() const;
     void setGlobelYErrorP(const QString &value);
 
+    QString getGlobelTError() const;
+    void setGlobelTError(const QString &value);
+
+    QString getLocalTError() const;
+    void setLocalTError(const QString &value);
+
 private:
     Ui::TC_statistics *ui;
     QString size;
@@ -56,6 +62,8 @@ private:
     QString globelErrorP;
     QString localYErrorP;
     QString globelYErrorP;
+    QString globelTError;
+    QString localTError;
 
 };
 

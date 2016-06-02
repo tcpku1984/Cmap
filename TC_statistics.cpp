@@ -15,6 +15,8 @@ TC_statistics::TC_statistics(QWidget *parent) :
     this->setGlobelErrorP("0");
     this->setLocalYErrorP("0");
     this->setGlobelYErrorP("0");
+    this->setGlobelTError("0");
+    this->setLocalTError("0");
 }
 
 TC_statistics::~TC_statistics()
@@ -33,30 +35,36 @@ void TC_statistics::paintEvent(QPaintEvent *event)
      painter->eraseRect(QRect(20,50,200,20));
      painter->drawText(QRect(20,50,200,20),"Original percentage : 18.5");
      painter->eraseRect(QRect(20,70,200,20));
-     painter->drawText(QRect(20,70,200,20),"VErrorL :"
+     painter->drawText(QRect(20,70,200,20),"W/E ErrorL :"
                        +this->getLocalError());
      painter->eraseRect(QRect(220,50,200,20));
      painter->drawText(QRect(220,50,200,20),"Percentage :"+this->getSize());
      painter->eraseRect(QRect(220,70,200,20));
-     painter->drawText(QRect(220,70,200,20),"VErrorG :"+this->getGlobelError());
+     painter->drawText(QRect(220,70,200,20),"W/E ErrorG :"+this->getGlobelError());
      painter->eraseRect(QRect(20,90,200,20));
-     painter->drawText(QRect(20,90,200,20),"VErrorL :"
+     painter->drawText(QRect(20,90,200,20),"W/E ErrorL :"
                        +this->getLocalErrorP());
      painter->eraseRect(QRect(220,90,200,20));
-     painter->drawText(QRect(220,90,200,20),"VErrorG :"
+     painter->drawText(QRect(220,90,200,20),"W/E ErrorG :"
                        +this->getGlobelErrorP());
      painter->eraseRect(QRect(20,110,200,20));
-     painter->drawText(QRect(20,110,200,20),"HErrorL :"
+     painter->drawText(QRect(20,110,200,20),"N/S ErrorL :"
                        +this->getLocalYError());
      painter->eraseRect(QRect(220,110,200,20));
-     painter->drawText(QRect(220,110,200,20),"HErrorG :"
+     painter->drawText(QRect(220,110,200,20),"N/S ErrorG :"
                        +this->getGlobelYError());
      painter->eraseRect(QRect(20,130,200,20));
-     painter->drawText(QRect(20,130,200,20),"HErrorL :"
+     painter->drawText(QRect(20,130,200,20),"N/S ErrorL :"
                        +this->getLocalYErrorP());
      painter->eraseRect(QRect(220,130,200,20));
-     painter->drawText(QRect(220,130,200,20),"HErrorG :"
+     painter->drawText(QRect(220,130,200,20),"N/S ErrorG :"
                        +this->getGlobelYErrorP());
+     painter->eraseRect(QRect(20,150,200,20));
+     painter->drawText(QRect(20,150,200,20),"Total ErrorL :"
+                       +this->getLocalTError());
+     painter->eraseRect(QRect(220,150,200,20));
+     painter->drawText(QRect(220,150,200,20),"Total ErrorG :"
+                       +this->getGlobelTError());
 
 }
 
@@ -148,4 +156,24 @@ QString TC_statistics::getGlobelYErrorP() const
 void TC_statistics::setGlobelYErrorP(const QString &value)
 {
     globelYErrorP = value;
+}
+
+QString TC_statistics::getGlobelTError() const
+{
+    return globelTError;
+}
+
+void TC_statistics::setGlobelTError(const QString &value)
+{
+    globelTError = value;
+}
+
+QString TC_statistics::getLocalTError() const
+{
+    return localTError;
+}
+
+void TC_statistics::setLocalTError(const QString &value)
+{
+    localTError = value;
 }

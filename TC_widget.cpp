@@ -160,12 +160,6 @@ Widget::Widget(QWidget *parent) :
     qSort(this->getLastYregion()->begin(),this->getLastYregion()->end(),
           YOrder);
     errorCount(this->getLastYregion(),this->getCurrentYregion());
-    /*
-    for(int i=0;i<this->regionListV()->size();i++)
-    {
-        cout<<this->regionListV()->at(i)->getVOrder()<<" Horder : "<<
-        this->regionListV()->at(i)->getHOrder()<<endl;
-    }*/
     m_Datacolor=new dataColor();
     this->regionColor=m_Datacolor->getRegionColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
@@ -264,6 +258,15 @@ void Widget::paintCCg(QPainter *painter)
                                              /this->regionListV()->size()));
         sta->setGlobelYErrorP(QString::number(double(100*this->getYError())/this->regionListV()->size()
                                              /this->regionListV()->size()));
+        sta->setLocalTError(QString::number(double(100*this->getLocalError())
+                                            /this->regionListV()->size()/this->regionListV()->size()
+                                            +double(100*this->getLocalYError())
+                                            /this->regionListV()->size()/this->regionListV()->size()));
+        sta->setGlobelTError(QString::number(double(100*this->getError())
+                                            /this->regionListV()->size()/this->regionListV()->size()
+                                            +double(100*this->getYError())
+                                            /this->regionListV()->size()/this->regionListV()->size()));
+
         sta->update();
     }
     if(this->getFinished())
@@ -451,8 +454,8 @@ void Widget::paintCCg(QPainter *painter)
             {
                 for(int z=0;z<this->regionListV()->at(i)->getCrossing()->size();z++)
                 {
-                    if(true)
-                    //if(this->regionListV()->at(i)->X()<this->regionListV()->at(i)->getCrossing()->at(z)->X())
+                    //if(true)
+                    if(this->regionListV()->at(i)->X()<this->regionListV()->at(i)->getCrossing()->at(z)->X())
                     {
                         painter->setPen(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
                         QLineF line=QLineF(QPointF(this->regionListV()->at(i)->X()+
@@ -465,7 +468,7 @@ void Widget::paintCCg(QPainter *painter)
                                                    this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
                         if(line.length()<double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100)
                         {
-                            painter->setPen(Qt::red);
+                            painter->setPen(Qt::gray);
                         }
 
                         else
@@ -479,9 +482,9 @@ void Widget::paintCCg(QPainter *painter)
                                                       this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
                                                       this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
                                                       this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2));
-                            grad.setColorAt(0,Qt::red);
+                            grad.setColorAt(0,Qt::gray);
                             grad.setColorAt(double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()
-                                            ,Qt::red);
+                                            ,Qt::gray);
                             //cout<<double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()<<endl;
                             grad.setColorAt(double(this->getLocalPercentage())*(SOUTHBOUND-NORTHBOUND)/100/line.length()+0.000001
                                             ,regionColor.at(this->regionListV()->at(i)->getColorIndex()));
