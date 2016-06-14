@@ -27,6 +27,7 @@ enum{
     WESTBOUND=10,
     EASTBOUND=1650,
     HALFSIZE=105,
+    HALFSIZEA=13,
     TEXTX=1760,
     SIGNX=1680
 };
@@ -215,11 +216,11 @@ void Widget::paintCCg(QPainter *painter)
                                this->regionListV()->at(i)->Y(),
                                this->regionListV()->at(i)->getSize(),
                                this->regionListV()->at(i)->getSize()));
-            painter->drawText(QRectF(this->regionListV()->at(i)->X(),
+           /* painter->drawText(QRectF(this->regionListV()->at(i)->X(),
                                      this->regionListV()->at(i)->Y(),
                                      this->regionListV()->at(i)->getSize(),
                                      this->regionListV()->at(i)->getSize()), QString::number(
-                                  this->regionListV()->at(i)->getError()));
+                                  this->regionListV()->at(i)->getError()));*/
 
         }
         else
@@ -516,6 +517,15 @@ void Widget::paintArea(QPainter *painter)
                            this->getAreaGroup()->at(i)->Size(),
                            this->getAreaGroup()->at(i)->Size()));
     }
+    double size=0;
+    for(int i=0;i<this->getAreaGroup()->size();i++)
+    {
+        size+=this->getAreaGroup()->at(i)->Size()
+                *this->getAreaGroup()->at(i)->Size();
+    }
+    size=size*100/(SOUTHBOUND-NORTHBOUND)/(EASTBOUND-WESTBOUND);
+    sta->setSize(QString::number(size));
+    sta->update();
     if(this->getFinished()==true)
     {
         painter->setBrush(Qt::NoBrush);
@@ -955,6 +965,52 @@ void Widget::areaIncrease()
             }
         }
      }
+    for(int i=0;i<this->getAreaGroup()->size();i++)
+    {
+        if(this->getAreaGroup()->at(i)->Y()<NORTHBOUND
+                &this->getAreaGroup()->at(i)->X()<this->getAreaGroup()->at(HALFSIZEA)->X())
+        {
+            qreal temp=NORTHBOUND-this->getAreaGroup()->at(i)->Y();
+            this->getAreaGroup()->at(i)->setX(this->getAreaGroup()->at(i)->X()-temp);
+            this->getAreaGroup()->at(i)->setY(NORTHBOUND);
+        }
+        if(this->getAreaGroup()->at(i)->Y()<NORTHBOUND
+                &this->getAreaGroup()->at(i)->X()>=this->getAreaGroup()->at(HALFSIZEA)->X())
+        {
+            qreal temp=NORTHBOUND-this->regionListV()->at(i)->Y();
+            this->getAreaGroup()->at(i)->setX(this->getAreaGroup()->at(i)->X()+temp);
+            this->getAreaGroup()->at(i)->setY(NORTHBOUND);
+
+        }
+        if(this->getAreaGroup()->at(i)->Y()>SOUTHBOUND
+                &this->getAreaGroup()->at(i)->X()<this->getAreaGroup()->at(HALFSIZEA)->X())
+        {
+            qreal temp=this->getAreaGroup()->at(i)->Y()-SOUTHBOUND;
+            this->getAreaGroup()->at(i)->setX(this->getAreaGroup()->at(i)->X()-temp);
+            this->getAreaGroup()->at(i)->setY(SOUTHBOUND);
+
+        }
+        if(this->getAreaGroup()->at(i)->Y()>SOUTHBOUND
+                &this->getAreaGroup()->at(i)->X()>=this->getAreaGroup()->at(HALFSIZEA)->X())
+        {
+            qreal temp=this->getAreaGroup()->at(i)->Y()-SOUTHBOUND;
+            this->getAreaGroup()->at(i)->setX(this->getAreaGroup()->at(i)->X()+temp);
+            this->getAreaGroup()->at(i)->setY(SOUTHBOUND);
+        }
+
+        if(this->getAreaGroup()->at(i)->X()<WESTBOUND)
+        {
+                overlapRemoveArea();
+                timer->stop();
+                this->setFinished(true);
+         }
+        if(this->getAreaGroup()->at(i)->X()>EASTBOUND)
+        {
+                overlapRemoveArea();
+                timer->stop();
+                this->setFinished(true);
+         }
+    }
     overlapRemoveArea();
     if(count>=this->getAreaGroup()->size())
     {

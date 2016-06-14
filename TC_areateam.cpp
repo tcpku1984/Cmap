@@ -8,8 +8,8 @@
 enum{
     RATHH=400,
     RATHV=600,
-    HH=-200,
-    VV=1000
+    HH=-400,
+    VV=1050
 };
 AreaTeam::AreaTeam()
 {
