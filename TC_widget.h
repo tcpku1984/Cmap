@@ -227,6 +227,21 @@ public:
     bool getYcross() const;
     void setYcross(bool Ycross);
 
+    QList<AreaTeam *> *getLastregionA() const;
+    void setLastregionA(QList<AreaTeam *> *LastregionA);
+
+    QList<AreaTeam *> *getCurrentregionA() const;
+    void setCurrentregionA(QList<AreaTeam *> *CurrentregionA);
+
+    QList<AreaTeam *> *getLastYregionA() const;
+    void setLastYregionA(QList<AreaTeam *> *LastYregionA);
+
+    QList<AreaTeam *> *getCurrentYregionA() const;
+    void setCurrentYregionA(QList<AreaTeam *> *CurrentYregionA);
+
+    bool getBColor() const;
+    void setBColor(bool BColor);
+
 public slots:
     void animate();
 
@@ -288,6 +303,8 @@ private slots:
 
     void on_checkBox_15_toggled(bool checked);
 
+    void on_checkBox_16_toggled(bool checked);
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -309,6 +326,8 @@ private:
     void refreshColor();
     int errorCount(QList<Region *> * r1, QList<Region *> * r2);
     int errorYCount(QList<Region *> * r1, QList<Region *> * r2);
+    int errorCountA(QList<AreaTeam *> * r1, QList<AreaTeam *> * r2);
+    int errorYCountA(QList<AreaTeam *> * r1, QList<AreaTeam *> * r2);
     //void moveWest();
 
 
@@ -319,6 +338,11 @@ private:
     QList <Region *> * m_Currentregion;
     QList <Region *> * m_LastYregion;
     QList <Region *> * m_CurrentYregion;
+
+    QList <AreaTeam *> * m_LastregionA;
+    QList <AreaTeam *> * m_CurrentregionA;
+    QList <AreaTeam *> * m_LastYregionA;
+    QList <AreaTeam *> * m_CurrentYregionA;
     int count;
     int index;
     int m_increaseSize;
@@ -366,6 +390,7 @@ private:
     TC_statistics * sta;
     bool m_Xcross;
     bool m_Ycross;
+    bool m_BColor;
 
 
 };

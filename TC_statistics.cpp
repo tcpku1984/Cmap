@@ -1,3 +1,9 @@
+/**
+  * @file TC_statistics.cpp
+  * @author Chao Tong
+  * @date 10 June 2016
+  * @see TC_statistics.h
+  */
 #include "TC_statistics.h"
 #include "ui_TC_statistics.h"
 

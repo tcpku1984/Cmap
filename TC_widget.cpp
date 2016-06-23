@@ -53,7 +53,16 @@ bool YOrder(Region *r1, Region * r2)
 {
     return r1->Y()>=r2->Y();
 }
+bool XAOrder(AreaTeam *r1, AreaTeam * r2)
+{
+    return r1->X()>=r2->X();
+}
 
+
+bool YAOrder(AreaTeam *r1, AreaTeam * r2)
+{
+    return r1->Y()>=r2->Y();
+}
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
@@ -67,6 +76,11 @@ Widget::Widget(QWidget *parent) :
     m_Lastregion= new QList<Region *>;
     m_CurrentYregion= new QList<Region *>;
     m_LastYregion= new QList<Region *>;
+    m_CurrentregionA=new QList<AreaTeam *>;
+    m_LastregionA=new QList<AreaTeam *>;
+    m_CurrentYregionA=new QList<AreaTeam *>;
+    m_LastYregionA=new QList<AreaTeam *>;
+
     index=0;
     m_increaseSize=1;
     m_regionMaxsize=110;
@@ -104,6 +118,7 @@ Widget::Widget(QWidget *parent) :
     this->setXcross(true);
     this->setYcross(true);
     this->setLocalPercentage(20);
+    this->setBColor(true);
     refreshColor();
     sta=new TC_statistics();
     sta->setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -138,6 +153,10 @@ Widget::Widget(QWidget *parent) :
     for(int i=0; i<this->getAreaGroup()->size();i++)
     {
         this->getAreaGroup()->at(i)->initi();
+        this->getLastregionA()->append(this->getAreaGroup()->at(i));
+        this->getCurrentregionA()->append(this->getAreaGroup()->at(i));
+        this->getLastYregionA()->append(this->getAreaGroup()->at(i));
+        this->getCurrentYregionA()->append(this->getAreaGroup()->at(i));
     }
     qSort(this->regionListH()->begin(),this->regionListH()->end(),
           horizontalOrder);
@@ -160,7 +179,16 @@ Widget::Widget(QWidget *parent) :
           YOrder);
     qSort(this->getLastYregion()->begin(),this->getLastYregion()->end(),
           YOrder);
-    errorCount(this->getLastYregion(),this->getCurrentYregion());
+    errorYCount(this->getLastYregion(),this->getCurrentYregion());
+
+    qSort(this->getCurrentregionA()->begin(),this->getCurrentregionA()->end(),
+          XAOrder);
+    qSort(this->getLastregionA()->begin(),this->getLastregionA()->end(),
+          XAOrder);
+    qSort(this->getCurrentYregionA()->begin(),this->getCurrentYregionA()->end(),
+          YAOrder);
+    qSort(this->getLastYregionA()->begin(),this->getLastYregionA()->end(),
+          YAOrder);
     m_Datacolor=new dataColor();
     this->regionColor=m_Datacolor->getRegionColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
@@ -371,7 +399,15 @@ void Widget::paintCCg(QPainter *painter)
         for(int i=0;i<this->regionListV()->size();i++)
         {
             QPen pen;
-            pen.setBrush(Qt::white);
+            if(this->getBColor()==true)
+            {
+                pen.setBrush(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+            }
+            else
+            {
+                pen.setBrush(Qt::white);
+            }
+
             pen.setWidth(this->getBorder()+2);
             painter->setPen(pen);
             if(this->getScreen()==false)
@@ -525,6 +561,18 @@ void Widget::paintArea(QPainter *painter)
     }
     size=size*100/(SOUTHBOUND-NORTHBOUND)/(EASTBOUND-WESTBOUND);
     sta->setSize(QString::number(size));
+    sta->setGlobelError(QString::number(this->getError()));
+    sta->setGlobelYError(QString::number(this->getYError()));
+    sta->setGlobelErrorP(QString::number(double(100*this->getError())/this->getAreaGroup()->size()
+                                         /this->getAreaGroup()->size()));
+    sta->setGlobelYErrorP(QString::number(double(100*this->getYError())/this->getAreaGroup()->size()
+                                         /this->getAreaGroup()->size()));
+    sta->setGlobelTError(QString::number(double(100*this->getError())
+                                        /this->getAreaGroup()->size()/this->getAreaGroup()->size()
+                                        +double(100*this->getYError())
+                                        /this->getAreaGroup()->size()/this->getAreaGroup()->size()));
+
+
     sta->update();
     if(this->getFinished()==true)
     {
@@ -638,7 +686,14 @@ void Widget::paintArea(QPainter *painter)
                                  rectList->at(j)->L());
 
             }
-            pen.setBrush(Qt::white);
+            if(this->getBColor()==true)
+            {
+                pen.setBrush(regionColor.at(i%13));
+            }
+            else
+            {
+                pen.setBrush(Qt::white);
+            }
             pen.setWidth(this->getBorder()+4);
             painter->setPen(pen);
             painter->drawRect(this->getAreaGroup()->at(i)->X(),
@@ -1012,6 +1067,30 @@ void Widget::areaIncrease()
          }
     }
     overlapRemoveArea();
+    if(this->getXcross()==true)
+    {
+        qSort(this->getCurrentregionA()->begin(),this->getCurrentregionA()->end(),
+              XAOrder);
+        errorCountA(this->getLastregionA(),this->getCurrentregionA());
+        this->getLastregionA()->clear();
+        for(int i=0;i<this->getCurrentregionA()->size();i++)
+        {
+            this->getLastregionA()->append(
+                        this->getCurrentregionA()->at(i));
+        }
+    }
+    if(this->getYcross()==true)
+    {
+        qSort(this->getCurrentYregionA()->begin(),this->getCurrentYregionA()->end(),
+              YAOrder);
+        errorYCountA(this->getLastYregionA(),this->getCurrentYregionA());
+        this->getLastYregionA()->clear();
+        for(int i=0;i<this->getCurrentregionA()->size();i++)
+        {
+            this->getLastYregionA()->append(
+                        this->getCurrentYregionA()->at(i));
+        }
+    }
     if(count>=this->getAreaGroup()->size())
     {
         timer->stop();
@@ -1579,6 +1658,14 @@ void Widget::on_start_pressed()
             {
                 this->getAreaGroup()->at(i)->initi();
             }
+            qSort(this->getCurrentregionA()->begin(),this->getCurrentregionA()->end(),
+                  XAOrder);
+            qSort(this->getLastregionA()->begin(),this->getLastregionA()->end(),
+                  XAOrder);
+            qSort(this->getCurrentYregionA()->begin(),this->getCurrentYregionA()->end(),
+                  YAOrder);
+            qSort(this->getLastYregionA()->begin(),this->getLastYregionA()->end(),
+                  YAOrder);
             this->setFinished(false);
             count=0;
             timer->start(20);
@@ -1915,6 +2002,92 @@ int Widget::errorYCount(QList<Region *> *r1, QList<Region *> *r2)
         return error;
     }
 }
+
+int Widget::errorCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
+{
+    int error=0;
+    for(int i=0;i<r1->size();i++)
+    {
+        if(r1->at(i)->AreaCode()==r2->at(i)->AreaCode())
+        {}
+        else
+        {
+            if(abs(r1->at(i)->X()-r2->at(i)->X())>1)
+            {
+                error=error+1;
+            }
+        }
+    }
+    this->setError(this->getError()+error);
+}
+
+int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
+{
+    int error=0;
+    for(int i=0;i<r1->size();i++)
+    {
+        if(r1->at(i)->AreaCode()==r2->at(i)->AreaCode())
+        {}
+        else
+        {
+            if(abs(r1->at(i)->Y()-r2->at(i)->Y())>1)
+            {
+                error=error+1;
+            }
+        }
+    }
+    this->setYError(this->getYError()+error);
+}
+bool Widget::getBColor() const
+{
+    return m_BColor;
+}
+
+void Widget::setBColor(bool BColor)
+{
+    m_BColor = BColor;
+}
+
+QList<AreaTeam *> *Widget::getCurrentYregionA() const
+{
+    return m_CurrentYregionA;
+}
+
+void Widget::setCurrentYregionA(QList<AreaTeam *> *CurrentYregionA)
+{
+    m_CurrentYregionA = CurrentYregionA;
+}
+
+QList<AreaTeam *> *Widget::getLastYregionA() const
+{
+    return m_LastYregionA;
+}
+
+void Widget::setLastYregionA(QList<AreaTeam *> *LastYregionA)
+{
+    m_LastYregionA = LastYregionA;
+}
+
+QList<AreaTeam *> *Widget::getCurrentregionA() const
+{
+    return m_CurrentregionA;
+}
+
+void Widget::setCurrentregionA(QList<AreaTeam *> *CurrentregionA)
+{
+    m_CurrentregionA = CurrentregionA;
+}
+
+QList<AreaTeam *> *Widget::getLastregionA() const
+{
+    return m_LastregionA;
+}
+
+void Widget::setLastregionA(QList<AreaTeam *> *LastregionA)
+{
+    m_LastregionA = LastregionA;
+}
+
 
 bool Widget::getYcross() const
 {
@@ -2765,6 +2938,19 @@ void Widget::on_checkBox_15_toggled(bool checked)
     else
     {
         this->setXcross(false);
+    }
+
+}
+
+void Widget::on_checkBox_16_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setBColor(true);
+    }
+    else
+    {
+        this->setBColor(false);
     }
 
 }

@@ -1,3 +1,12 @@
+/**
+  *@file TC_statistics.h
+  * @author Chao Tong
+  * @date 10 June 2016
+ * @brief The statistics class
+ * This class is to create a new window
+ * to show the statistics information of cartographic treemap.
+ * It includes space filling percentage , local and global errors.
+  */
 #ifndef TC_STATISTICS_H
 #define TC_STATISTICS_H
 
