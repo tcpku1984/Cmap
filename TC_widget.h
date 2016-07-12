@@ -242,6 +242,9 @@ public:
     bool getBColor() const;
     void setBColor(bool BColor);
 
+    int getOpacity() const;
+    void setOpacity(int Opacity);
+
 public slots:
     void animate();
 
@@ -304,6 +307,8 @@ private slots:
     void on_checkBox_15_toggled(bool checked);
 
     void on_checkBox_16_toggled(bool checked);
+
+    void on_horizontalSlider_6_valueChanged(int value);
 
 private:
     Ui::Widget *ui;
@@ -391,6 +396,7 @@ private:
     bool m_Xcross;
     bool m_Ycross;
     bool m_BColor;
+    int m_Opacity;
 
 
 };

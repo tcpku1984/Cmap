@@ -119,6 +119,7 @@ Widget::Widget(QWidget *parent) :
     this->setYcross(true);
     this->setLocalPercentage(20);
     this->setBColor(true);
+    this->setOpacity(100);
     refreshColor();
     sta=new TC_statistics();
     sta->setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -1390,7 +1391,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.97));
+                                                          0,0.97,double(this->getOpacity())/100));
                         }
                     }
                     else
@@ -1402,7 +1403,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.97));
+                                                          0,0.97,double(this->getOpacity())/100));
                         }
                     }
                 }
@@ -1417,7 +1418,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         if(this->getFilter()==2)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.97));
+                                                          0,0.97,double(this->getOpacity())/100));
                         }
 
                     }
@@ -1430,7 +1431,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         if(this->getFilter()==1)
                         {
                             p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.97));
+                                                          0,0.97,double(this->getOpacity())/100));
                         }
                     }
                 }
@@ -1685,6 +1686,7 @@ void Widget::on_horizontalSlider_valueChanged(int value)
 void Widget::on_horizontalSlider_2_valueChanged(int value)
 {
     this->setRegionMaxsize(value);
+    on_start_pressed();
 }
 
 
@@ -2038,6 +2040,16 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
     }
     this->setYError(this->getYError()+error);
 }
+int Widget::getOpacity() const
+{
+    return m_Opacity;
+}
+
+void Widget::setOpacity(int Opacity)
+{
+    m_Opacity = Opacity;
+}
+
 bool Widget::getBColor() const
 {
     return m_BColor;
@@ -2937,7 +2949,7 @@ void Widget::on_checkBox_15_toggled(bool checked)
     }
     else
     {
-        this->setXcross(false);
+        this->setYcross(false);
     }
 
 }
@@ -2953,4 +2965,9 @@ void Widget::on_checkBox_16_toggled(bool checked)
         this->setBColor(false);
     }
 
+}
+
+void Widget::on_horizontalSlider_6_valueChanged(int value)
+{
+    this->setOpacity(100-value);
 }
