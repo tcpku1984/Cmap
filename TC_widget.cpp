@@ -245,11 +245,11 @@ void Widget::paintCCg(QPainter *painter)
                                this->regionListV()->at(i)->Y(),
                                this->regionListV()->at(i)->getSize(),
                                this->regionListV()->at(i)->getSize()));
-           /* painter->drawText(QRectF(this->regionListV()->at(i)->X(),
+           painter->drawText(QRectF(this->regionListV()->at(i)->X(),
                                      this->regionListV()->at(i)->Y(),
                                      this->regionListV()->at(i)->getSize(),
                                      this->regionListV()->at(i)->getSize()), QString::number(
-                                  this->regionListV()->at(i)->getError()));*/
+                                  this->regionListV()->at(i)->getError()));
 
         }
         else
@@ -1686,7 +1686,7 @@ void Widget::on_horizontalSlider_valueChanged(int value)
 void Widget::on_horizontalSlider_2_valueChanged(int value)
 {
     this->setRegionMaxsize(value);
-    on_start_pressed();
+    //on_start_pressed();
 }
 
 
