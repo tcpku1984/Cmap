@@ -134,6 +134,9 @@ Widget::Widget(QWidget *parent) :
     regionFile* file=new regionFile();
     file->readfile();
     this->setRegionListV(file->regionList());
+    this->setPopulation(file->populiation());
+    this->setAreaGroup(file->AreaGroup());
+    this->setAveragePrevlance(file->AveragePrevlance());
     for(int i=0;i<this->regionListV()->size();i++)
     {
        this->regionListH()->append(this->regionListV()->at(i));
@@ -146,9 +149,7 @@ Widget::Widget(QWidget *parent) :
         this->getLastYregion()->append(this->regionListV()->at(i));
         this->getCurrentYregion()->append(this->regionListV()->at(i));
     }
-    this->setPopulation(file->populiation());
-    this->setAreaGroup(file->AreaGroup());
-    this->setAveragePrevlance(file->AveragePrevlance());
+
     cout<<"ccg size:"<<this->regionListH()->size()<<endl;
     cout<<"area number :"<<this->getAreaGroup()->size()<<endl;
     for(int i=0; i<this->getAreaGroup()->size();i++)
@@ -161,12 +162,13 @@ Widget::Widget(QWidget *parent) :
     }
     qSort(this->regionListH()->begin(),this->regionListH()->end(),
           horizontalOrder);
+    qSort(this->regionListV()->begin(),this->regionListV()->end(),
+                                 verticalOrder);
     for(int i=0;i<this->regionListH()->size();i++)
     {
         this->regionListH()->at(i)->setHOrder(i);
     }
-    qSort(this->regionListV()->begin(),this->regionListV()->end(),
-          verticalOrder);
+
     for(int i=0;i<this->regionListV()->size();i++)
     {
         this->regionListV()->at(i)->setVOrder(i);
@@ -1610,6 +1612,23 @@ void Widget::on_start_pressed()
         this->getLastregion()->clear();
         this->getCurrentYregion()->clear();
         this->getLastYregion()->clear();
+        this->regionListV()->clear();
+        this->regionListH()->clear();
+        this->getAreaGroup()->clear();
+        regionFile* file=new regionFile();
+        file->readfile();
+        this->setRegionListV(file->regionList());
+        this->setPopulation(file->populiation());
+        this->setAreaGroup(file->AreaGroup());
+        for(int i=0;i<this->regionListV()->size();i++)
+        {
+           this->regionListH()->append(this->regionListV()->at(i));
+
+        }
+        qSort(this->regionListH()->begin(),this->regionListH()->end(),
+              horizontalOrder);
+        qSort(this->regionListV()->begin(),this->regionListV()->end(),
+                                     verticalOrder);
         if(this->getGroup()==false)
         {
             for(int i=0;i<this->regionListV()->size();i++)
@@ -1644,6 +1663,8 @@ void Widget::on_start_pressed()
 
             count=0;
             index=0;
+
+
             if(this->getAlgorithm()==false)
             {
                 timer->start();
