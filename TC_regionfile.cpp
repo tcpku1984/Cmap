@@ -25,11 +25,22 @@ regionFile::regionFile()
 
 }
 
-void regionFile::readfile()
+void regionFile::readfile(int year)
 {
     regionFile();
     ifstream inFlow;
-    inFlow.open("D:/qtproject/Cmap/centerp3.csv");
+    if(year==2011)
+    {
+        inFlow.open("D:/qtproject/Cmap/centerp2011.csv");
+    }
+    else if(year==2012)
+    {
+        inFlow.open("D:/qtproject/Cmap/centerp2012.csv");
+    }
+    else
+    {
+        inFlow.open("D:/qtproject/Cmap/centerp2013.csv");
+    }
     string input;
     int i = 0;
 
@@ -40,7 +51,9 @@ void regionFile::readfile()
     else
     {
     cout << "\n Reading" <<endl;
+    cout<<year<<endl;
     }
+
     while (!inFlow.eof())
     {
         //cout<<i<<"region"<<endl;
@@ -59,6 +72,11 @@ void regionFile::readfile()
         {
             getline(inFlow,input, ',');
             double b=atof(input.c_str());
+            if(b<0.01||b>30)
+            {
+                cout<<b<<endl;
+                b=0.05;
+            }
             this->AveragePrevlance()->replace(j,
                                               this->AveragePrevlance()->at(j)+b);
             tempList->append(b);
@@ -94,6 +112,7 @@ void regionFile::readfile()
 
     }
     inFlow.close();
+    cout<<"Reading finished"<<endl;
 
     for(int i=0;i<14;i++)
     {

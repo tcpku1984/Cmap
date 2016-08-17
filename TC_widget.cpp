@@ -86,6 +86,7 @@ Widget::Widget(QWidget *parent) :
     m_regionMaxsize=110;
     m_searchRange=209;
     m_population=0;
+    m_dataYear=2013;
     this->setLoopCount(1);
     m_border=1;
     this->setColor(0);
@@ -132,7 +133,7 @@ Widget::Widget(QWidget *parent) :
 
     ui->setupUi(this);
     regionFile* file=new regionFile();
-    file->readfile();
+    file->readfile(this->getDataYear());
     this->setRegionListV(file->regionList());
     this->setPopulation(file->populiation());
     this->setAreaGroup(file->AreaGroup());
@@ -1616,7 +1617,7 @@ void Widget::on_start_pressed()
         this->regionListH()->clear();
         this->getAreaGroup()->clear();
         regionFile* file=new regionFile();
-        file->readfile();
+        file->readfile(this->getDataYear());
         this->setRegionListV(file->regionList());
         this->setPopulation(file->populiation());
         this->setAreaGroup(file->AreaGroup());
@@ -2060,6 +2061,16 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
         }
     }
     this->setYError(this->getYError()+error);
+}
+
+int Widget::getDataYear() const
+{
+    return m_dataYear;
+}
+
+void Widget::setDataYear(int dataYear)
+{
+    m_dataYear = dataYear;
 }
 int Widget::getOpacity() const
 {
@@ -2991,4 +3002,9 @@ void Widget::on_checkBox_16_toggled(bool checked)
 void Widget::on_horizontalSlider_6_valueChanged(int value)
 {
     this->setOpacity(100-value);
+}
+
+void Widget::on_comboBox_3_currentIndexChanged(int index)
+{
+    this->setDataYear(2011+index);
 }

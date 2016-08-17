@@ -245,6 +245,9 @@ public:
     int getOpacity() const;
     void setOpacity(int Opacity);
 
+    int getDataYear() const;
+    void setDataYear(int dataYear);
+
 public slots:
     void animate();
 
@@ -309,6 +312,8 @@ private slots:
     void on_checkBox_16_toggled(bool checked);
 
     void on_horizontalSlider_6_valueChanged(int value);
+
+    void on_comboBox_3_currentIndexChanged(int index);
 
 private:
     Ui::Widget *ui;
@@ -397,6 +402,7 @@ private:
     bool m_Ycross;
     bool m_BColor;
     int m_Opacity;
+    int m_dataYear;
 
 
 };

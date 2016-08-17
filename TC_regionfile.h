@@ -18,7 +18,7 @@ class regionFile
 {
 public:
     regionFile();
-    void readfile();
+    void readfile(int year);
     QList<Region *> *regionList() const;
     void setRegionList(QList<Region *> *regionList);
 

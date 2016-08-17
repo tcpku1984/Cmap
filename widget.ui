@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -313,6 +313,34 @@
      <property name="text">
       <string>Corner Boundaries</string>
      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_3">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>40</y>
+       <width>69</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentText">
+      <string>2013</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>2011</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2012</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2013</string>
+      </property>
+     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
