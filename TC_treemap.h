@@ -84,6 +84,9 @@ public:
     QList<QString> getHealthName() const;
     void setHealthName(const QList<QString> &HealthName);
 
+    int getAspectRatio() const;
+    void setAspectRatio(int aspectRatio);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -123,6 +126,7 @@ private:
     int m_mouseIndex;
     QList<QString> m_HealthName;
     dataColor * m_Datacolor;
+    int m_aspectRatio;
 
 };
 

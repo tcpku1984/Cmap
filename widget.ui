@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -324,7 +324,7 @@
       </rect>
      </property>
      <property name="currentText">
-      <string>2013</string>
+      <string>2011</string>
      </property>
      <item>
       <property name="text">
@@ -605,7 +605,7 @@
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>110</y>
+       <y>50</y>
        <width>121</width>
        <height>20</height>
       </rect>
@@ -615,6 +615,88 @@
      </property>
      <property name="checked">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QSlider" name="horizontalSlider_7">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>130</y>
+       <width>140</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>20</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
+     </property>
+     <property name="pageStep">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+     <property name="sliderPosition">
+      <number>1</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>100</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Aspect ratio</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::RichText</enum>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_6">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>130</y>
+       <width>46</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>20</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+     <property name="displayIntegerBase">
+      <number>10</number>
      </property>
     </widget>
    </widget>
@@ -994,8 +1076,8 @@
      <y>93</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1707</x>
-     <y>116</y>
+     <x>1782</x>
+     <y>96</y>
     </hint>
    </hints>
   </connection>
@@ -1010,8 +1092,8 @@
      <y>163</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1707</x>
-     <y>196</y>
+     <x>1782</x>
+     <y>166</y>
     </hint>
    </hints>
   </connection>
@@ -1022,12 +1104,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1761</x>
+     <x>1751</x>
      <y>233</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1707</x>
-     <y>256</y>
+     <x>1782</x>
+     <y>236</y>
     </hint>
    </hints>
   </connection>
@@ -1042,8 +1124,8 @@
      <y>263</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1577</x>
-     <y>296</y>
+     <x>1622</x>
+     <y>266</y>
     </hint>
    </hints>
   </connection>
@@ -1058,8 +1140,24 @@
      <y>253</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1781</x>
-     <y>281</y>
+     <x>1852</x>
+     <y>266</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_7</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_6</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1744</x>
+     <y>177</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1868</x>
+     <y>175</y>
     </hint>
    </hints>
   </connection>

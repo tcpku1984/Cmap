@@ -80,6 +80,7 @@ Widget::Widget(QWidget *parent) :
     m_LastregionA=new QList<AreaTeam *>;
     m_CurrentYregionA=new QList<AreaTeam *>;
     m_LastYregionA=new QList<AreaTeam *>;
+    this->setAspectRatio(1);
 
     index=0;
     m_increaseSize=1;
@@ -1159,6 +1160,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setFont(this->getFont());
               t->setCgroup(this->getCgroup());
               t->setFilter(this->getFilter());
+              t->setAspectRatio(this->getAspectRatio());
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
@@ -1333,6 +1335,11 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
     for(number=0;number<data->size()-pos;number++)
     {
         temp=calRatio(width,length,pos,number,data);
+        if(temp<this->getAspectRatio())
+        {
+            number++;
+            break;
+        }
         if(temp<ratio)
         {
             ratio=temp;
@@ -2061,6 +2068,16 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
         }
     }
     this->setYError(this->getYError()+error);
+}
+
+int Widget::getAspectRatio() const
+{
+    return m_aspectRatio;
+}
+
+void Widget::setAspectRatio(int aspectRatio)
+{
+    m_aspectRatio = aspectRatio;
 }
 
 int Widget::getDataYear() const
@@ -3007,4 +3024,10 @@ void Widget::on_horizontalSlider_6_valueChanged(int value)
 void Widget::on_comboBox_3_currentIndexChanged(int index)
 {
     this->setDataYear(2011+index);
+}
+
+void Widget::on_horizontalSlider_7_valueChanged(int value)
+{
+    this->setAspectRatio(value);
+    update();
 }

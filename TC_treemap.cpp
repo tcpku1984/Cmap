@@ -32,6 +32,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setMouseY(0);
     this->setMouseIndex(0);
     this->setMouseTracking(true);
+    this->setAspectRatio(1);
     m_Datacolor=new dataColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
                <<"Chronic-kidney-disease"<<"Diabetes"<<"Hypertension"
@@ -193,6 +194,11 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
     for(number=0;number<data->size()-pos;number++)
     {
         temp=calRatio(width,length,pos,number,data);
+        if(temp<this->getAspectRatio())
+        {
+            number++;
+            break;
+        }
         if(temp<ratio)
         {
             ratio=temp;
@@ -495,6 +501,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
     return ratio;
 
 
+}
+
+int treeMap::getAspectRatio() const
+{
+    return m_aspectRatio;
+}
+
+void treeMap::setAspectRatio(int aspectRatio)
+{
+    m_aspectRatio = aspectRatio;
 }
 QList<QString> treeMap::getHealthName() const
 {

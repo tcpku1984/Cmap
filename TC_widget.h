@@ -248,6 +248,9 @@ public:
     int getDataYear() const;
     void setDataYear(int dataYear);
 
+    int getAspectRatio() const;
+    void setAspectRatio(int aspectRatio);
+
 public slots:
     void animate();
 
@@ -314,6 +317,8 @@ private slots:
     void on_horizontalSlider_6_valueChanged(int value);
 
     void on_comboBox_3_currentIndexChanged(int index);
+
+    void on_horizontalSlider_7_valueChanged(int value);
 
 private:
     Ui::Widget *ui;
@@ -403,6 +408,7 @@ private:
     bool m_BColor;
     int m_Opacity;
     int m_dataYear;
+    int m_aspectRatio;
 
 
 };
