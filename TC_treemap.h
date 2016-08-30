@@ -87,6 +87,9 @@ public:
     int getAspectRatio() const;
     void setAspectRatio(int aspectRatio);
 
+    QList<Region *> *getRegionList() const;
+    void setRegionList(QList<Region *> *value);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -127,6 +130,7 @@ private:
     QList<QString> m_HealthName;
     dataColor * m_Datacolor;
     int m_aspectRatio;
+    QList<Region *> * regionList;
 
 };
 

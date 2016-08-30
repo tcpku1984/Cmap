@@ -31,12 +31,16 @@ public:
     int populiation() const;
     void setPopuliation(int populiation);
 
+    bool display() const;
+    void setDisplay(bool display);
+
 private:
     int searchAreaCode(QString code);
     QList < Region *> * m_regionList;
     int m_populiation;
     QList <AreaTeam *>  * m_AreaGroup;
     QList<double> * m_AveragePrevlance;
+    bool m_display;
 
 };
 

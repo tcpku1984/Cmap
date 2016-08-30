@@ -366,6 +366,9 @@ qreal areaTreemap::calRatio(qreal w, qreal l, int pos, int number, QList<double>
     return ratio;
 }
 
+
+
+
 int areaTreemap::getFilter() const
 {
     return m_Filter;

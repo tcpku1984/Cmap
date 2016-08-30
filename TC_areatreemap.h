@@ -11,6 +11,8 @@
 #include <TC_areateam.h>
 #include<QMouseEvent>
 #include<TC_datacolor.h>
+#include<TC_regionfile.h>
+#include<TC_region.h>
 namespace Ui {
 class areaTreemap;
 }
@@ -75,6 +77,8 @@ public:
     int getFilter() const;
     void setFilter(int Filter);
 
+
+
 private:
     Ui::areaTreemap *ui;
     AreaTeam * m_Area;
@@ -96,6 +100,7 @@ private:
     bool m_Cgroup;
     int m_Filter;
     dataColor *m_Datacolor;
+
 private slots:
     void windowClose();
 

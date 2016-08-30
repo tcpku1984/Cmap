@@ -20,6 +20,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     m_lookAhead=false;
     m_ratioTemp=0;
     m_totalAsp=0;
+    regionList=new QList<Region *>;
     this->setMapDifference(true);
     this->setBorder(4);
     ui->setupUi(this);
@@ -222,6 +223,24 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
             if(layer==2)
             {
+                p->fillRect(rect,Qt::white);
+                QList <QRectF> * rectListTemp=new QList<QRectF>;
+                double max=-1;
+                for(int z=0;z<3;z++)
+                {
+                    if(max<this->getRegionList()->at(z)->healthData()->at(i))
+                    {
+                        max=this->getRegionList()->at(z)->healthData()->at(i);
+                    }
+                }
+                for(int z=0;z<3;z++)
+                {
+                    QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
+                                        y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                        double(fabs(data->at(i))*width/value)/3,
+                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                    rectListTemp->append(rectTemp);
+                }
                 if(this->getGradient()==false)
                 {
                     QLinearGradient grad(tempx,y,
@@ -233,7 +252,11 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      0.5,1));
-                    p->fillRect(rect,grad);
+                    //p->fillRect(rect,grad);
+                    for(int z=0;z<3;z++)
+                    {
+                        p->fillRect(rectListTemp->at(z),grad);
+                    }
                 }
                 else
                 {
@@ -247,7 +270,11 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.7));
-                    p->fillRect(rect,grad);
+                    //p->fillRect(rect,grad);
+                    for(int z=0;z<3;z++)
+                    {
+                        p->fillRect(rectListTemp->at(z),grad);
+                    }
                 }
                 if(this->getMapDifference()==false)
                 {
@@ -259,8 +286,12 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
-                            p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.97));
+                            //p->fillRect(rect,QColor::fromHsvF(0,
+                              //                            0,0.97));
+                            for(int z=0;z<3;z++)
+                            {
+                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                            }
                         }
 
                     }
@@ -272,9 +303,13 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
-                            p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.97));
-                        }
+                            //p->fillRect(rect,QColor::fromHsvF(0,
+                              //                            0,0.97));
+
+                            for(int z=0;z<3;z++)
+                            {
+                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                            }}
                     }
                 }
                 else
@@ -287,8 +322,12 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
-                            p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.97));
+                            //p->fillRect(rect,QColor::fromHsvF(0,
+                              //                            0,0.97));
+                            for(int z=0;z<3;z++)
+                            {
+                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                            }
                         }
 
                     }
@@ -300,9 +339,13 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
-                            p->fillRect(rect,QColor::fromHsvF(0,
-                                                          0,0.97));
-                        }
+                            //p->fillRect(rect,QColor::fromHsvF(0,
+                                //                          0,0.97));
+
+                            for(int z=0;z<3;z++)
+                            {
+                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                            }}
                     }
                 }
 
@@ -502,6 +545,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
 
 
 }
+QList<Region *> *treeMap::getRegionList() const
+{
+    return regionList;
+}
+
+void treeMap::setRegionList(QList<Region *> *value)
+{
+    regionList = value;
+}
+
 
 int treeMap::getAspectRatio() const
 {
