@@ -65,11 +65,11 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
-     <string>Algorithom parameters</string>
+     <string>Algorithm parameters</string>
     </attribute>
     <widget class="QSlider" name="horizontalSlider">
      <property name="geometry">
@@ -1002,13 +1002,57 @@
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>230</y>
+       <y>220</y>
        <width>111</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
       <string>Gradient</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_4">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>250</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>No filter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Increase only</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Decrease only</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_17">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>250</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>bottom</string>
      </property>
      <property name="checked">
       <bool>false</bool>

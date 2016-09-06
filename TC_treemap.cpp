@@ -34,6 +34,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setMouseIndex(0);
     this->setMouseTracking(true);
     this->setAspectRatio(1);
+    this->setTrend(0);
     m_Datacolor=new dataColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
                <<"Chronic-kidney-disease"<<"Diabetes"<<"Hypertension"
@@ -225,7 +226,25 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
             {
                 p->fillRect(rect,Qt::white);
                 QList <QRectF> * rectListTemp=new QList<QRectF>;
+                QPen pen(Qt::white);
+                pen.setWidth(this->getBorder());
+                p->setPen(pen);
                 double max=-1;
+                int trend;
+                if(this->getRegionList()->at(0)->healthData()->at(i)>=this->getRegionList()->at(1)->healthData()->at(i)&
+                        this->getRegionList()->at(1)->healthData()->at(i)>=this->getRegionList()->at(2)->healthData()->at(i))
+                {
+                    trend=2;
+                }
+                else if(this->getRegionList()->at(0)->healthData()->at(i)<=this->getRegionList()->at(1)->healthData()->at(i)&
+                        this->getRegionList()->at(1)->healthData()->at(i)<=this->getRegionList()->at(2)->healthData()->at(i))
+                {
+                    trend=1;
+                }
+                else
+                {
+                    trend=0;
+                }
                 for(int z=0;z<3;z++)
                 {
                     if(max<this->getRegionList()->at(z)->healthData()->at(i))
@@ -235,14 +254,28 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                 }
                 for(int z=0;z<3;z++)
                 {
-                    QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
-                                        y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                        double(fabs(data->at(i))*width/value)/3,
-                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                    rectListTemp->append(rectTemp);
+                    if(this->getBottomStair()==false)
+                    {
+                        QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
+                                            y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                            double(fabs(data->at(i))*width/value)/3,
+                                            value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                        rectListTemp->append(rectTemp);
+                    }
+                    else
+                    {
+                        QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
+                                            y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)/2,
+                                            double(fabs(data->at(i))*width/value)/3,
+                                            value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                        rectListTemp->append(rectTemp);
+                    }
                 }
                 if(this->getGradient()==false)
                 {
+                    QPen pen(Qt::white);
+                    pen.setWidth(this->getBorder());
+                    p->setPen(pen);
                     QLinearGradient grad(tempx,y,
                                          tempx+fabs(data->at(i))*width/value,
                                          y+value*length/total);
@@ -255,11 +288,25 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                     //p->fillRect(rect,grad);
                     for(int z=0;z<3;z++)
                     {
-                        p->fillRect(rectListTemp->at(z),grad);
+                        if(this->getTrend()==0)
+                        {
+                            p->fillRect(rectListTemp->at(z),grad);
+                        }
+                        else
+                        {
+                            if(trend==this->getTrend())
+                                p->fillRect(rectListTemp->at(z),grad);
+                            else
+                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                        }
+                        p->drawRect(rectListTemp->at(z));
                     }
                 }
                 else
                 {
+                    QPen pen(Qt::white);
+                    pen.setWidth(this->getBorder());
+                    p->setPen(pen);
                     QRadialGradient grad(tempx+fabs(data->at(i))*width/value/2,
                                          y+value*length/total/2,
                                          fabs(data->at(i))*width/value/2+
@@ -273,7 +320,18 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                     //p->fillRect(rect,grad);
                     for(int z=0;z<3;z++)
                     {
-                        p->fillRect(rectListTemp->at(z),grad);
+                        if(this->getTrend()==0)
+                        {
+                            p->fillRect(rectListTemp->at(z),grad);
+                        }
+                        else
+                        {
+                            if(trend==this->getTrend())
+                                p->fillRect(rectListTemp->at(z),grad);
+                            else
+                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                        }
+                        p->drawRect(rectListTemp->at(z));
                     }
                 }
                 if(this->getMapDifference()==false)
@@ -291,6 +349,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             for(int z=0;z<3;z++)
                             {
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                                p->drawRect(rectListTemp->at(z));
                             }
                         }
 
@@ -309,6 +368,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             for(int z=0;z<3;z++)
                             {
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                                p->drawRect(rectListTemp->at(z));
                             }}
                     }
                 }
@@ -327,6 +387,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             for(int z=0;z<3;z++)
                             {
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                                p->drawRect(rectListTemp->at(z));
                             }
                         }
 
@@ -345,6 +406,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             for(int z=0;z<3;z++)
                             {
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                                p->drawRect(rectListTemp->at(z));
                             }}
                     }
                 }
@@ -544,6 +606,26 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
     return ratio;
 
 
+}
+
+bool treeMap::getBottomStair() const
+{
+    return m_bottomStair;
+}
+
+void treeMap::setBottomStair(bool bottomStair)
+{
+    m_bottomStair = bottomStair;
+}
+
+int treeMap::getTrend() const
+{
+    return m_Trend;
+}
+
+void treeMap::setTrend(int Trend)
+{
+    m_Trend = Trend;
 }
 QList<Region *> *treeMap::getRegionList() const
 {

@@ -90,6 +90,12 @@ public:
     QList<Region *> *getRegionList() const;
     void setRegionList(QList<Region *> *value);
 
+    int getTrend() const;
+    void setTrend(int Trend);
+
+    bool getBottomStair() const;
+    void setBottomStair(bool bottomStair);
+
 private:
     Ui::treeMap *ui;
     Region *m_region;
@@ -131,6 +137,8 @@ private:
     dataColor * m_Datacolor;
     int m_aspectRatio;
     QList<Region *> * regionList;
+    int m_Trend;
+    bool m_bottomStair;
 
 };
 

@@ -255,6 +255,12 @@ public:
     QList<QList<Region *> *> *getFileList() const;
     void setFileList(QList<QList<Region *> *> *FileList);
 
+    int getTrend() const;
+    void setTrend(int Trend);
+
+    bool getBottomStair() const;
+    void setBottomStair(bool bottomStair);
+
 public slots:
     void animate();
 
@@ -323,6 +329,10 @@ private slots:
     void on_comboBox_3_currentIndexChanged(int index);
 
     void on_horizontalSlider_7_valueChanged(int value);
+
+    void on_comboBox_4_currentIndexChanged(int index);
+
+    void on_checkBox_17_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -414,6 +424,8 @@ private:
     int m_dataYear;
     int m_aspectRatio;
     QList <QList <Region *> *> * m_FileList;
+    int m_Trend;
+    bool m_bottomStair;
 
 
 };

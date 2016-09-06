@@ -81,7 +81,9 @@ Widget::Widget(QWidget *parent) :
     m_CurrentYregionA=new QList<AreaTeam *>;
     m_LastYregionA=new QList<AreaTeam *>;
     m_FileList=new QList<QList<Region *>*>;
+    this->setTrend(0);
     this->setAspectRatio(1);
+    this->setBottomStair(false);
 
     index=0;
     m_increaseSize=1;
@@ -1183,6 +1185,8 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setAttribute(Qt::WA_DeleteOnClose);
               t->setWindowFlags(Qt::WindowStaysOnTopHint);
               t->setRegionList(listTemp);
+              t->setTrend(this->getTrend());
+              t->setBottomStair(this->getBottomStair());
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
               t->show();
               this->setWindowsnumber(this->Windowsnumber()+1);
@@ -1386,6 +1390,21 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 p->fillRect(rect,Qt::white);
                 QList <QRectF> * rectListTemp=new QList<QRectF>;
                 double max=-1;
+                int trend;
+                if(this->getFileList()->at(0)->at(j)->healthData()->at(i)>=this->getFileList()->at(1)->at(j)->healthData()->at(i)&
+                        this->getFileList()->at(1)->at(j)->healthData()->at(i)>=this->getFileList()->at(2)->at(j)->healthData()->at(i))
+                {
+                    trend=2;
+                }
+                else if(this->getFileList()->at(0)->at(j)->healthData()->at(i)<=this->getFileList()->at(1)->at(j)->healthData()->at(i)&
+                        this->getFileList()->at(1)->at(j)->healthData()->at(i)<=this->getFileList()->at(2)->at(j)->healthData()->at(i))
+                {
+                    trend=1;
+                }
+                else
+                {
+                    trend=0;
+                }
                 for(int z=0;z<3;z++)
                 {
                     if(max<this->getFileList()->at(z)->at(j)->healthData()->at(i))
@@ -1395,11 +1414,22 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 }
                 for(int z=0;z<3;z++)
                 {
-                    QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
+                    if(this->getBottomStair()==false)
+                    {
+                        QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
                                         y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
                                         double(fabs(data->at(i))*width/value)/3,
                                         value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                    rectListTemp->append(rectTemp);
+                        rectListTemp->append(rectTemp);
+                    }
+                    else
+                    {
+                        QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
+                                        y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)/2,
+                                        double(fabs(data->at(i))*width/value)/3,
+                                        value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                        rectListTemp->append(rectTemp);
+                    }
                 }
 
                 if(this->getGradient()==false)
@@ -1416,7 +1446,18 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                     //p->fillRect(rect,grad);
                     for(int z=0;z<3;z++)
                     {
-                        p->fillRect(rectListTemp->at(z),grad);
+                        if(this->getTrend()==0)
+                        {
+                            p->fillRect(rectListTemp->at(z),grad);
+                        }
+                        else
+                        {
+                            if(trend==this->getTrend())
+                                p->fillRect(rectListTemp->at(z),grad);
+                            else
+                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0,
+                                                0,0.97,double(this->getOpacity())/100));
+                        }
                     }
                 }
                 else
@@ -1431,10 +1472,20 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.7));
-                    //p->fillRect(rect,grad);
                     for(int z=0;z<3;z++)
                     {
-                        p->fillRect(rectListTemp->at(z),grad);
+                        if(this->getTrend()==0)
+                        {
+                            p->fillRect(rectListTemp->at(z),grad);
+                        }
+                        else
+                        {
+                            if(trend==this->getTrend())
+                                p->fillRect(rectListTemp->at(z),grad);
+                            else
+                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0,
+                                                0,0.97,double(this->getOpacity())/100));
+                        }
                     }
                 }
                 if(this->getMapDifference()==false)
@@ -2136,6 +2187,26 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
         }
     }
     this->setYError(this->getYError()+error);
+}
+
+bool Widget::getBottomStair() const
+{
+    return m_bottomStair;
+}
+
+void Widget::setBottomStair(bool bottomStair)
+{
+    m_bottomStair = bottomStair;
+}
+
+int Widget::getTrend() const
+{
+    return m_Trend;
+}
+
+void Widget::setTrend(int Trend)
+{
+    m_Trend = Trend;
 }
 QList<QList<Region *> *> *Widget::getFileList() const
 {
@@ -3109,4 +3180,22 @@ void Widget::on_horizontalSlider_7_valueChanged(int value)
 {
     this->setAspectRatio(value);
     update();
+}
+
+void Widget::on_comboBox_4_currentIndexChanged(int index)
+{
+    this->setTrend(index);
+}
+
+void Widget::on_checkBox_17_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setBottomStair(true);
+    }
+    else
+    {
+        this->setBottomStair(false);
+    }
+
 }
