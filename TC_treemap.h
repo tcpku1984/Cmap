@@ -15,6 +15,11 @@
 #include <QLinearGradient>
 #include <QMouseEvent>
 #include <TC_datacolor.h>
+#include <QAbstractAnimation>
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
+#include <QPushButton>
+#include <QTimer>
 namespace Ui {
 class treeMap;
 }
@@ -95,6 +100,8 @@ public:
 
     bool getBottomStair() const;
     void setBottomStair(bool bottomStair);
+public slots:
+    void animate();
 
 private:
     Ui::treeMap *ui;
@@ -139,6 +146,8 @@ private:
     QList<Region *> * regionList;
     int m_Trend;
     bool m_bottomStair;
+    int index;
+    QTimer * timer;
 
 };
 

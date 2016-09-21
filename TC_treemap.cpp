@@ -35,11 +35,15 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setMouseTracking(true);
     this->setAspectRatio(1);
     this->setTrend(0);
+    index=0;
     m_Datacolor=new dataColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
                <<"Chronic-kidney-disease"<<"Diabetes"<<"Hypertension"
               <<"COPD"<<"Mental-Health"<<"Osteoporosis"<<"Rheumatoid-Arthritis"
              <<"Cancer"<<"Epilepsy"<<"Hypothyroidism"<<"Asthma";
+    timer=new QTimer();
+    connect(timer,SIGNAL(timeout()),this,SLOT(animate()));
+    timer->start(300);
 }
 
 
@@ -245,14 +249,14 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                 {
                     trend=0;
                 }
-                for(int z=0;z<3;z++)
+                for(int z=0;z<index+1&&z<3;z++)
                 {
                     if(max<this->getRegionList()->at(z)->healthData()->at(i))
                     {
                         max=this->getRegionList()->at(z)->healthData()->at(i);
                     }
                 }
-                for(int z=0;z<3;z++)
+                for(int z=0;z<index+1&&z<3;z++)
                 {
                     if(this->getBottomStair()==false)
                     {
@@ -286,7 +290,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      0.5,1));
                     //p->fillRect(rect,grad);
-                    for(int z=0;z<3;z++)
+                    for(int z=0;z<index+1&&z<3;z++)
                     {
                         if(this->getTrend()==0)
                         {
@@ -318,7 +322,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.7));
                     //p->fillRect(rect,grad);
-                    for(int z=0;z<3;z++)
+                    for(int z=0;z<index+1&&z<3;z++)
                     {
                         if(this->getTrend()==0)
                         {
@@ -346,7 +350,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         {
                             //p->fillRect(rect,QColor::fromHsvF(0,
                               //                            0,0.97));
-                            for(int z=0;z<3;z++)
+                            for(int z=0;z<index+1&&z<3;z++)
                             {
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
                                 p->drawRect(rectListTemp->at(z));
@@ -365,7 +369,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             //p->fillRect(rect,QColor::fromHsvF(0,
                               //                            0,0.97));
 
-                            for(int z=0;z<3;z++)
+                            for(int z=0;z<index+1&&z<3;z++)
                             {
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
                                 p->drawRect(rectListTemp->at(z));
@@ -384,7 +388,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         {
                             //p->fillRect(rect,QColor::fromHsvF(0,
                               //                            0,0.97));
-                            for(int z=0;z<3;z++)
+                            for(int z=0;z<index+1&&z<3;z++)
                             {
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
                                 p->drawRect(rectListTemp->at(z));
@@ -403,7 +407,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             //p->fillRect(rect,QColor::fromHsvF(0,
                                 //                          0,0.97));
 
-                            for(int z=0;z<3;z++)
+                            for(int z=0;z<index+1&&z<3;z++)
                             {
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
                                 p->drawRect(rectListTemp->at(z));
@@ -616,6 +620,18 @@ bool treeMap::getBottomStair() const
 void treeMap::setBottomStair(bool bottomStair)
 {
     m_bottomStair = bottomStair;
+}
+
+void treeMap::animate()
+{
+    if(index>2)
+    {
+        timer->stop();
+        index=2;
+        return;
+    }
+    index++;
+    update();
 }
 
 int treeMap::getTrend() const

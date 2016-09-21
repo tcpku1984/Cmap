@@ -240,7 +240,6 @@ void Widget::paintEvent(QPaintEvent *event)
         paintArea(&painter);
     }
 
-
 }
 
 void Widget::paintCCg(QPainter *painter)
