@@ -43,7 +43,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
              <<"Cancer"<<"Epilepsy"<<"Hypothyroidism"<<"Asthma";
     timer=new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(animate()));
-    timer->start(300);
+    timer->start();
 }
 
 
@@ -228,7 +228,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
             if(layer==2)
             {
-                p->fillRect(rect,Qt::white);
+                //p->fillRect(rect,Qt::white);
                 QList <QRectF> * rectListTemp=new QList<QRectF>;
                 QPen pen(Qt::white);
                 pen.setWidth(this->getBorder());
@@ -260,7 +260,13 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                 {
                     if(this->getBottomStair()==false)
                     {
-                        QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3+index,
+                        double x=tempx+z*double(fabs(data->at(i))*width/value)/3+index;
+                        if(x>=tempx+double(fabs(data->at(i))*width/value))
+                        {
+                            int n=(x-tempx)/double(fabs(data->at(i))*width/value);
+                            x=x-n*double(fabs(data->at(i))*width/value);
+                        }
+                        QRectF rectTemp=QRectF(x,
                                             y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
                                             double(fabs(data->at(i))*width/value)/3,
                                             value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
@@ -304,6 +310,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
                         }
                         p->drawRect(rectListTemp->at(z));
+                       // p->drawText(rectListTemp->at(z),QString::number(z));
                     }
                 }
                 else
@@ -624,7 +631,7 @@ void treeMap::setBottomStair(bool bottomStair)
 
 void treeMap::animate()
 {
-    if(index>500)
+    if(index>5000)
     {
         timer->stop();
         index=0;
