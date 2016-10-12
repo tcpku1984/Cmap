@@ -7,7 +7,8 @@
 #include "TC_treemap.h"
 #include "ui_treemap.h"
 enum{
-    GRAY=85
+    GRAY=85,
+    STEP=1000
 };
 treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList<double> * aver) :
     QWidget(parent),
@@ -260,12 +261,31 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                 {
                     if(this->getBottomStair()==false)
                     {
-                        double x=tempx+z*double(fabs(data->at(i))*width/value)/3+index;
+
+                        double x;
+                        if(trend==1)
+                        {
+                            x=tempx+z*double(fabs(data->at(i))*width/value)/3+index*double(fabs(data->at(i))*width/value)/STEP;
+                        }
+                        else if(trend==2)
+                        {
+                            x=tempx+z*double(fabs(data->at(i))*width/value)/3-index*double(fabs(data->at(i))*width/value)/STEP;
+                        }
+                        else
+                        {
+                            x=tempx+z*double(fabs(data->at(i))*width/value)/3;
+                        }
                         if(x>=tempx+double(fabs(data->at(i))*width/value))
                         {
                             int n=(x-tempx)/double(fabs(data->at(i))*width/value);
                             x=x-n*double(fabs(data->at(i))*width/value);
                         }
+                        if(x<tempx)
+                        {
+                            int n=(tempx-x)/double(fabs(data->at(i))*width/value);
+                            x=x+(n+1)*double(fabs(data->at(i))*width/value);
+                        }
+
                         QRectF rectTemp=QRectF(x,
                                             y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
                                             double(fabs(data->at(i))*width/value)/3,

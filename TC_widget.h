@@ -263,6 +263,7 @@ public:
 
 public slots:
     void animate();
+    void animation();
 
 private slots:
     void on_start_pressed();
@@ -334,6 +335,8 @@ private slots:
 
     void on_checkBox_17_toggled(bool checked);
 
+    void on_start_4_clicked();
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -361,6 +364,7 @@ private:
 
 
     QTimer  *timer;
+    QTimer *timer2;
     QList <Region *> * m_regionListV;
     QList <Region *> * m_regionListH;
     QList <Region *> * m_Lastregion;
@@ -374,6 +378,7 @@ private:
     QList <AreaTeam *> * m_CurrentYregionA;
     int count;
     int index;
+    int index2;
     int m_increaseSize;
     int m_regionMaxsize;
     int m_searchRange;
@@ -426,6 +431,7 @@ private:
     QList <QList <Region *> *> * m_FileList;
     int m_Trend;
     bool m_bottomStair;
+
 
 
 };

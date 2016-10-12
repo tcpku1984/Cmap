@@ -29,7 +29,9 @@ enum{
     HALFSIZE=105,
     HALFSIZEA=13,
     TEXTX=1760,
-    SIGNX=1680
+    SIGNX=1680,
+    DELAY=0,
+    STEP=10
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -86,6 +88,7 @@ Widget::Widget(QWidget *parent) :
     this->setBottomStair(false);
 
     index=0;
+    index2=0;
     m_increaseSize=1;
     m_regionMaxsize=110;
     m_searchRange=209;
@@ -219,6 +222,9 @@ Widget::Widget(QWidget *parent) :
     count=0;
     timer=new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(animate()));
+    timer2=new QTimer();
+    connect(timer2,SIGNAL(timeout()),this,SLOT(animation()));
+
 }
 
 Widget::~Widget()
@@ -753,6 +759,18 @@ void Widget::animate()
         areaIncrease();
         update();
     }
+}
+
+void Widget::animation()
+{
+    if(index2>5000)
+    {
+        timer2->stop();
+        index2=0;
+        return;
+    }
+    index2++;
+    update();
 }
 
 void Widget::regionIncrease()
@@ -1415,7 +1433,31 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 {
                     if(this->getBottomStair()==false)
                     {
-                        QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
+                        cout<<index2<<endl;
+                        double x;
+                        if(trend==1)
+                        {
+                            x=tempx+z*double(fabs(data->at(i))*width/value)/3+index2*double(fabs(data->at(i))*width/value)/STEP;
+                        }
+                        else if(trend==2)
+                        {
+                            x=tempx+z*double(fabs(data->at(i))*width/value)/3-index2*double(fabs(data->at(i))*width/value)/STEP;
+                        }
+                        else
+                        {
+                            x=tempx+z*double(fabs(data->at(i))*width/value)/3;
+                        }
+                        if(x>=tempx+double(fabs(data->at(i))*width/value))
+                        {
+                            int n=(x-tempx)/double(fabs(data->at(i))*width/value);
+                            x=x-n*double(fabs(data->at(i))*width/value);
+                        }
+                        if(x<tempx)
+                        {
+                            int n=(tempx-x)/double(fabs(data->at(i))*width/value);
+                            x=x+(n+1)*double(fabs(data->at(i))*width/value);
+                        }
+                        QRectF rectTemp=QRectF(x,
                                         y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
                                         double(fabs(data->at(i))*width/value)/3,
                                         value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
@@ -3197,4 +3239,9 @@ void Widget::on_checkBox_17_toggled(bool checked)
         this->setBottomStair(false);
     }
 
+}
+
+void Widget::on_start_4_clicked()
+{
+    timer2->start();
 }
