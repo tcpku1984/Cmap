@@ -8,7 +8,8 @@
 #include "ui_treemap.h"
 enum{
     GRAY=85,
-    STEP=1000
+    STEP=1000,
+    DELAY=30
 };
 treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList<double> * aver) :
     QWidget(parent),
@@ -44,7 +45,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
              <<"Cancer"<<"Epilepsy"<<"Hypothyroidism"<<"Asthma";
     timer=new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(animate()));
-    timer->start();
+    timer->start(DELAY);
 }
 
 
@@ -269,7 +270,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         }
                         else if(trend==2)
                         {
-                            x=tempx+z*double(fabs(data->at(i))*width/value)/3-index*double(fabs(data->at(i))*width/value)/STEP;
+                            x=tempx+z*double(fabs(data->at(i))*width/value)/3+index*double(fabs(data->at(i))*width/value)/STEP;
                         }
                         else
                         {
@@ -279,6 +280,41 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         {
                             int n=(x-tempx)/double(fabs(data->at(i))*width/value);
                             x=x-n*double(fabs(data->at(i))*width/value);
+                            double w=double(fabs(data->at(i))*width/value)/3;
+                            if(x+w>tempx+double(fabs(data->at(i))*width/value))
+                            {
+                                w=tempx+double(fabs(data->at(i))*width/value)-x;
+                            }
+                            if(x>tempx&&x<tempx+double(fabs(data->at(i))*width/value)/3)
+                            {
+                                QRectF rectTemp=QRectF(tempx,
+                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                    x-tempx,
+                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                rectListTemp->append(rectTemp);
+
+                            }
+                            else
+                            {
+                                QRectF rectTemp=QRectF(x-double(fabs(data->at(i))*width/value)/3,
+                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                    w,
+                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                rectListTemp->append(rectTemp);
+                            }
+                        }
+                        else
+                        {
+                            double w=double(fabs(data->at(i))*width/value)/3;
+                            if(x+w>tempx+double(fabs(data->at(i))*width/value))
+                            {
+                                w=tempx+double(fabs(data->at(i))*width/value)-x;
+                            }
+                            QRectF rectTemp=QRectF(x,
+                                                y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                w,
+                                                value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            rectListTemp->append(rectTemp);
                         }
                         if(x<tempx)
                         {
@@ -286,11 +322,6 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             x=x+(n+1)*double(fabs(data->at(i))*width/value);
                         }
 
-                        QRectF rectTemp=QRectF(x,
-                                            y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                            double(fabs(data->at(i))*width/value)/3,
-                                            value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                        rectListTemp->append(rectTemp);
                     }
                     else
                     {
@@ -328,6 +359,10 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                 p->fillRect(rectListTemp->at(z),grad);
                             else
                                 p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                        }
+                        if(z==0)
+                        {
+                            p->fillRect(rectListTemp->at(z),Qt::BDiagPattern);
                         }
                         p->drawRect(rectListTemp->at(z));
                        // p->drawText(rectListTemp->at(z),QString::number(z));

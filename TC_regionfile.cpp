@@ -31,15 +31,15 @@ void regionFile::readfile(int year)
     ifstream inFlow;
     if(year==2011)
     {
-        inFlow.open("D:/qtproject/Cmap/centerp2011.csv");
+        inFlow.open("D:/Cmap/centerp2011.csv");
     }
     else if(year==2012)
     {
-        inFlow.open("D:/qtproject/Cmap/centerp2012.csv");
+        inFlow.open("D:/Cmap/centerp2012.csv");
     }
     else
     {
-        inFlow.open("D:/qtproject/Cmap/centerp2013.csv");
+        inFlow.open("D:/Cmap/centerp2013.csv");
     }
     string input;
     int i = 0;

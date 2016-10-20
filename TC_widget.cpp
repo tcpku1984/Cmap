@@ -30,8 +30,8 @@ enum{
     HALFSIZEA=13,
     TEXTX=1760,
     SIGNX=1680,
-    DELAY=0,
-    STEP=10
+    DELAY=50,
+    STEP=50
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -763,7 +763,7 @@ void Widget::animate()
 
 void Widget::animation()
 {
-    if(index2>5000)
+    if(index2>200)
     {
         timer2->stop();
         index2=0;
@@ -1433,7 +1433,6 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 {
                     if(this->getBottomStair()==false)
                     {
-                        cout<<index2<<endl;
                         double x;
                         if(trend==1)
                         {
@@ -1457,9 +1456,14 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                             int n=(tempx-x)/double(fabs(data->at(i))*width/value);
                             x=x+(n+1)*double(fabs(data->at(i))*width/value);
                         }
+                        double w=double(fabs(data->at(i))*width/value)/3;
+                        if(x+w>tempx+double(fabs(data->at(i))*width/value))
+                        {
+                            w=tempx+double(fabs(data->at(i))*width/value)-x;
+                        }
                         QRectF rectTemp=QRectF(x,
                                         y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
-                                        double(fabs(data->at(i))*width/value)/3,
+                                        w,
                                         value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
                         rectListTemp->append(rectTemp);
                     }
@@ -1767,6 +1771,8 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *da
 
 void Widget::on_start_pressed()
 {
+    timer2->stop();
+    index2=0;
     this->setStep(false);
     if(this->getFinished()==true)
     {
@@ -1779,7 +1785,7 @@ void Widget::on_start_pressed()
         this->getLastregion()->clear();
         this->getCurrentYregion()->clear();
         this->getLastYregion()->clear();
-        /*
+
         this->regionListV()->clear();
         this->regionListH()->clear();
         this->getAreaGroup()->clear();
@@ -1796,7 +1802,7 @@ void Widget::on_start_pressed()
         qSort(this->regionListH()->begin(),this->regionListH()->end(),
               horizontalOrder);
         qSort(this->regionListV()->begin(),this->regionListV()->end(),
-                                     verticalOrder);*/
+                                     verticalOrder);
         if(this->getGroup()==false)
         {
             for(int i=0;i<this->regionListV()->size();i++)
@@ -3243,5 +3249,15 @@ void Widget::on_checkBox_17_toggled(bool checked)
 
 void Widget::on_start_4_clicked()
 {
-    timer2->start();
+    if(timer2->isActive()==true)
+    {
+
+       timer2->stop();
+       index2=0;
+       update();
+    }
+    else
+    {
+        timer2->start();
+    }
 }
