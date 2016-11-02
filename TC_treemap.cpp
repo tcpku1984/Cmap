@@ -270,38 +270,90 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         }
                         else if(trend==2)
                         {
-                            x=tempx+z*double(fabs(data->at(i))*width/value)/3+index*double(fabs(data->at(i))*width/value)/STEP;
+                            x=tempx+z*double(fabs(data->at(i))*width/value)/3-index*double(fabs(data->at(i))*width/value)/STEP;
                         }
                         else
                         {
                             x=tempx+z*double(fabs(data->at(i))*width/value)/3;
                         }
+                        ///
+
                         if(x>=tempx+double(fabs(data->at(i))*width/value))
                         {
-                            int n=(x-tempx)/double(fabs(data->at(i))*width/value);
-                            x=x-n*double(fabs(data->at(i))*width/value);
                             double w=double(fabs(data->at(i))*width/value)/3;
+                            if(x>=tempx+6*w)
+                            {
+                                index=0;
+                            }
+                            int n=(x-tempx)/double(fabs(data->at(i))*width/value);
+                            x=x-n*double(fabs(data->at(i))*width/value)-w;
+
                             if(x+w>tempx+double(fabs(data->at(i))*width/value))
                             {
                                 w=tempx+double(fabs(data->at(i))*width/value)-x;
+
+                                QRectF rectTemp=QRectF(x,
+                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                    w,
+                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                rectListTemp->append(rectTemp);
                             }
-                            if(x>tempx&&x<tempx+double(fabs(data->at(i))*width/value)/3)
+                            else if(x<tempx)
                             {
+                                w=x+w-tempx;
                                 QRectF rectTemp=QRectF(tempx,
                                                     y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                                    x-tempx,
+                                                    w,
                                                     value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
                                 rectListTemp->append(rectTemp);
 
                             }
                             else
                             {
-                                QRectF rectTemp=QRectF(x-double(fabs(data->at(i))*width/value)/3,
+                                QRectF rectTemp=QRectF(x,
                                                     y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
                                                     w,
                                                     value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
                                 rectListTemp->append(rectTemp);
                             }
+                        }
+                        else if(x<tempx)
+                        {
+                            double w=double(fabs(data->at(i))*width/value)/3;
+                            if(x<=tempx-6*w)
+                            {
+                                index=0;
+                            }
+                            if(x>tempx-w)
+                            {
+                                w=x+w-tempx;
+                                QRectF rectTemp=QRectF(tempx,
+                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                    w,
+                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                rectListTemp->append(rectTemp);
+
+                            }
+                            else
+                            {
+
+                                x=x+double(fabs(data->at(i))*width/value)+w;
+                                if(x>tempx+2*w)
+                                {
+                                    w=tempx+3*w-x;
+                                }
+
+                                QRectF rectTemp=QRectF(x,
+                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                    w,
+                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                rectListTemp->append(rectTemp);
+
+                            }
+
+
+
+
                         }
                         else
                         {
@@ -316,11 +368,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                                 value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
                             rectListTemp->append(rectTemp);
                         }
-                        if(x<tempx)
-                        {
-                            int n=(tempx-x)/double(fabs(data->at(i))*width/value);
-                            x=x+(n+1)*double(fabs(data->at(i))*width/value);
-                        }
+
 
                     }
                     else

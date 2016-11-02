@@ -1446,12 +1446,16 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         {
                             x=tempx+z*double(fabs(data->at(i))*width/value)/3;
                         }
+                        //
                         if(x>=tempx+double(fabs(data->at(i))*width/value))
                         {
+                            if(x>tempx+2*double(fabs(data->at(i))*width/value))
+                            {
+                                index2=0;
+                            }
                             int n=(x-tempx)/double(fabs(data->at(i))*width/value);
-                            x=x-n*double(fabs(data->at(i))*width/value);
-                        }
-                        if(x<tempx)
+                            x=x-n*double(fabs(data->at(i))*width/value)-double(fabs(data->at(i))*width/value)/3;
+                        }else if(x<tempx)
                         {
                             int n=(tempx-x)/double(fabs(data->at(i))*width/value);
                             x=x+(n+1)*double(fabs(data->at(i))*width/value);
