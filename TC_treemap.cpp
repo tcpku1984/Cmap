@@ -9,7 +9,7 @@
 enum{
     GRAY=85,
     STEP=1000,
-    DELAY=30
+    DELAY=10
 };
 treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList<double> * aver) :
     QWidget(parent),
@@ -37,6 +37,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setMouseTracking(true);
     this->setAspectRatio(1);
     this->setTrend(0);
+    this->setSingleYear(false);
     index=0;
     m_Datacolor=new dataColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
@@ -230,154 +231,162 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
             if(layer==2)
             {
-                //p->fillRect(rect,Qt::white);
+                //
                 QList <QRectF> * rectListTemp=new QList<QRectF>;
                 QPen pen(Qt::white);
                 pen.setWidth(this->getBorder());
                 p->setPen(pen);
                 double max=-1;
                 int trend;
-                if(this->getRegionList()->at(0)->healthData()->at(i)>=this->getRegionList()->at(1)->healthData()->at(i)&
-                        this->getRegionList()->at(1)->healthData()->at(i)>=this->getRegionList()->at(2)->healthData()->at(i))
+                if(this->getSingleYear()==true)
                 {
-                    trend=2;
-                }
-                else if(this->getRegionList()->at(0)->healthData()->at(i)<=this->getRegionList()->at(1)->healthData()->at(i)&
-                        this->getRegionList()->at(1)->healthData()->at(i)<=this->getRegionList()->at(2)->healthData()->at(i))
-                {
-                    trend=1;
+                    p->fillRect(rect,Qt::white);
                 }
                 else
                 {
-                    trend=0;
-                }
-                for(int z=0;z<3;z++)
-                {
-                    if(max<this->getRegionList()->at(z)->healthData()->at(i))
+
+                    if(this->getRegionList()->at(0)->healthData()->at(i)>=this->getRegionList()->at(1)->healthData()->at(i)&
+                            this->getRegionList()->at(1)->healthData()->at(i)>=this->getRegionList()->at(2)->healthData()->at(i))
                     {
-                        max=this->getRegionList()->at(z)->healthData()->at(i);
+                        trend=2;
                     }
-                }
-                for(int z=0;z<3;z++)
-                {
-                    if(this->getBottomStair()==false)
+                    else if(this->getRegionList()->at(0)->healthData()->at(i)<=this->getRegionList()->at(1)->healthData()->at(i)&
+                            this->getRegionList()->at(1)->healthData()->at(i)<=this->getRegionList()->at(2)->healthData()->at(i))
                     {
-
-                        double x;
-                        if(trend==1)
-                        {
-                            x=tempx+z*double(fabs(data->at(i))*width/value)/3+index*double(fabs(data->at(i))*width/value)/STEP;
-                        }
-                        else if(trend==2)
-                        {
-                            x=tempx+z*double(fabs(data->at(i))*width/value)/3-index*double(fabs(data->at(i))*width/value)/STEP;
-                        }
-                        else
-                        {
-                            x=tempx+z*double(fabs(data->at(i))*width/value)/3;
-                        }
-                        ///
-
-                        if(x>=tempx+double(fabs(data->at(i))*width/value))
-                        {
-                            double w=double(fabs(data->at(i))*width/value)/3;
-                            if(x>=tempx+6*w)
-                            {
-                                index=0;
-                            }
-                            int n=(x-tempx)/double(fabs(data->at(i))*width/value);
-                            x=x-n*double(fabs(data->at(i))*width/value)-w;
-
-                            if(x+w>tempx+double(fabs(data->at(i))*width/value))
-                            {
-                                w=tempx+double(fabs(data->at(i))*width/value)-x;
-
-                                QRectF rectTemp=QRectF(x,
-                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                                    w,
-                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                                rectListTemp->append(rectTemp);
-                            }
-                            else if(x<tempx)
-                            {
-                                w=x+w-tempx;
-                                QRectF rectTemp=QRectF(tempx,
-                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                                    w,
-                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                                rectListTemp->append(rectTemp);
-
-                            }
-                            else
-                            {
-                                QRectF rectTemp=QRectF(x,
-                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                                    w,
-                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                                rectListTemp->append(rectTemp);
-                            }
-                        }
-                        else if(x<tempx)
-                        {
-                            double w=double(fabs(data->at(i))*width/value)/3;
-                            if(x<=tempx-6*w)
-                            {
-                                index=0;
-                            }
-                            if(x>tempx-w)
-                            {
-                                w=x+w-tempx;
-                                QRectF rectTemp=QRectF(tempx,
-                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                                    w,
-                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                                rectListTemp->append(rectTemp);
-
-                            }
-                            else
-                            {
-
-                                x=x+double(fabs(data->at(i))*width/value)+w;
-                                if(x>tempx+2*w)
-                                {
-                                    w=tempx+3*w-x;
-                                }
-
-                                QRectF rectTemp=QRectF(x,
-                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                                    w,
-                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                                rectListTemp->append(rectTemp);
-
-                            }
-
-
-
-
-                        }
-                        else
-                        {
-                            double w=double(fabs(data->at(i))*width/value)/3;
-                            if(x+w>tempx+double(fabs(data->at(i))*width/value))
-                            {
-                                w=tempx+double(fabs(data->at(i))*width/value)-x;
-                            }
-                            QRectF rectTemp=QRectF(x,
-                                                y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
-                                                w,
-                                                value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                            rectListTemp->append(rectTemp);
-                        }
-
-
+                        trend=1;
                     }
                     else
                     {
-                        QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
-                                            y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)/2,
-                                            double(fabs(data->at(i))*width/value)/3,
-                                            value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
-                        rectListTemp->append(rectTemp);
+                        trend=0;
+                    }
+                    for(int z=0;z<3;z++)
+                    {
+                        if(max<this->getRegionList()->at(z)->healthData()->at(i))
+                        {
+                            max=this->getRegionList()->at(z)->healthData()->at(i);
+                        }
+                    }
+                    for(int z=0;z<3;z++)
+                    {
+                        if(this->getBottomStair()==false)
+                        {
+
+                            double x;
+                            if(trend==1)
+                            {
+                                x=tempx+z*double(fabs(data->at(i))*width/value)/3+index*double(fabs(data->at(i))*width/value)/STEP;
+                            }
+                            else if(trend==2)
+                            {
+                                x=tempx+z*double(fabs(data->at(i))*width/value)/3-index*double(fabs(data->at(i))*width/value)/STEP;
+                            }
+                            else
+                            {
+                                x=tempx+z*double(fabs(data->at(i))*width/value)/3;
+                            }
+                            ///
+
+                            if(x>=tempx+double(fabs(data->at(i))*width/value))
+                            {
+                                double w=double(fabs(data->at(i))*width/value)/3;
+                                if(x>=tempx+6*w)
+                                {
+                                    index=0;
+                                }
+                                int n=(x-tempx)/double(fabs(data->at(i))*width/value);
+                                x=x-n*double(fabs(data->at(i))*width/value)-w;
+
+                                if(x+w>tempx+double(fabs(data->at(i))*width/value))
+                                {
+                                    w=tempx+double(fabs(data->at(i))*width/value)-x;
+
+                                    QRectF rectTemp=QRectF(x,
+                                                        y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                        w,
+                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                    rectListTemp->append(rectTemp);
+                                }
+                                else if(x<tempx)
+                                {
+                                    w=x+w-tempx;
+                                    QRectF rectTemp=QRectF(tempx,
+                                                        y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                        w,
+                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                    rectListTemp->append(rectTemp);
+
+                                }
+                                else
+                                {
+                                    QRectF rectTemp=QRectF(x,
+                                                        y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                        w,
+                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                    rectListTemp->append(rectTemp);
+                                }
+                            }
+                            else if(x<tempx)
+                            {
+                                double w=double(fabs(data->at(i))*width/value)/3;
+                                if(x<=tempx-6*w)
+                                {
+                                    index=0;
+                                }
+                                if(x>tempx-w)
+                                {
+                                    w=x+w-tempx;
+                                    QRectF rectTemp=QRectF(tempx,
+                                                        y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                        w,
+                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                    rectListTemp->append(rectTemp);
+
+                                }
+                                else
+                                {
+
+                                    x=x+double(fabs(data->at(i))*width/value)+w;
+                                    if(x>tempx+2*w)
+                                    {
+                                        w=tempx+3*w-x;
+                                    }
+
+                                    QRectF rectTemp=QRectF(x,
+                                                        y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                        w,
+                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                    rectListTemp->append(rectTemp);
+
+                                }
+
+
+
+
+                            }
+                            else
+                            {
+                                double w=double(fabs(data->at(i))*width/value)/3;
+                                if(x+w>tempx+double(fabs(data->at(i))*width/value))
+                                {
+                                    w=tempx+double(fabs(data->at(i))*width/value)-x;
+                                }
+                                QRectF rectTemp=QRectF(x,
+                                                    y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max),
+                                                    w,
+                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                rectListTemp->append(rectTemp);
+                            }
+
+
+                        }
+                        else
+                        {
+                            QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
+                                                y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)/2,
+                                                double(fabs(data->at(i))*width/value)/3,
+                                                value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            rectListTemp->append(rectTemp);
+                        }
                     }
                 }
                 if(this->getGradient()==false)
@@ -394,25 +403,27 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      0.5,1));
-                    //p->fillRect(rect,grad);
-                    for(int z=0;z<3;z++)
+                    if(this->getSingleYear()==true)
                     {
-                        if(this->getTrend()==0)
+                        p->fillRect(rect,grad);
+                    }
+                    else
+                    {
+                        for(int z=0;z<3;z++)
                         {
-                            p->fillRect(rectListTemp->at(z),grad);
-                        }
-                        else
-                        {
-                            if(trend==this->getTrend())
+                            if(this->getTrend()==0)
+                            {
                                 p->fillRect(rectListTemp->at(z),grad);
+                            }
                             else
-                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                            {
+                                if(trend==this->getTrend())
+                                    p->fillRect(rectListTemp->at(z),grad);
+                                else
+                                    p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                            }
+                            p->drawRect(rectListTemp->at(z));
                         }
-                        if(z==0)
-                        {
-                            p->fillRect(rectListTemp->at(z),Qt::BDiagPattern);
-                        }
-                        p->drawRect(rectListTemp->at(z));
                        // p->drawText(rectListTemp->at(z),QString::number(z));
                     }
                 }
@@ -431,22 +442,28 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.7));
-                    //p->fillRect(rect,grad);
-                    for(int z=0;z<3;z++)
+                    if(this->getSingleYear()==true)
                     {
-                        if(this->getTrend()==0)
-                        {
-                            p->fillRect(rectListTemp->at(z),grad);
-                        }
-                        else
-                        {
-                            if(trend==this->getTrend())
-                                p->fillRect(rectListTemp->at(z),grad);
-                            else
-                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
-                        }
-                        p->drawRect(rectListTemp->at(z));
+                        p->fillRect(rect,grad);
                     }
+                    else
+                    {
+                        for(int z=0;z<3;z++)
+                        {
+                            if(this->getTrend()==0)
+                            {
+                                p->fillRect(rectListTemp->at(z),grad);
+                            }
+                            else
+                            {
+                                if(trend==this->getTrend())
+                                    p->fillRect(rectListTemp->at(z),grad);
+                                else
+                                    p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                            }
+                            p->drawRect(rectListTemp->at(z));
+                        }
+                     }
                 }
                 if(this->getMapDifference()==false)
                 {
@@ -458,12 +475,18 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
-                            //p->fillRect(rect,QColor::fromHsvF(0,
-                              //                            0,0.97));
-                            for(int z=0;z<3;z++)
+                            if(this->getSingleYear()==true)
                             {
-                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
-                                p->drawRect(rectListTemp->at(z));
+                                p->fillRect(rect,QColor::fromHsvF(0,
+                                                        0,0.97));
+                            }
+                            else
+                            {
+                                for(int z=0;z<3;z++)
+                                {
+                                    p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                                    p->drawRect(rectListTemp->at(z));
+                                }
                             }
                         }
 
@@ -476,14 +499,20 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
-                            //p->fillRect(rect,QColor::fromHsvF(0,
-                              //                            0,0.97));
-
-                            for(int z=0;z<3;z++)
+                            if(this->getSingleYear()==true)
                             {
-                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
-                                p->drawRect(rectListTemp->at(z));
-                            }}
+                                p->fillRect(rect,QColor::fromHsvF(0,
+                                                        0,0.97));
+                            }
+                            else
+                            {
+                                for(int z=0;z<3;z++)
+                                {
+                                    p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                                    p->drawRect(rectListTemp->at(z));
+                                }
+                            }
+                        }
                     }
                 }
                 else
@@ -496,12 +525,18 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         p->setPen(pen);
                         if(this->getFilter()==2)
                         {
-                            //p->fillRect(rect,QColor::fromHsvF(0,
-                              //                            0,0.97));
-                            for(int z=0;z<3;z++)
+                            if(this->getSingleYear()==true)
                             {
-                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
-                                p->drawRect(rectListTemp->at(z));
+                                p->fillRect(rect,QColor::fromHsvF(0,
+                                                        0,0.97));
+                            }
+                            else
+                            {
+                                for(int z=0;z<3;z++)
+                                {
+                                    p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                                    p->drawRect(rectListTemp->at(z));
+                                }
                             }
                         }
 
@@ -514,16 +549,23 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         p->setPen(pen);
                         if(this->getFilter()==1)
                         {
-                            //p->fillRect(rect,QColor::fromHsvF(0,
-                                //                          0,0.97));
-
-                            for(int z=0;z<3;z++)
+                            if(this->getSingleYear()==true)
                             {
-                                p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
-                                p->drawRect(rectListTemp->at(z));
-                            }}
+                                p->fillRect(rect,QColor::fromHsvF(0,
+                                                        0,0.97));
+                            }
+                            else
+                            {
+                                for(int z=0;z<3;z++)
+                                {
+                                    p->fillRect(rectListTemp->at(z),QColor::fromHsvF(0, 0,0.97));
+                                    p->drawRect(rectListTemp->at(z));
+                                }
+                            }
+                        }
                     }
                 }
+
 
             }
             else if(layer==1)
@@ -720,6 +762,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
     return ratio;
 
 
+}
+
+bool treeMap::getSingleYear() const
+{
+    return m_singleYear;
+}
+
+void treeMap::setSingleYear(bool singleYear)
+{
+    m_singleYear = singleYear;
 }
 
 bool treeMap::getBottomStair() const

@@ -261,6 +261,9 @@ public:
     bool getBottomStair() const;
     void setBottomStair(bool bottomStair);
 
+    bool getSingleYear() const;
+    void setSingleYear(bool singleYear);
+
 public slots:
     void animate();
     void animation();
@@ -336,6 +339,8 @@ private slots:
     void on_checkBox_17_toggled(bool checked);
 
     void on_start_4_clicked();
+
+    void on_checkBox_35_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -431,6 +436,7 @@ private:
     QList <QList <Region *> *> * m_FileList;
     int m_Trend;
     bool m_bottomStair;
+    bool m_singleYear;
 
 
 

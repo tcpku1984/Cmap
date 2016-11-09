@@ -100,6 +100,9 @@ public:
 
     bool getBottomStair() const;
     void setBottomStair(bool bottomStair);
+    bool getSingleYear() const;
+    void setSingleYear(bool singleYear);
+
 public slots:
     void animate();
 
@@ -148,6 +151,7 @@ private:
     bool m_bottomStair;
     int index;
     QTimer * timer;
+    bool m_singleYear;
 
 };
 
