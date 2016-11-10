@@ -31,7 +31,7 @@ enum{
     TEXTX=1760,
     SIGNX=1680,
     DELAY=0,
-    STEP=100
+    STEP=50
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -88,7 +88,6 @@ Widget::Widget(QWidget *parent) :
     this->setBottomStair(false);
 
     index=0;
-    index2=0;
     m_increaseSize=1;
     m_regionMaxsize=110;
     m_searchRange=209;
@@ -141,7 +140,10 @@ Widget::Widget(QWidget *parent) :
 
 
     }
-
+    for(int i=0;i<this->getFileList()->at(0)->size();i++)
+    {
+        index2.append(0);
+    }
     sta=new TC_statistics();
     sta->setWindowFlags(Qt::WindowStaysOnTopHint);
     sta->setGeometry(QRect(10,600,400,200));
@@ -763,13 +765,11 @@ void Widget::animate()
 
 void Widget::animation()
 {
-    if(index2>1000)
+    for(int i=0;i<this->getFileList()->at(0)->size();i++)
     {
-        timer2->stop();
-        index2=0;
-        return;
+        index2.replace(i,index2.at(i)+1);
     }
-    index2++;
+
     update();
 }
 
@@ -1439,11 +1439,11 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                             double x;
                             if(trend==1)
                             {
-                                x=tempx+z*double(fabs(data->at(i))*width/value)/3+index2*double(fabs(data->at(i))*width/value)/STEP;
+                                x=tempx+z*double(fabs(data->at(i))*width/value)/3+index2.at(j)*double(fabs(data->at(i))*width/value)/STEP;
                             }
                             else if(trend==2)
                             {
-                                x=tempx+z*double(fabs(data->at(i))*width/value)/3-index2*double(fabs(data->at(i))*width/value)/STEP;
+                                x=tempx+z*double(fabs(data->at(i))*width/value)/3-index2.at(j)*double(fabs(data->at(i))*width/value)/STEP;
                             }
                             else
                             {
@@ -1454,9 +1454,9 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                             {
                                 double w=double(fabs(data->at(i))*width/value)/3;
 
-                                if(x>=tempx+6*w&&j==this->getFileList()->at(2)->size()-1)
+                                if(x>=tempx+6*w)
                                 {
-                                    index2=0;
+                                    index2.replace(j,0);
                                 }
                                 int n=(x-tempx)/double(fabs(data->at(i))*width/value);
                                 x=x-n*double(fabs(data->at(i))*width/value)-w;
@@ -1493,10 +1493,10 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                             else if(x<tempx)
                             {
                                 double w=double(fabs(data->at(i))*width/value)/3;
-                                /*if(x<=tempx-6*w)
+                                if(x<=tempx-6*w)
                                 {
-                                    index2=0;
-                                }*/
+                                    index2.replace(j,0);
+                                }
                                 if(x>tempx-w)
                                 {
                                     w=x+w-tempx;
@@ -1541,36 +1541,6 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                                     value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
                                 rectListTemp->append(rectTemp);
                             }
-
-
-                            /*
-                            if(x>=tempx+double(fabs(data->at(i))*width/value))
-                            {
-                                if(x>tempx+2*double(fabs(data->at(i))*width/value))
-                                {
-                                    index2=0;
-                                }
-                                int n=(x-tempx)/double(fabs(data->at(i))*width/value);
-                                x=x-n*double(fabs(data->at(i))*width/value)-double(fabs(data->at(i))*width/value)/3;
-                            }else if(x<tempx)
-                            {
-                                int n=(tempx-x)/double(fabs(data->at(i))*width/value);
-                                x=x+(n+1)*double(fabs(data->at(i))*width/value);
-                            }
-                            double w=double(fabs(data->at(i))*width/value)/3;
-                            if(x+w>tempx+double(fabs(data->at(i))*width/value))
-                            {
-                                w=tempx+double(fabs(data->at(i))*width/value)-x;
-                            }
-                            QRectF rectTemp=QRectF(x,
-                                            y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
-                                            w,
-                                            value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                            rectListTemp->append(rectTemp);
-
-
-
-    */
                         }
                         else
                         {
@@ -1915,7 +1885,10 @@ qreal Widget::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *da
 void Widget::on_start_pressed()
 {
     timer2->stop();
-    index2=0;
+    for(int i=0;i<this->getFileList()->at(0)->size();i++)
+    {
+        index2.replace(i,0);
+    }
     this->setStep(false);
     if(this->getFinished()==true)
     {
@@ -3406,7 +3379,6 @@ void Widget::on_start_4_clicked()
     {
 
        timer2->stop();
-       index2=0;
        update();
     }
     else

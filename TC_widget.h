@@ -383,7 +383,7 @@ private:
     QList <AreaTeam *> * m_CurrentYregionA;
     int count;
     int index;
-    int index2;
+    QList <int> index2;
     int m_increaseSize;
     int m_regionMaxsize;
     int m_searchRange;
