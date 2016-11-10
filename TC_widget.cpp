@@ -30,8 +30,8 @@ enum{
     HALFSIZEA=13,
     TEXTX=1760,
     SIGNX=1680,
-    DELAY=100,
-    STEP=50
+    DELAY=0,
+    STEP=100
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -763,7 +763,7 @@ void Widget::animate()
 
 void Widget::animation()
 {
-    if(index2>200)
+    if(index2>1000)
     {
         timer2->stop();
         index2=0;
@@ -3411,7 +3411,7 @@ void Widget::on_start_4_clicked()
     }
     else
     {
-        timer2->start();
+        timer2->start(DELAY);
     }
 }
 
