@@ -1450,7 +1450,8 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                 x=tempx+z*double(fabs(data->at(i))*width/value)/3;
                             }
                             //
-                            if(x>=tempx+double(fabs(data->at(i))*width/value))
+
+                            if(x>tempx+double(fabs(data->at(i))*width/value))
                             {
                                 double w=double(fabs(data->at(i))*width/value)/3;
 
@@ -1458,8 +1459,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                 {
                                     index2.replace(j,0);
                                 }
-                                int n=(x-tempx)/double(fabs(data->at(i))*width/value);
-                                x=x-n*double(fabs(data->at(i))*width/value)-w;
+                                x=x-double(fabs(data->at(i))*width/value)-w;
 
                                 if(x+w>tempx+double(fabs(data->at(i))*width/value))
                                 {
@@ -1493,7 +1493,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                             else if(x<tempx)
                             {
                                 double w=double(fabs(data->at(i))*width/value)/3;
-                                if(x<=tempx-6*w)
+                                if(x<tempx-4*w)
                                 {
                                     index2.replace(j,0);
                                 }

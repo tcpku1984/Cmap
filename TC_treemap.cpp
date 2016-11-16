@@ -293,8 +293,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                 {
                                     index=0;
                                 }
-                                int n=(x-tempx)/double(fabs(data->at(i))*width/value);
-                                x=x-n*double(fabs(data->at(i))*width/value)-w;
+                                x=x-double(fabs(data->at(i))*width/value)-w;
 
                                 if(x+w>tempx+double(fabs(data->at(i))*width/value))
                                 {
@@ -328,7 +327,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             else if(x<tempx)
                             {
                                 double w=double(fabs(data->at(i))*width/value)/3;
-                                if(x<=tempx-6*w)
+                                if(x<=tempx-4*w)
                                 {
                                     index=0;
                                 }
