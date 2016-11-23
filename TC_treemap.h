@@ -20,6 +20,12 @@
 #include <QParallelAnimationGroup>
 #include <QPushButton>
 #include <QTimer>
+#include <QtWidgets/QMainWindow>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QAreaSeries>
+
+QT_CHARTS_USE_NAMESPACE
 namespace Ui {
 class treeMap;
 }
@@ -105,6 +111,11 @@ public:
 
 public slots:
     void animate();
+
+private slots:
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::treeMap *ui;

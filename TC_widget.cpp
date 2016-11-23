@@ -1434,8 +1434,15 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                     }
                     for(int z=0;z<3;z++)
                     {
+                        double smally;
                         if(this->getBottomStair()==false)
                         {
+                            smally=y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                        }
+                        else
+                        {
+                            smally=y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)/2;
+                        }
                             double x;
                             if(trend==1)
                             {
@@ -1466,7 +1473,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                     w=tempx+double(fabs(data->at(i))*width/value)-x;
 
                                     QRectF rectTemp=QRectF(x,
-                                                        y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
+                                                        smally,
                                                         w,
                                                         value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
                                     rectListTemp->append(rectTemp);
@@ -1475,7 +1482,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                 {
                                     w=x+w-tempx;
                                     QRectF rectTemp=QRectF(tempx,
-                                                        y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
+                                                        smally,
                                                         w,
                                                         value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
                                     rectListTemp->append(rectTemp);
@@ -1484,7 +1491,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                 else
                                 {
                                     QRectF rectTemp=QRectF(x,
-                                                        y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
+                                                        smally,
                                                         w,
                                                         value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
                                     rectListTemp->append(rectTemp);
@@ -1501,7 +1508,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                 {
                                     w=x+w-tempx;
                                     QRectF rectTemp=QRectF(tempx,
-                                                        y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
+                                                        smally,
                                                         w,
                                                         value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
                                     rectListTemp->append(rectTemp);
@@ -1517,7 +1524,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                     }
 
                                     QRectF rectTemp=QRectF(x,
-                                                        y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
+                                                        smally,
                                                         w,
                                                         value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
                                     rectListTemp->append(rectTemp);
@@ -1536,20 +1543,12 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                     w=tempx+double(fabs(data->at(i))*width/value)-x;
                                 }
                                 QRectF rectTemp=QRectF(x,
-                                                    y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max),
+                                                    smally,
                                                     w,
                                                     value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
                                 rectListTemp->append(rectTemp);
                             }
-                        }
-                        else
-                        {
-                            QRectF rectTemp=QRectF(tempx+z*double(fabs(data->at(i))*width/value)/3,
-                                            y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)/2,
-                                            double(fabs(data->at(i))*width/value)/3,
-                                            value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                            rectListTemp->append(rectTemp);
-                        }
+
                     }
                 }
 

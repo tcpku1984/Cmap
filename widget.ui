@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -1071,12 +1071,12 @@
       <rect>
        <x>260</x>
        <y>250</y>
-       <width>111</width>
+       <width>121</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>bottom</string>
+      <string>symmetric bars</string>
      </property>
      <property name="checked">
       <bool>false</bool>
