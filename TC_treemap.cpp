@@ -1020,6 +1020,11 @@ void treeMap::setLookAhead(bool lookAhead)
 
 void treeMap::on_pushButton_2_clicked()
 {
+    Linechart * lChart=new Linechart();
+    lChart->setColor(this->getColor());
+    lChart->setRegionList(this->getRegionList());
+    lChart->setWindowFlags(Qt::WindowStaysOnTopHint);
+    lChart->show();
 
 
 }

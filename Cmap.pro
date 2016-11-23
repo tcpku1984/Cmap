@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     TC_regionfile.cpp \
     TC_treemap.cpp \
     TC_widget.cpp \
-    TC_statistics.cpp
+    TC_statistics.cpp \
+    linechart.cpp
 
 HEADERS  += \
     block.h \
@@ -50,9 +51,11 @@ HEADERS  += \
     TC_rectholder.h \
     TC_region.h \
     TC_regionfile.h \
-    TC_statistics.h
+    TC_statistics.h \
+    linechart.h
 
 FORMS    += widget.ui \
     treemap.ui \
     areatreemap.ui \
-    TC_statistics.ui
+    TC_statistics.ui \
+    linechart.ui

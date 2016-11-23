@@ -34,6 +34,7 @@
 #include<TC_regionfile.h>
 #include<TC_datacolor.h>
 #include<TC_statistics.h>
+#include<linechart.h>
 using namespace std;
 namespace Ui {
 class Widget;

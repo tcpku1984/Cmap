@@ -20,6 +20,7 @@
 #include <QParallelAnimationGroup>
 #include <QPushButton>
 #include <QTimer>
+#include <linechart.h>
 #include <QtWidgets/QMainWindow>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
