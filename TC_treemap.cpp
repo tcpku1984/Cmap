@@ -38,6 +38,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setAspectRatio(1);
     this->setTrend(0);
     this->setSingleYear(false);
+    this->setGap(0);
     index=0;
     m_Datacolor=new dataColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
@@ -269,13 +270,31 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                     for(int z=0;z<3;z++)
                     {
                         double smally;
+                        double smallw;
                         if(this->getBottomStair()==false)
                         {
-                            smally=y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            smally=y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)
+                                    +this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            smallw=value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max-
+                                    this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            while(smally>y+length/2||smallw<0)
+                            {
+                                smally=smally-value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                smallw=smallw+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            }
                         }
                         else
                         {
-                            smally=y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)/2;
+                            smally=y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)
+                                    +this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            smallw=value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max-
+                                    value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)-
+                                    this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            while(smally>y+length/2||smallw<0)
+                            {
+                                smally=smally-value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                smallw=smallw+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                            }
                         }
 
                             double x;
@@ -309,7 +328,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                     QRectF rectTemp=QRectF(x,
                                                         smally,
                                                         w,
-                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                                        smallw);
                                     rectListTemp->append(rectTemp);
                                 }
                                 else if(x<tempx)
@@ -318,7 +337,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                     QRectF rectTemp=QRectF(tempx,
                                                         smally,
                                                         w,
-                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                                        smallw);
                                     rectListTemp->append(rectTemp);
 
                                 }
@@ -327,7 +346,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                     QRectF rectTemp=QRectF(x,
                                                         smally,
                                                         w,
-                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                                        smallw);
                                     rectListTemp->append(rectTemp);
                                 }
                             }
@@ -344,7 +363,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                     QRectF rectTemp=QRectF(tempx,
                                                         smally,
                                                         w,
-                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                                        smallw);
                                     rectListTemp->append(rectTemp);
 
                                 }
@@ -360,7 +379,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                     QRectF rectTemp=QRectF(x,
                                                         smally,
                                                         w,
-                                                        value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                                        smallw);
                                     rectListTemp->append(rectTemp);
 
                                 }
@@ -379,7 +398,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                 QRectF rectTemp=QRectF(x,
                                                     smally,
                                                     w,
-                                                    value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                                    smallw);
                                 rectListTemp->append(rectTemp);
                             }
 
@@ -761,6 +780,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
     return ratio;
 
 
+}
+
+int treeMap::getGap() const
+{
+    return m_Gap;
+}
+
+void treeMap::setGap(int Gap)
+{
+    m_Gap = Gap;
 }
 
 bool treeMap::getSingleYear() const

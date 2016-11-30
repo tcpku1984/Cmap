@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -436,7 +436,7 @@
      <property name="geometry">
       <rect>
        <x>50</x>
-       <y>180</y>
+       <y>150</y>
        <width>101</width>
        <height>20</height>
       </rect>
@@ -460,7 +460,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>210</y>
+       <y>170</y>
        <width>140</width>
        <height>19</height>
       </rect>
@@ -487,8 +487,8 @@
     <widget class="QSpinBox" name="spinBox_4">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>210</y>
+       <x>170</x>
+       <y>170</y>
        <width>46</width>
        <height>22</height>
       </rect>
@@ -718,6 +718,85 @@
      </property>
      <property name="value">
       <number>1</number>
+     </property>
+     <property name="displayIntegerBase">
+      <number>10</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>200</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>gap scale</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::RichText</enum>
+     </property>
+    </widget>
+    <widget class="QSlider" name="horizontalSlider_8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>230</y>
+       <width>140</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>3</number>
+     </property>
+     <property name="pageStep">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="sliderPosition">
+      <number>0</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_7">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>230</y>
+       <width>46</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>3</number>
+     </property>
+     <property name="value">
+      <number>0</number>
      </property>
      <property name="displayIntegerBase">
       <number>10</number>
@@ -1210,11 +1289,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>1621</x>
-     <y>263</y>
+     <y>223</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1622</x>
-     <y>266</y>
+     <x>1634</x>
+     <y>226</y>
     </hint>
    </hints>
   </connection>
@@ -1247,6 +1326,22 @@
     <hint type="destinationlabel">
      <x>1868</x>
      <y>175</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_8</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_7</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1550</x>
+     <y>279</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1658</x>
+     <y>275</y>
     </hint>
    </hints>
   </connection>

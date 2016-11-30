@@ -5,6 +5,7 @@
 #include<TC_region.h>
 #include <TC_datacolor.h>
 #include <QPainter>
+#include<QString>
 
 namespace Ui {
 class Linechart;
@@ -36,6 +37,7 @@ private:
     dataColor * m_Datacolor;
     QList<Region *> * regionList;
     QList<QColor> dataColor0;
+    QList<QString> m_HealthName;
 
 };
 

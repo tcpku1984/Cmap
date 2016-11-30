@@ -265,6 +265,9 @@ public:
     bool getSingleYear() const;
     void setSingleYear(bool singleYear);
 
+    int getGap() const;
+    void setGap(int Gap);
+
 public slots:
     void animate();
     void animation();
@@ -342,6 +345,8 @@ private slots:
     void on_start_4_clicked();
 
     void on_checkBox_35_toggled(bool checked);
+
+    void on_horizontalSlider_8_valueChanged(int value);
 
 private:
     Ui::Widget *ui;
@@ -438,6 +443,7 @@ private:
     int m_Trend;
     bool m_bottomStair;
     bool m_singleYear;
+    int m_Gap;
 
 
 

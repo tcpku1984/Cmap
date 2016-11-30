@@ -110,6 +110,9 @@ public:
     bool getSingleYear() const;
     void setSingleYear(bool singleYear);
 
+    int getGap() const;
+    void setGap(int Gap);
+
 public slots:
     void animate();
 
@@ -164,6 +167,7 @@ private:
     int index;
     QTimer * timer;
     bool m_singleYear;
+    int m_Gap;
 
 };
 
