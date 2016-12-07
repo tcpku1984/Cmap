@@ -87,6 +87,7 @@ public:
 
     void drawTreeMap(qreal x,qreal y,qreal width,qreal length,QList<double> * data, QPainter * p);
     QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p,int layer,int j);
+    void drawLineChart(qreal x,qreal y,qreal s,int j, QPainter * p);
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<double> *data);
     QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p);
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
@@ -268,6 +269,12 @@ public:
     int getGap() const;
     void setGap(int Gap);
 
+    bool getShowDifference() const;
+    void setShowDifference(bool showDifference);
+
+    bool getLineChart() const;
+    void setLineChart(bool LineChart);
+
 public slots:
     void animate();
     void animation();
@@ -347,6 +354,10 @@ private slots:
     void on_checkBox_35_toggled(bool checked);
 
     void on_horizontalSlider_8_valueChanged(int value);
+
+    void on_checkBox_18_toggled(bool checked);
+
+    void on_checkBox_36_toggled(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -444,6 +455,8 @@ private:
     bool m_bottomStair;
     bool m_singleYear;
     int m_Gap;
+    bool m_showDifference;
+    bool m_LineChart;
 
 
 

@@ -87,6 +87,8 @@ Widget::Widget(QWidget *parent) :
     this->setAspectRatio(1);
     this->setBottomStair(false);
     this->setGap(0);
+    this->setShowDifference(false);
+    this->setLineChart(false);
 
     index=0;
     m_increaseSize=1;
@@ -330,98 +332,113 @@ void Widget::paintCCg(QPainter *painter)
     if(this->getFinished())
     {
         painter->setBrush(Qt::NoBrush);
-        if(this->getLookAhead()==false)
+        if(this->getLineChart()==true)
         {
             for(int i=0;i<this->regionListV()->size();i++)
             {
-                if(this->getMapDifference()==false)
+                drawLineChart(this->regionListV()->at(i)->X(),
+                              this->regionListV()->at(i)->Y(),
+                              this->regionListV()->at(i)->getSize(),
+                              i,painter);
+            }
+
+        }
+        else
+        {
+            if(this->getLookAhead()==false)
+            {
+                for(int i=0;i<this->regionListV()->size();i++)
                 {
-                    if(this->getCgroup()==false)
+                    if(this->getMapDifference()==false)
                     {
-                        if(this->getScreen()==false)
+                        if(this->getCgroup()==false)
                         {
-                            drawSqTreeMap(this->regionListV()->at(i)->X(),
-                                        this->regionListV()->at(i)->Y(),
-                                        this->regionListV()->at(i)->getSize(),
-                                        this->regionListV()->at(i)->getSize(),0,
-                                        this->regionListV()->at(i)->healthData(),
-                                        painter,2,i);
+                            if(this->getScreen()==false)
+                            {
+                                drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                            this->regionListV()->at(i)->Y(),
+                                            this->regionListV()->at(i)->getSize(),
+                                            this->regionListV()->at(i)->getSize(),0,
+                                            this->regionListV()->at(i)->healthData(),
+                                            painter,2,i);
+                            }
+                            else
+                            {
+                                drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                            this->regionListV()->at(i)->Y(),
+                                            this->regionListV()->at(i)->getSize(),
+                                            this->regionListV()->at(i)->getSize()*9/16,0,
+                                            this->regionListV()->at(i)->healthData(),
+                                            painter,2,i);
+
+                            }
                         }
                         else
                         {
-                            drawSqTreeMap(this->regionListV()->at(i)->X(),
-                                        this->regionListV()->at(i)->Y(),
-                                        this->regionListV()->at(i)->getSize(),
-                                        this->regionListV()->at(i)->getSize()*9/16,0,
-                                        this->regionListV()->at(i)->healthData(),
-                                        painter,2,i);
-
+                           QList<double> * dataTemp=new QList<double>;
+                           double temp=0;
+                           for(int k=0;k<3;k++)
+                           {
+                               temp+=this->regionListV()->at(i)->healthData()->at(k);
+                           }
+                           dataTemp->append(temp);
+                           for(int k=3;k<this->regionListV()->at(i)->healthData()->size();k++)
+                           {
+                               dataTemp->append(this->regionListV()->at(i)->healthData()->at(k));
+                           }
+                           drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                       this->regionListV()->at(i)->Y(),
+                                       this->regionListV()->at(i)->getSize(),
+                                       this->regionListV()->at(i)->getSize(),0,
+                                       dataTemp,
+                                       painter,2,i);
                         }
                     }
                     else
                     {
-                       QList<double> * dataTemp=new QList<double>;
-                       double temp=0;
-                       for(int k=0;k<3;k++)
-                       {
-                           temp+=this->regionListV()->at(i)->healthData()->at(k);
-                       }
-                       dataTemp->append(temp);
-                       for(int k=3;k<this->regionListV()->at(i)->healthData()->size();k++)
-                       {
-                           dataTemp->append(this->regionListV()->at(i)->healthData()->at(k));
-                       }
-                       drawSqTreeMap(this->regionListV()->at(i)->X(),
-                                   this->regionListV()->at(i)->Y(),
-                                   this->regionListV()->at(i)->getSize(),
-                                   this->regionListV()->at(i)->getSize(),0,
-                                   dataTemp,
-                                   painter,2,i);
-                    }
-                }
-                else
-                {
-                    QList <double>* dataTemp=new QList<double>;
-                    for(int k=0;k<this->regionListV()->at(i)->healthData()->size();k++)
-                    {
-                        double tempdata=double(this->regionListV()->at(i)->healthData()->at(k)-
-                                this->getAveragePrevlance()->at(k));
-                        if(fabs(tempdata)>0.005)
+                        QList <double>* dataTemp=new QList<double>;
+                        for(int k=0;k<this->regionListV()->at(i)->healthData()->size();k++)
                         {
-                            dataTemp->append(this->regionListV()->at(i)->healthData()->at(k)-
-                                             this->getAveragePrevlance()->at(k));
-                        }
-                        else
-                        {
-                            if(tempdata>0)
-                                dataTemp->append(0.005);
+                            double tempdata=double(this->regionListV()->at(i)->healthData()->at(k)-
+                                    this->getAveragePrevlance()->at(k));
+                            if(fabs(tempdata)>0.005)
+                            {
+                                dataTemp->append(this->regionListV()->at(i)->healthData()->at(k)-
+                                                 this->getAveragePrevlance()->at(k));
+                            }
                             else
-                                dataTemp->append(-0.005);
+                            {
+                                if(tempdata>0)
+                                    dataTemp->append(0.005);
+                                else
+                                    dataTemp->append(-0.005);
+                            }
                         }
+
+                        drawSqTreeMap(this->regionListV()->at(i)->X(),
+                                     this->regionListV()->at(i)->Y(),
+                                     this->regionListV()->at(i)->getSize(),
+                                     this->regionListV()->at(i)->getSize(),0,
+                                     dataTemp,
+                                     painter,2,i);
+
+
                     }
-
-                    drawSqTreeMap(this->regionListV()->at(i)->X(),
-                                 this->regionListV()->at(i)->Y(),
-                                 this->regionListV()->at(i)->getSize(),
-                                 this->regionListV()->at(i)->getSize(),0,
-                                 dataTemp,
-                                 painter,2,i);
-
-
                 }
             }
-        }
-        else
-        {
-            for(int i=0;i<this->regionListV()->size();i++)
+            else
             {
+                for(int i=0;i<this->regionListV()->size();i++)
+                {
 
-                drawSqTreeMap2(this->regionListV()->at(i)->X(),
-                            this->regionListV()->at(i)->Y(),
-                            this->regionListV()->at(i)->getSize(),
-                            this->regionListV()->at(i)->getSize(),0,
-                            this->regionListV()->at(i)->healthData(),
-                            painter);
+                    drawSqTreeMap2(this->regionListV()->at(i)->X(),
+                                this->regionListV()->at(i)->Y(),
+                                this->regionListV()->at(i)->getSize(),
+                                this->regionListV()->at(i)->getSize(),0,
+                                this->regionListV()->at(i)->healthData(),
+                                painter);
+                }
+
             }
 
         }
@@ -1207,6 +1224,7 @@ void Widget::mousePressEvent(QMouseEvent *e)
               t->setBottomStair(this->getBottomStair());
               t->setSingleYear(this->getSingleYear());
               t->setGap(this->getGap());
+              t->setShowDifference(this->getShowDifference());
               connect(t,SIGNAL(destroyed(QObject*)),this,SLOT(windowClose()));
               t->show();
               this->setWindowsnumber(this->Windowsnumber()+1);
@@ -1410,6 +1428,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                 p->fillRect(rect,Qt::white);
                 QList <QRectF> * rectListTemp=new QList<QRectF>;
                 double max=-1;
+                double min=100;
                 int trend;
                 if(this->getSingleYear()==false)
                 {
@@ -1433,34 +1452,54 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                         {
                             max=this->getFileList()->at(z)->at(j)->healthData()->at(i);
                         }
+                        if(min>this->getFileList()->at(z)->at(j)->healthData()->at(i))
+                        {
+                            min=this->getFileList()->at(z)->at(j)->healthData()->at(i);
+                        }
                     }
                     for(int z=0;z<3;z++)
                     {
                         double smally;
                         double smallw;
-                        if(this->getBottomStair()==false)
+                        if(this->getShowDifference()==true)
                         {
-                            smally=y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)
-                                    +this->getGap()*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                            smallw=value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max-
-                                    this->getGap()*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                            while(smally>y+length/2||smallw<0)
+                            if(max==min)
                             {
-                                smally=smally-value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                                smallw=smallw+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                smally=y+value*length/total;
+                                smallw=0;
+                            }
+                            else
+                            {
+                                smally=y+value*length/total*(1-(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min));
+                                smallw=value*length/total*(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min);
                             }
                         }
                         else
                         {
-                            smally=y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)+
-                                    this->getGap()*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                            smallw=value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max-
-                                    value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)-
-                                    this->getGap()*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                            while(smally>y+length/2||smallw<0)
+                            if(this->getBottomStair()==false)
                             {
-                                smally=smally-value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
-                                smallw=smallw+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                smally=y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)
+                                        +this->getGap()*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                smallw=value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max-
+                                        this->getGap()*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                while(smally>y+length/2||smallw<0)
+                                {
+                                    smally=smally-value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                    smallw=smallw+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                }
+                            }
+                            else
+                            {
+                                smally=y+value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)+
+                                        this->getGap()*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                smallw=value*length/total*this->getFileList()->at(z)->at(j)->healthData()->at(i)/max-
+                                        value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max)-
+                                        2*this->getGap()*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                while(smally>y+length/2||smallw<0)
+                                {
+                                    smally=smally-value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                    smallw=smallw+2*value*length/total*(1-this->getFileList()->at(z)->at(j)->healthData()->at(i)/max);
+                                }
                             }
                         }
                             double x;
@@ -1773,6 +1812,66 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
             rectList->append(*drawSqTreeMap(x,y,width,length,pos,data,p,layer,j));
         }
         return rectList;
+    }
+
+}
+
+void Widget::drawLineChart(qreal x, qreal y, qreal s,int j, QPainter *p)
+{
+    //p->setBrush(Qt::white);
+    p->fillRect(QRectF(x,y,s,s),Qt::white);
+    for(int i=0;i<this->getFileList()->at(0)->at(j)->healthData()->size();i++)
+    {
+
+            QPen pen;
+            pen.setColor(this->dataColor0.at(i));
+            pen.setWidth(2);
+            p->setPen(pen);
+            QPointF a,b,c;
+            if(this->getShowDifference()==false)
+            {
+                a=QPointF(x+0.1*s,y+0.9*s-this->getFileList()->at(0)->at(j)->healthData()->at(i)*0.9*s/20);
+                b=QPointF(x+0.5*s,y+0.9*s-this->getFileList()->at(1)->at(j)->healthData()->at(i)*0.9*s/20);
+                c=QPointF(x+0.9*s,y+0.9*s-this->getFileList()->at(2)->at(j)->healthData()->at(i)*0.9*s/20);
+
+            }
+            else
+            {
+                double max=-1;
+                double min=100;
+                for(int z=0;z<3;z++)
+                {
+                    if(max<this->getFileList()->at(z)->at(j)->healthData()->at(i))
+                    {
+                        max=this->getFileList()->at(z)->at(j)->healthData()->at(i);
+                    }
+                    if(min>this->getFileList()->at(z)->at(j)->healthData()->at(i))
+                    {
+                        min=this->getFileList()->at(z)->at(j)->healthData()->at(i);
+                    }
+                }
+
+                if(max==min)
+                {
+                    a=QPointF(x+0.1*s,y+0.9*s);
+                    b=QPointF(x+0.1*s,y+0.9*s);
+                    c=QPointF(x+0.1*s,y+0.9*s);
+                }
+                else
+                {
+                    a=QPointF(x+0.1*s,y+0.9*s-(this->getFileList()->at(0)->at(j)->healthData()->at(i)-min)/max*0.9*s);
+                    b=QPointF(x+0.5*s,y+0.9*s-(this->getFileList()->at(1)->at(j)->healthData()->at(i)-min)/max*0.9*s);
+                    c=QPointF(x+0.9*s,y+0.9*s-(this->getFileList()->at(2)->at(j)->healthData()->at(i)-min)/max*0.9*s);
+                }
+            }
+            p->drawLine(a,b);
+            p->drawLine(b,c);
+            pen.setWidth(3);
+            p->setPen(pen);
+            p->drawPoint(a);
+            p->drawPoint(b);
+            p->drawPoint(c);
+
     }
 
 }
@@ -2369,6 +2468,26 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
         }
     }
     this->setYError(this->getYError()+error);
+}
+
+bool Widget::getLineChart() const
+{
+    return m_LineChart;
+}
+
+void Widget::setLineChart(bool LineChart)
+{
+    m_LineChart = LineChart;
+}
+
+bool Widget::getShowDifference() const
+{
+    return m_showDifference;
+}
+
+void Widget::setShowDifference(bool showDifference)
+{
+    m_showDifference = showDifference;
 }
 
 int Widget::getGap() const
@@ -3431,4 +3550,28 @@ void Widget::on_checkBox_35_toggled(bool checked)
 void Widget::on_horizontalSlider_8_valueChanged(int value)
 {
     this->setGap(value);
+}
+
+void Widget::on_checkBox_18_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setShowDifference(true);
+    }
+    else
+    {
+        this->setShowDifference(false);
+    }
+}
+
+void Widget::on_checkBox_36_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->setLineChart(true);
+    }
+    else
+    {
+        this->setLineChart(false);
+    }
 }

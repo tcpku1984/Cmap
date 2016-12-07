@@ -15,6 +15,7 @@ Linechart::Linechart(QWidget *parent) :
                <<"Chronic-kidney-disease"<<"Diabetes"<<"Hypertension"
               <<"COPD"<<"Mental-Health"<<"Osteoporosis"<<"Rheumatoid-Arthritis"
              <<"Cancer"<<"Epilepsy"<<"Hypothyroidism"<<"Asthma";
+    this->setShowDifference(false);
 }
 
 Linechart::~Linechart()
@@ -39,9 +40,43 @@ void Linechart::paintEvent(QPaintEvent *event)
             pen.setColor(this->dataColor0.at(i));
             pen.setWidth(2);
             painter.setPen(pen);
-            QPointF a=QPointF(10,500-this->getRegionList()->at(0)->healthData()->at(i)*25);
-            QPointF b=QPointF(360,500-this->getRegionList()->at(1)->healthData()->at(i)*25);
-            QPointF c=QPointF(710,500-this->getRegionList()->at(2)->healthData()->at(i)*25);
+            QPointF a,b,c;
+            if(this->getShowDifference()==false)
+            {
+                a=QPointF(10,500-this->getRegionList()->at(0)->healthData()->at(i)*25);
+                b=QPointF(360,500-this->getRegionList()->at(1)->healthData()->at(i)*25);
+                c=QPointF(710,500-this->getRegionList()->at(2)->healthData()->at(i)*25);
+
+            }
+            else
+            {
+                double max=-1;
+                double min=100;
+                for(int z=0;z<3;z++)
+                {
+                    if(max<this->getRegionList()->at(z)->healthData()->at(i))
+                    {
+                        max=this->getRegionList()->at(z)->healthData()->at(i);
+                    }
+                    if(min>this->getRegionList()->at(z)->healthData()->at(i))
+                    {
+                        min=this->getRegionList()->at(z)->healthData()->at(i);
+                    }
+                }
+
+                if(max==min)
+                {
+                    a=QPointF(10,500);
+                    b=QPointF(360,500);
+                    c=QPointF(710,500);
+                }
+                else
+                {
+                    a=QPointF(10,500-(this->getRegionList()->at(0)->healthData()->at(i)-min)/max*500);
+                    b=QPointF(360,500-(this->getRegionList()->at(1)->healthData()->at(i)-min)/max*500);
+                    c=QPointF(710,500-(this->getRegionList()->at(2)->healthData()->at(i)-min)/max*500);
+                }
+            }
             painter.drawLine(a,b);
             painter.drawLine(b,c);
             pen.setWidth(10);
@@ -49,7 +84,7 @@ void Linechart::paintEvent(QPaintEvent *event)
             painter.drawPoint(a);
             painter.drawPoint(b);
             painter.drawPoint(c);
-            painter.drawText(QRectF(730,500-this->getRegionList()->at(2)->healthData()->at(i)*25-10
+            painter.drawText(QRectF(730,c.ry()-10
                                     ,50,20),m_HealthName.at(i));
 
     }
@@ -83,4 +118,14 @@ QList<Region *> *Linechart::getRegionList() const
 void Linechart::setRegionList(QList<Region *> *value)
 {
     regionList = value;
+}
+
+bool Linechart::getShowDifference() const
+{
+    return m_showDifference;
+}
+
+void Linechart::setShowDifference(bool showDifference)
+{
+    m_showDifference = showDifference;
 }

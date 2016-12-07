@@ -30,6 +30,9 @@ public:
     QList<Region *> *getRegionList() const;
     void setRegionList(QList<Region *> *value);
 
+    bool getShowDifference() const;
+    void setShowDifference(bool showDifference);
+
 private:
     Ui::Linechart *ui;
 
@@ -38,6 +41,7 @@ private:
     QList<Region *> * regionList;
     QList<QColor> dataColor0;
     QList<QString> m_HealthName;
+    bool m_showDifference;
 
 };
 

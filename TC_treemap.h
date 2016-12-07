@@ -113,6 +113,9 @@ public:
     int getGap() const;
     void setGap(int Gap);
 
+    bool getShowDifference() const;
+    void setShowDifference(bool showDifference);
+
 public slots:
     void animate();
 
@@ -168,6 +171,7 @@ private:
     QTimer * timer;
     bool m_singleYear;
     int m_Gap;
+    bool m_showDifference;
 
 };
 

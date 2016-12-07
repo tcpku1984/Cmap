@@ -40,6 +40,7 @@ treeMap::treeMap(QWidget *parent, bool treemap, int color, Region *region, QList
     this->setSingleYear(false);
     this->setGap(0);
     index=0;
+    this->setShowDifference(true);
     m_Datacolor=new dataColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
                <<"Chronic-kidney-disease"<<"Diabetes"<<"Hypertension"
@@ -238,6 +239,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                 pen.setWidth(this->getBorder());
                 p->setPen(pen);
                 double max=-1;
+                double min=100;
                 int trend;
                 if(this->getSingleYear()==true)
                 {
@@ -266,34 +268,54 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                         {
                             max=this->getRegionList()->at(z)->healthData()->at(i);
                         }
+                        if(min>this->getRegionList()->at(z)->healthData()->at(i))
+                        {
+                            min=this->getRegionList()->at(z)->healthData()->at(i);
+                        }
                     }
                     for(int z=0;z<3;z++)
                     {
                         double smally;
                         double smallw;
-                        if(this->getBottomStair()==false)
+                        if(this->getShowDifference()==true)
                         {
-                            smally=y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)
-                                    +this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
-                            smallw=value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max-
-                                    this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
-                            while(smally>y+length/2||smallw<0)
+                            if(max==min)
                             {
-                                smally=smally-value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
-                                smallw=smallw+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                smally=y+value*length/total;
+                                smallw=0;
+                            }
+                            else
+                            {
+                                smally=y+value*length/total*(1-(this->getRegionList()->at(z)->healthData()->at(i)-min)/(max-min));
+                                smallw=value*length/total*(this->getRegionList()->at(z)->healthData()->at(i)-min)/(max-min);
                             }
                         }
                         else
                         {
-                            smally=y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)
-                                    +this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
-                            smallw=value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max-
-                                    value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)-
-                                    this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
-                            while(smally>y+length/2||smallw<0)
+                            if(this->getBottomStair()==false)
                             {
-                                smally=smally-value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
-                                smallw=smallw+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                smally=y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)
+                                        +this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                smallw=value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max-
+                                        this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                while(smally>y+length/2||smallw<0)
+                                {
+                                    smally=smally-value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                    smallw=smallw+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                }
+                            }
+                            else
+                            {
+                                smally=y+value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)
+                                        +this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                smallw=value*length/total*this->getRegionList()->at(z)->healthData()->at(i)/max-
+                                        value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max)-
+                                        2*this->getGap()*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                while(smally>y+length/2||smallw<0)
+                                {
+                                    smally=smally-value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                    smallw=smallw+2*value*length/total*(1-this->getRegionList()->at(z)->healthData()->at(i)/max);
+                                }
                             }
                         }
 
@@ -782,6 +804,16 @@ qreal treeMap::calRatio2(qreal w, qreal l, int pos, int number, QList<double> *d
 
 }
 
+bool treeMap::getShowDifference() const
+{
+    return m_showDifference;
+}
+
+void treeMap::setShowDifference(bool showDifference)
+{
+    m_showDifference = showDifference;
+}
+
 int treeMap::getGap() const
 {
     return m_Gap;
@@ -1053,6 +1085,7 @@ void treeMap::on_pushButton_2_clicked()
     lChart->setColor(this->getColor());
     lChart->setRegionList(this->getRegionList());
     lChart->setWindowFlags(Qt::WindowStaysOnTopHint);
+    lChart->setShowDifference(this->getShowDifference());
     lChart->show();
 
 
