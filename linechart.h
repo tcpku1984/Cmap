@@ -33,6 +33,9 @@ public:
     bool getShowDifference() const;
     void setShowDifference(bool showDifference);
 
+    int getTrend() const;
+    void setTrend(int Trend);
+
 private:
     Ui::Linechart *ui;
 
@@ -42,6 +45,7 @@ private:
     QList<QColor> dataColor0;
     QList<QString> m_HealthName;
     bool m_showDifference;
+    int m_Trend;
 
 };
 

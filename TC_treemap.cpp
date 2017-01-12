@@ -286,8 +286,14 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                             }
                             else
                             {
+
                                 smally=y+value*length/total*(1-(this->getRegionList()->at(z)->healthData()->at(i)-min)/(max-min));
                                 smallw=value*length/total*(this->getRegionList()->at(z)->healthData()->at(i)-min)/(max-min);
+                                if(this->getRegionList()->at(z)->healthData()->at(i)==min)
+                                {
+                                    smally=y+value*length/total*0.95;
+                                    smallw=value*length/total*0.05;
+                                }
                             }
                         }
                         else
@@ -1086,6 +1092,7 @@ void treeMap::on_pushButton_2_clicked()
     lChart->setRegionList(this->getRegionList());
     lChart->setWindowFlags(Qt::WindowStaysOnTopHint);
     lChart->setShowDifference(this->getShowDifference());
+    lChart->setTrend(this->getTrend());
     lChart->show();
 
 

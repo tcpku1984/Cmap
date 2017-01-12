@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -768,7 +768,7 @@
       </font>
      </property>
      <property name="text">
-      <string>gap scale</string>
+      <string>scale bars</string>
      </property>
      <property name="textFormat">
       <enum>Qt::RichText</enum>
@@ -1201,7 +1201,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>difference only</string>
+      <string>change only</string>
      </property>
      <property name="checked">
       <bool>false</bool>

@@ -22,11 +22,9 @@
 #include <QTimer>
 #include <linechart.h>
 #include <QtWidgets/QMainWindow>
-#include <QtCharts/QChartView>
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QAreaSeries>
 
-QT_CHARTS_USE_NAMESPACE
+
+
 namespace Ui {
 class treeMap;
 }

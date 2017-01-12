@@ -16,6 +16,7 @@ Linechart::Linechart(QWidget *parent) :
               <<"COPD"<<"Mental-Health"<<"Osteoporosis"<<"Rheumatoid-Arthritis"
              <<"Cancer"<<"Epilepsy"<<"Hypothyroidism"<<"Asthma";
     this->setShowDifference(false);
+    this->setTrend(0);
 }
 
 Linechart::~Linechart()
@@ -72,13 +73,11 @@ void Linechart::paintEvent(QPaintEvent *event)
                 }
                 else
                 {
-                    a=QPointF(10,500-(this->getRegionList()->at(0)->healthData()->at(i)-min)/max*500);
-                    b=QPointF(360,500-(this->getRegionList()->at(1)->healthData()->at(i)-min)/max*500);
-                    c=QPointF(710,500-(this->getRegionList()->at(2)->healthData()->at(i)-min)/max*500);
+                    a=QPointF(10,500-(this->getRegionList()->at(0)->healthData()->at(i)-min)/(max-min)*480);
+                    b=QPointF(360,500-(this->getRegionList()->at(1)->healthData()->at(i)-min)/(max-min)*480);
+                    c=QPointF(710,500-(this->getRegionList()->at(2)->healthData()->at(i)-min)/(max-min)*480);
                 }
             }
-            painter.drawLine(a,b);
-            painter.drawLine(b,c);
             pen.setWidth(10);
             painter.setPen(pen);
             painter.drawPoint(a);
@@ -86,6 +85,31 @@ void Linechart::paintEvent(QPaintEvent *event)
             painter.drawPoint(c);
             painter.drawText(QRectF(730,c.ry()-10
                                     ,50,20),m_HealthName.at(i));
+            if(this->getTrend()==2)
+            {
+                if((a.ry()<=b.ry())&&(b.ry()<=c.ry()))
+                {  }
+                else
+                {
+                    pen.setColor(Qt::white);
+                }
+            }
+            else if(this->getTrend()==1)
+            {
+                if((a.ry()>=b.ry())&&(b.ry()>=c.ry()))
+                {  }
+                else
+                {
+                    pen.setColor(Qt::white);
+                }
+            }
+            pen.setWidth(2);
+            painter.setPen(pen);
+            painter.drawLine(a,b);
+            painter.drawLine(b,c);
+
+
+
 
     }
 }
@@ -129,3 +153,13 @@ void Linechart::setShowDifference(bool showDifference)
 {
     m_showDifference = showDifference;
 }
+int Linechart::getTrend() const
+{
+    return m_Trend;
+}
+
+void Linechart::setTrend(int Trend)
+{
+    m_Trend = Trend;
+}
+

@@ -1472,6 +1472,11 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                             {
                                 smally=y+value*length/total*(1-(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min));
                                 smallw=value*length/total*(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min);
+                                if(this->getFileList()->at(z)->at(j)->healthData()->at(i)==min)
+                                {
+                                    smally=y+value*length/total*0.95;
+                                    smallw=value*length/total*0.05;
+                                }
                             }
                         }
                         else
@@ -1825,6 +1830,13 @@ void Widget::drawLineChart(qreal x, qreal y, qreal s,int j, QPainter *p)
 
             QPen pen;
             pen.setColor(this->dataColor0.at(i));
+            if(this->getColorFilter()==true)
+            {
+                if(this->colorlegend->at(i)==false)
+                {
+                    pen.setColor(Qt::white);
+                }
+            }
             pen.setWidth(2);
             p->setPen(pen);
             QPointF a,b,c;
@@ -1859,18 +1871,39 @@ void Widget::drawLineChart(qreal x, qreal y, qreal s,int j, QPainter *p)
                 }
                 else
                 {
-                    a=QPointF(x+0.1*s,y+0.9*s-(this->getFileList()->at(0)->at(j)->healthData()->at(i)-min)/max*0.9*s);
-                    b=QPointF(x+0.5*s,y+0.9*s-(this->getFileList()->at(1)->at(j)->healthData()->at(i)-min)/max*0.9*s);
-                    c=QPointF(x+0.9*s,y+0.9*s-(this->getFileList()->at(2)->at(j)->healthData()->at(i)-min)/max*0.9*s);
+                    a=QPointF(x+0.1*s,y+0.9*s-(this->getFileList()->at(0)->at(j)->healthData()->at(i)-min)/(max-min)*0.8*s);
+                    b=QPointF(x+0.5*s,y+0.9*s-(this->getFileList()->at(1)->at(j)->healthData()->at(i)-min)/(max-min)*0.8*s);
+                    c=QPointF(x+0.9*s,y+0.9*s-(this->getFileList()->at(2)->at(j)->healthData()->at(i)-min)/(max-min)*0.8*s);
                 }
             }
-            p->drawLine(a,b);
-            p->drawLine(b,c);
             pen.setWidth(3);
             p->setPen(pen);
             p->drawPoint(a);
             p->drawPoint(b);
             p->drawPoint(c);
+            if(this->getTrend()==2)
+            {
+                if((a.ry()<=b.ry())&&(b.ry()<=c.ry()))
+                {  }
+                else
+                {
+                    pen.setColor(Qt::white);
+                }
+            }
+            else if(this->getTrend()==1)
+            {
+                if((a.ry()>=b.ry())&&(b.ry()>=c.ry()))
+                {  }
+                else
+                {
+                    pen.setColor(Qt::white);
+                }
+            }
+            pen.setWidth(2);
+            p->setPen(pen);
+            p->drawLine(a,b);
+            p->drawLine(b,c);
+
 
     }
 
