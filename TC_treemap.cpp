@@ -228,6 +228,11 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
         }
         for(int i=pos;i<pos+number;i++)
         {
+            if(fabs(data->at(i))<0.01)
+            {
+            }
+            else
+            {
             QRectF rect=QRectF(tempx,y,fabs(data->at(i))*width/value,value*length/total);
             //cout<<"new length"<<value*length/total<<endl;
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
@@ -636,6 +641,7 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
             p->drawText(rect,QString::number(data->at(i)));
             tempx=tempx+fabs(data->at(i))*width/value;
         }
+        }
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
@@ -743,12 +749,19 @@ qreal treeMap::calRatio(qreal w, qreal l, int pos, int number, QList<double> *da
     {
         for(int i=pos;i<=pos+number;i++)
         {
-            temp=data->at(i)*total*w/(l*value*value);
-            if(temp<1)
+            if(fabs(data->at(i))<0.01)
             {
-                temp=1/temp;
+
             }
-            sum=sum+temp;
+            else
+            {
+                temp=data->at(i)*total*w/(l*value*value);
+                if(temp<1)
+                {
+                    temp=1/temp;
+                }
+                sum=sum+temp;
+            }
         }
     }
     /*

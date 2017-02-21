@@ -275,6 +275,12 @@ public:
     bool getLineChart() const;
     void setLineChart(bool LineChart);
 
+    QList<int> *getDataCheck() const;
+    void setDataCheck(QList<int> *dataCheck);
+
+    QList<Region *> *getRegionListSave() const;
+    void setRegionListSave(QList<Region *> *regionListSave);
+
 public slots:
     void animate();
     void animation();
@@ -359,6 +365,36 @@ private slots:
 
     void on_checkBox_36_toggled(bool checked);
 
+    void on_checkBox_20_toggled(bool checked);
+
+    void on_checkBox_19_toggled(bool checked);
+
+    void on_checkBox_21_toggled(bool checked);
+
+    void on_checkBox_22_toggled(bool checked);
+
+    void on_checkBox_23_toggled(bool checked);
+
+    void on_checkBox_24_toggled(bool checked);
+
+    void on_checkBox_25_toggled(bool checked);
+
+    void on_checkBox_26_toggled(bool checked);
+
+    void on_checkBox_27_toggled(bool checked);
+
+    void on_checkBox_28_toggled(bool checked);
+
+    void on_checkBox_29_toggled(bool checked);
+
+    void on_checkBox_30_toggled(bool checked);
+
+    void on_checkBox_31_toggled(bool checked);
+
+    void on_checkBox_32_toggled(bool checked);
+
+    void on_start_5_pressed();
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -389,6 +425,7 @@ private:
     QTimer *timer2;
     QList <Region *> * m_regionListV;
     QList <Region *> * m_regionListH;
+    QList <Region *> * m_regionListSave;
     QList <Region *> * m_Lastregion;
     QList <Region *> * m_Currentregion;
     QList <Region *> * m_LastYregion;
@@ -457,6 +494,7 @@ private:
     int m_Gap;
     bool m_showDifference;
     bool m_LineChart;
+    QList <int> * m_dataCheck;
 
 
 

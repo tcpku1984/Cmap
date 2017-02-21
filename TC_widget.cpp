@@ -74,6 +74,7 @@ Widget::Widget(QWidget *parent) :
     this->setPalette(pal);
     m_regionListV= new QList<Region *>;
     m_regionListH= new QList<Region *>;
+    m_regionListSave= new QList<Region *>;
     m_Currentregion= new QList<Region *>;
     m_Lastregion= new QList<Region *>;
     m_CurrentYregion= new QList<Region *>;
@@ -83,6 +84,11 @@ Widget::Widget(QWidget *parent) :
     m_CurrentYregionA=new QList<AreaTeam *>;
     m_LastYregionA=new QList<AreaTeam *>;
     m_FileList=new QList<QList<Region *>*>;
+    m_dataCheck=new QList<int>;
+    for(int i=0;i<14;i++)
+    {
+        m_dataCheck->append(1);
+    }
     this->setTrend(0);
     this->setAspectRatio(1);
     this->setBottomStair(false);
@@ -1420,6 +1426,12 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
         }
         for(int i=pos;i<pos+number;i++)
         {
+            if(fabs(data->at(i))<0.01)
+            {
+
+            }
+            else
+            {
             QRectF rect=QRectF(tempx,y,fabs(data->at(i))*width/value,value*length/total);
             //cout<<"new length"<<value*length/total<<endl;
             rectList->append(new rectHolder(tempx,y,fabs(data->at(i))*width/value,value*length/total));
@@ -1809,6 +1821,7 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
 
             tempx=tempx+fabs(data->at(i))*width/value;
         }
+        }
         y=y+value*length/total;
         length=length-value*length/total;
         pos=pos+number;
@@ -1928,6 +1941,12 @@ qreal Widget::calRatio(qreal w, qreal l, int pos, int number, QList<double> *dat
     {
         for(int i=pos;i<=pos+number;i++)
         {
+            if(fabs(data->at(i))<0.01)
+            {
+
+            }
+            else
+            {
             temp=fabs(data->at(i))*total*w/(l*value*value);
             if(temp<1)
             {
@@ -1938,6 +1957,7 @@ qreal Widget::calRatio(qreal w, qreal l, int pos, int number, QList<double> *dat
             if(temp>ratio)
             {
                 ratio=temp;
+            }
             }
         }
     }
@@ -2055,21 +2075,45 @@ void Widget::on_start_pressed()
 
         this->regionListV()->clear();
         this->regionListH()->clear();
+        this->getRegionListSave()->clear();
         this->getAreaGroup()->clear();
         regionFile* file=new regionFile();
         file->readfile(this->getDataYear());
         this->setRegionListV(file->regionList());
         this->setPopulation(file->populiation());
         this->setAreaGroup(file->AreaGroup());
+        /*
+        for(int i=0;i<this->regionListV()->size();i++)
+        {
+            for(int j=0;j<14;j++)
+            {
+                if(this->getDataCheck()->at(j)==1)
+                {
+                    this->regionListV()->at(i)->healthData()->replace(j,0.01);
+                }
+            }
+        }
+        */
         for(int i=0;i<this->regionListV()->size();i++)
         {
            this->regionListH()->append(this->regionListV()->at(i));
-
+            Region * regionTemp=new Region();
+            QList<double> * healthTemp= new QList<double>;
+            for(int j=0;j<14;j++)
+            {
+                healthTemp->append(0);
+                healthTemp->replace(j,
+                                    this->regionListV()->at(i)->healthData()->at(j));
+            }
+            regionTemp->setHealthData(healthTemp);
+           this->getRegionListSave()->append(regionTemp);
         }
         qSort(this->regionListH()->begin(),this->regionListH()->end(),
               horizontalOrder);
         qSort(this->regionListV()->begin(),this->regionListV()->end(),
                                      verticalOrder);
+        qSort(this->getRegionListSave()->begin(),this->getRegionListSave()->end(),
+              verticalOrder);
         if(this->getGroup()==false)
         {
             for(int i=0;i<this->regionListV()->size();i++)
@@ -2502,6 +2546,26 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
     }
     this->setYError(this->getYError()+error);
 }
+QList<Region *> *Widget::getRegionListSave() const
+{
+    return m_regionListSave;
+}
+
+void Widget::setRegionListSave(QList<Region *> *regionListSave)
+{
+    m_regionListSave = regionListSave;
+}
+
+QList<int> *Widget::getDataCheck() const
+{
+    return m_dataCheck;
+}
+
+void Widget::setDataCheck(QList<int> *dataCheck)
+{
+    m_dataCheck = dataCheck;
+}
+
 
 bool Widget::getLineChart() const
 {
@@ -3607,4 +3671,195 @@ void Widget::on_checkBox_36_toggled(bool checked)
     {
         this->setLineChart(false);
     }
+}
+
+
+void Widget::on_checkBox_19_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(0,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(0,0);
+    }
+}
+
+void Widget::on_checkBox_20_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(1,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(1,0);
+    }
+
+}
+
+void Widget::on_checkBox_21_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(2,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(2,0);
+    }
+}
+
+void Widget::on_checkBox_22_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(3,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(3,0);
+    }
+}
+
+void Widget::on_checkBox_23_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(4,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(4,0);
+    }
+}
+
+void Widget::on_checkBox_24_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(5,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(5,0);
+    }
+}
+
+void Widget::on_checkBox_25_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(6,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(6,0);
+    }
+}
+
+void Widget::on_checkBox_26_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(7,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(7,0);
+    }
+}
+
+void Widget::on_checkBox_27_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(8,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(8,0);
+    }
+}
+
+void Widget::on_checkBox_28_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(9,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(9,0);
+    }
+}
+
+void Widget::on_checkBox_29_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(10,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(10,0);
+    }
+}
+
+void Widget::on_checkBox_30_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(11,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(11,0);
+    }
+}
+
+void Widget::on_checkBox_31_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(12,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(12,0);
+    }
+}
+
+void Widget::on_checkBox_32_toggled(bool checked)
+{
+    if(checked==true)
+    {
+        this->getDataCheck()->replace(13,1);
+    }
+    else
+    {
+        this->getDataCheck()->replace(13,0);
+    }
+}
+
+void Widget::on_start_5_pressed()
+{
+    for(int i=0;i<this->regionListV()->size();i++)
+    {
+        for(int j=0;j<14;j++)
+        {
+            if(this->getDataCheck()->at(j)==0)
+            {
+                this->regionListV()->at(i)->healthData()->replace(j,0.009);
+            }
+
+            else
+            {
+                this->regionListV()->at(i)->healthData()->replace(j,
+                 this->getRegionListSave()->at(i)->healthData()->at(j));
+            }
+        }
+    }
+    update();
 }
