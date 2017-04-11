@@ -1482,12 +1482,25 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                             }
                             else
                             {
-                                smally=y+value*length/total*(1-(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min));
-                                smallw=value*length/total*(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min);
-                                if(this->getFileList()->at(z)->at(j)->healthData()->at(i)==min)
+                                if(this->getBottomStair()==false)
                                 {
-                                    smally=y+value*length/total*0.95;
-                                    smallw=value*length/total*0.05;
+                                    smally=y+value*length/total*(1-(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min));
+                                    smallw=value*length/total*(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min);
+                                    if(this->getFileList()->at(z)->at(j)->healthData()->at(i)==min)
+                                    {
+                                        smally=y+value*length/total*0.95;
+                                        smallw=value*length/total*0.05;
+                                    }
+                                }
+                                else
+                                {
+                                    smally=y+value*length/total*(0.5-(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min)/2);
+                                    smallw=value*length/total*(this->getFileList()->at(z)->at(j)->healthData()->at(i)-min)/(max-min);
+                                    if(this->getFileList()->at(z)->at(j)->healthData()->at(i)==min)
+                                    {
+                                        smally=y+value*length/total*0.475;
+                                        smallw=value*length/total*0.05;
+                                    }
                                 }
                             }
                         }

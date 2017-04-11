@@ -1182,7 +1182,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>symmetric bars</string>
+      <string>Gradient-oriented</string>
      </property>
      <property name="checked">
       <bool>false</bool>
