@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -1182,7 +1182,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Gradient-oriented</string>
+      <string>Symmetric Bar</string>
      </property>
      <property name="checked">
       <bool>false</bool>
@@ -1196,12 +1196,12 @@
       <rect>
        <x>260</x>
        <y>260</y>
-       <width>121</width>
+       <width>141</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>change only</string>
+      <string>Gradient-Oriented</string>
      </property>
      <property name="checked">
       <bool>false</bool>

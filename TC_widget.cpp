@@ -2282,30 +2282,40 @@ void Widget::drawSign(QPainter *p)
     {
         for(int i=0;i<14;i++)
         {
-            if(this->getGradient()==false)
+            if(this->getDataCheck()->at(i)==0)
             {
-                QLinearGradient temp(1680,440+i*40,1750,480+40*i);
-                //QRadialGradient temp(QPoint(1830,420+40*i),60);
-                temp.setColorAt(0,
-                                QColor::fromHsvF(dataColor0[i].hueF(),
-                                                 1,0.6));
-                temp.setColorAt(1,
-                                QColor::fromHsvF(dataColor0[i].hueF(),
-                                                 0.6,1));
-                p->fillRect(1680,440+i*40,70,40,temp);
+                p->setPen(dataColor0[i]);
+                p->drawRect(1680,440+i*40,70,40);
             }
             else
             {
-                QRadialGradient temp(QPoint(1715,460+40*i),40);
-                temp.setColorAt(0,
-                                QColor::fromHsvF(dataColor0[i].hueF(),
-                                                 0.3,1));
-                temp.setColorAt(1,
-                                QColor::fromHsvF(dataColor0[i].hueF(),
-                                                 1,0.7));
-                p->fillRect(1680,440+i*40,70,40,temp);
+                if(this->getGradient()==false)
+                {
+                    QLinearGradient temp(1680,440+i*40,1750,480+40*i);
+                    //QRadialGradient temp(QPoint(1830,420+40*i),60);
+                    temp.setColorAt(0,
+                                    QColor::fromHsvF(dataColor0[i].hueF(),
+                                                     1,0.6));
+                    temp.setColorAt(1,
+                                    QColor::fromHsvF(dataColor0[i].hueF(),
+                                                     0.6,1));
+                    p->fillRect(1680,440+i*40,70,40,temp);
+                }
+                else
+                {
+                    QRadialGradient temp(QPoint(1715,460+40*i),40);
+                    temp.setColorAt(0,
+                                    QColor::fromHsvF(dataColor0[i].hueF(),
+                                                     0.3,1));
+                    temp.setColorAt(1,
+                                    QColor::fromHsvF(dataColor0[i].hueF(),
+                                                     1,0.7));
+                    p->fillRect(1680,440+i*40,70,40,temp);
+
+                }
 
             }
+            p->setPen(Qt::white);
         }
     }
     else
