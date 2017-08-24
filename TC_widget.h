@@ -495,6 +495,7 @@ private:
     bool m_showDifference;
     bool m_LineChart;
     QList <int> * m_dataCheck;
+    QList <QPolygonF *> * m_polygonList;
 
 
 

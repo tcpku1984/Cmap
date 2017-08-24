@@ -15,6 +15,7 @@ enum{
 regionFile::regionFile()
 {
     m_regionList=new QList<Region *>;
+    m_PolygonList=new QList<QPolygonF *>;
     m_AreaGroup=new QList<AreaTeam *>;
     m_AveragePrevlance=new QList<double>;
     for(int i=0;i<14;i++)
@@ -125,6 +126,37 @@ void regionFile::readfile(int year)
 
 }
 
+void regionFile::readPolygon()
+{
+    ifstream inFlow;
+    inFlow.open("D:/Cmap/poly.csv");
+    string input;
+    int number=-1;
+    QPolygonF * tempPolygon;
+    float tempx,tempy;
+    while (!inFlow.eof())
+    {
+        getline(inFlow,input, ',');
+        if(number!=atoi(input.c_str()))
+        {
+            number=atoi(input.c_str());
+            tempPolygon=new QPolygonF();
+            m_PolygonList->append(tempPolygon);
+        }
+
+        getline(inFlow,input, ',');
+        tempx=atof(input.c_str())/RATHH+HH;
+        inFlow>>tempy;
+        tempy=-tempy/RATHV+VV;
+        tempPolygon->append(QPointF(tempx,tempy));
+    }
+    inFlow.close();
+    cout<<"Reading finished::"<<number<<endl;
+
+
+
+}
+
 QList<Region *> *regionFile::regionList() const
 {
     return m_regionList;
@@ -166,6 +198,16 @@ int regionFile::searchAreaCode(QString code)
     }
     return -1;
 }
+QList<QPolygonF *> *regionFile::PolygonList() const
+{
+    return m_PolygonList;
+}
+
+void regionFile::setPolygonList(QList<QPolygonF *> *PolygonList)
+{
+    m_PolygonList = PolygonList;
+}
+
 bool regionFile::display() const
 {
     return m_display;

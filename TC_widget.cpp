@@ -85,6 +85,7 @@ Widget::Widget(QWidget *parent) :
     m_LastYregionA=new QList<AreaTeam *>;
     m_FileList=new QList<QList<Region *>*>;
     m_dataCheck=new QList<int>;
+    m_polygonList=new QList<QPolygonF *>;
     for(int i=0;i<14;i++)
     {
         m_dataCheck->append(1);
@@ -104,7 +105,7 @@ Widget::Widget(QWidget *parent) :
     m_dataYear=2013;
     this->setLoopCount(1);
     m_border=1;
-    this->setColor(0);
+    this->setColor(6);
     this->setFilter(0);
     finished=false;
     m_samesize=true;
@@ -137,6 +138,9 @@ Widget::Widget(QWidget *parent) :
     this->setBColor(true);
     this->setOpacity(100);
     refreshColor();
+    regionFile* polyfile=new regionFile();
+    polyfile->readPolygon();
+    m_polygonList=polyfile->PolygonList();
     for(int i=0;i<3;i++)
     {
         regionFile* file=new regionFile();
@@ -224,6 +228,7 @@ Widget::Widget(QWidget *parent) :
           YAOrder);
     qSort(this->getLastYregionA()->begin(),this->getLastYregionA()->end(),
           YAOrder);
+
     m_Datacolor=new dataColor();
     this->regionColor=m_Datacolor->getRegionColor();
     m_HealthName<<"Coronary-heart-disease"<<"Heart Failure"<<"Stroke"
@@ -248,6 +253,11 @@ void Widget::paintEvent(QPaintEvent *event)
     this->dataColor0=m_Datacolor->getColor(this->getColor());
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
+    for(int i=0;i<m_polygonList->size();i++)
+    {
+        cout<<"testing::"<<m_polygonList->at(i)->at(0).x()<<"  :   "<<m_polygonList->at(i)->at(0).y()<<endl;
+        painter.drawPolyline(*m_polygonList->at(i));
+    }
     if(this->getGroup()==false)
     {
        paintCCg(&painter);
@@ -267,7 +277,9 @@ void Widget::paintCCg(QPainter *painter)
 
     int z=this->regionListV()->size()/HALF;
 
-    painter->setPen(Qt::white);
+
+
+    painter->setPen(Qt::white);    
     for(int i=0;i<this->regionListV()->size();i++)
     {
 
@@ -1647,11 +1659,17 @@ QList<rectHolder *> *Widget::drawSqTreeMap(qreal x, qreal y, qreal width, qreal 
                                          tempx+fabs(data->at(i))*width/value,
                                          y+value*length/total);
                     grad.setColorAt(0,
+                                    dataColor0.at(i));
+                    grad.setColorAt(1,
+                                    dataColor0.at(i));
+                    /*
+                    grad.setColorAt(0,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.5));
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
-                                                     0.5,1));
+                                                     0.5,1));*/
+
                     if(this->getSingleYear()==true)
                     {
                         p->fillRect(rect,grad);
@@ -2282,6 +2300,8 @@ void Widget::drawSign(QPainter *p)
     {
         for(int i=0;i<14;i++)
         {
+            p->fillRect(1680,440+i*40,70,40,dataColor0[i]);
+            /*
             if(this->getGradient()==false)
             {
                 QLinearGradient temp(1680,440+i*40,1750,480+40*i);
@@ -2305,7 +2325,7 @@ void Widget::drawSign(QPainter *p)
                                                  1,0.7));
                 p->fillRect(1680,440+i*40,70,40,temp);
 
-            }
+            }*/
         }
     }
     else

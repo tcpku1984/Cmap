@@ -32,8 +32,20 @@ void Linechart::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setFont(font);
     painter.setRenderHint( QPainter::Antialiasing );
-    //painter.drawLine(QPointF(10,10),QPointF(10,210));
-    //painter.drawLine(QPointF(310,210),QPointF(10,210));
+    painter.drawLine(QPointF(45,0),QPointF(45,510));
+    painter.drawLine(QPointF(45,510),QPointF(790,510));
+    painter.drawText(QRect(45,510,50,20),"2011");
+    painter.drawText(QRect(395,510,50,20),"2012");
+    painter.drawText(QRect(745,510,50,20),"2013");
+    if(this->getShowDifference()==false)
+    {
+        painter.drawText(QRect(25,10,20,20),"20");
+        painter.drawText(QRect(25,260,20,20),"10");
+    }
+    else
+    {
+        painter.drawText(QRect(25,10,20,20),"Max");
+    }
     for(int i=0;i<this->getRegionList()->at(0)->healthData()->size();i++)
     {
 
@@ -44,9 +56,9 @@ void Linechart::paintEvent(QPaintEvent *event)
             QPointF a,b,c;
             if(this->getShowDifference()==false)
             {
-                a=QPointF(10,500-this->getRegionList()->at(0)->healthData()->at(i)*25);
-                b=QPointF(360,500-this->getRegionList()->at(1)->healthData()->at(i)*25);
-                c=QPointF(710,500-this->getRegionList()->at(2)->healthData()->at(i)*25);
+                a=QPointF(50,500-this->getRegionList()->at(0)->healthData()->at(i)*25);
+                b=QPointF(400,500-this->getRegionList()->at(1)->healthData()->at(i)*25);
+                c=QPointF(750,500-this->getRegionList()->at(2)->healthData()->at(i)*25);
 
             }
             else
@@ -67,23 +79,27 @@ void Linechart::paintEvent(QPaintEvent *event)
 
                 if(max==min)
                 {
-                    a=QPointF(10,500);
-                    b=QPointF(360,500);
-                    c=QPointF(710,500);
+                    a=QPointF(50,500);
+                    b=QPointF(400,500);
+                    c=QPointF(750,500);
                 }
                 else
                 {
-                    a=QPointF(10,500-(this->getRegionList()->at(0)->healthData()->at(i)-min)/(max-min)*480);
-                    b=QPointF(360,500-(this->getRegionList()->at(1)->healthData()->at(i)-min)/(max-min)*480);
-                    c=QPointF(710,500-(this->getRegionList()->at(2)->healthData()->at(i)-min)/(max-min)*480);
+                    a=QPointF(50,500-(this->getRegionList()->at(0)->healthData()->at(i)-min)/(max-min)*480);
+                    b=QPointF(400,500-(this->getRegionList()->at(1)->healthData()->at(i)-min)/(max-min)*480);
+                    c=QPointF(750,500-(this->getRegionList()->at(2)->healthData()->at(i)-min)/(max-min)*480);
                 }
             }
             pen.setWidth(10);
             painter.setPen(pen);
+
+
             painter.drawPoint(a);
             painter.drawPoint(b);
             painter.drawPoint(c);
-            painter.drawText(QRectF(730,c.ry()-10
+            //painter.drawText(QRectF(),2011);
+
+            painter.drawText(QRectF(770,c.ry()-10
                                     ,50,20),m_HealthName.at(i));
             if(this->getTrend()==2)
             {

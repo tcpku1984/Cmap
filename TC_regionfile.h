@@ -13,12 +13,14 @@
 #include<QList>
 #include<string>
 #include<iostream>
+#include<QPolygonF>
 using namespace std;
 class regionFile
 {
 public:
     regionFile();
     void readfile(int year);
+    void readPolygon();
     QList<Region *> *regionList() const;
     void setRegionList(QList<Region *> *regionList);
 
@@ -34,6 +36,9 @@ public:
     bool display() const;
     void setDisplay(bool display);
 
+    QList<QPolygonF *> *PolygonList() const;
+    void setPolygonList(QList<QPolygonF *> *PolygonList);
+
 private:
     int searchAreaCode(QString code);
     QList < Region *> * m_regionList;
@@ -41,6 +46,9 @@ private:
     QList <AreaTeam *>  * m_AreaGroup;
     QList<double> * m_AveragePrevlance;
     bool m_display;
+    QList<QPolygonF *> * m_PolygonList;
+
+
 
 };
 

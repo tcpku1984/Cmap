@@ -461,11 +461,16 @@ QList <rectHolder *> *  treeMap::drawSqTreeMap(qreal x, qreal y, qreal width, qr
                                          tempx+fabs(data->at(i))*width/value,
                                          y+value*length/total);
                     grad.setColorAt(0,
+                                    dataColor0.at(i));
+                    grad.setColorAt(1,
+                                    dataColor0.at(i));
+                    /*
+                    grad.setColorAt(0,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
                                                      1,0.5));
                     grad.setColorAt(1,
                                     QColor::fromHsvF(dataColor0.at(i).hueF(),
-                                                     0.5,1));
+                                                     0.5,1));*/
                     if(this->getSingleYear()==true)
                     {
                         p->fillRect(rect,grad);

@@ -38,13 +38,33 @@ public:
 
     QList<QColor> getColor(int number);
 
+    QList<QColor> getColorTest() const;
+    void setColorTest(const QList<QColor> &value);
+
+    QList<QColor> getColorTest1() const;
+    void setColorTest1(const QList<QColor> &value);
+
+    QList<QColor> getColorTest2() const;
+    void setColorTest2(const QList<QColor> &value);
+
+    QList<QColor> getColorTest3() const;
+    void setColorTest3(const QList<QColor> &value);
+
+    QList<QColor> getDataColor5() const;
+    void setDataColor5(const QList<QColor> &value);
+
 private:
     QList<QColor> dataColor0;
     QList<QColor> dataColor1;
     QList<QColor> dataColor2;
     QList<QColor> dataColor3;
     QList<QColor> dataColor4;
+    QList<QColor> dataColor5;
     QList<QColor> regionColor;
+    QList<QColor> colorTest;
+    QList<QColor> colorTest1;
+    QList<QColor> colorTest2;
+    QList<QColor> colorTest3;
 };
 
 #endif // DATACOLOR_H
