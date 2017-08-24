@@ -253,11 +253,12 @@ void Widget::paintEvent(QPaintEvent *event)
     this->dataColor0=m_Datacolor->getColor(this->getColor());
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
+    /*
     for(int i=0;i<m_polygonList->size();i++)
     {
         cout<<"testing::"<<m_polygonList->at(i)->at(0).x()<<"  :   "<<m_polygonList->at(i)->at(0).y()<<endl;
         painter.drawPolyline(*m_polygonList->at(i));
-    }
+    }*/
     if(this->getGroup()==false)
     {
        paintCCg(&painter);
@@ -293,11 +294,17 @@ void Widget::paintCCg(QPainter *painter)
                                this->regionListV()->at(i)->Y(),
                                this->regionListV()->at(i)->getSize(),
                                this->regionListV()->at(i)->getSize()));
+            /*
            painter->drawText(QRectF(this->regionListV()->at(i)->X(),
                                      this->regionListV()->at(i)->Y(),
                                      this->regionListV()->at(i)->getSize(),
                                      this->regionListV()->at(i)->getSize()), QString::number(
-                                  this->regionListV()->at(i)->getError()));
+                                  this->regionListV()->at(i)->getError()));*/
+            painter->drawText(QRectF(this->regionListV()->at(i)->X(),
+                                      this->regionListV()->at(i)->Y(),
+                                      this->regionListV()->at(i)->getSize(),
+                                      this->regionListV()->at(i)->getSize()),
+                                   this->regionListV()->at(i)->ccgCode());
 
         }
         else
@@ -354,7 +361,12 @@ void Widget::paintCCg(QPainter *painter)
         {
             for(int i=0;i<this->regionListV()->size();i++)
             {
+                /*
                 drawLineChart(this->regionListV()->at(i)->X(),
+                              this->regionListV()->at(i)->Y(),
+                              this->regionListV()->at(i)->getSize(),
+                              i,painter);*/
+                drawGlyphChart(this->regionListV()->at(i)->X(),
                               this->regionListV()->at(i)->Y(),
                               this->regionListV()->at(i)->getSize(),
                               i,painter);
@@ -1950,6 +1962,40 @@ void Widget::drawLineChart(qreal x, qreal y, qreal s,int j, QPainter *p)
 
 
     }
+
+}
+
+void Widget::drawGlyphChart(qreal x, qreal y, qreal s, int j, QPainter *p)
+{
+    QPen pen;
+    pen.setColor(Qt::gray);
+    pen.setWidth(1);
+    p->setPen(pen);
+    p->fillRect(QRectF(x,y,s,s),Qt::white);
+    p->drawLine(QPointF(x,y+s/2),QPointF(x+s,y+s/2));
+    for(int i=1;i<6;i++)
+    {
+        p->drawLine(QPointF(x+i*s/6,y),QPointF(x+i*s/6,y+s));
+    }
+    for(int i=0;i<6;i++)
+    {
+        QPen pen;
+        pen.setColor(this->dataColor0.at(i));
+        pen.setWidth(4);
+        p->setPen(pen);
+        p->drawLine(QPointF(x+i*s/6,y+this->getFileList()->at(0)->at(j)->healthData()->at(i)*s/2/15),
+                    QPointF(x+(i+1)*s/6,y+this->getFileList()->at(0)->at(j)->healthData()->at(i+1)*s/2/15));
+    }
+    for(int i=7;i<13;i++)
+    {
+        QPen pen;
+        pen.setColor(this->dataColor0.at(i));
+        pen.setWidth(4);
+        p->setPen(pen);
+        p->drawLine(QPointF(x+(i-7)*s/6,y+s/2+this->getFileList()->at(0)->at(j)->healthData()->at(i)*s/2/15),
+                    QPointF(x+(i-6)*s/6,y+s/2+this->getFileList()->at(0)->at(j)->healthData()->at(i+1)*s/2/15));
+    }
+
 
 }
 
