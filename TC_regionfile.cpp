@@ -18,6 +18,7 @@ regionFile::regionFile()
     m_PolygonList=new QList<QPolygonF *>;
     m_AreaGroup=new QList<AreaTeam *>;
     m_AveragePrevlance=new QList<double>;
+    m_River=new QList<QString>;
     for(int i=0;i<14;i++)
     {
         this->AveragePrevlance()->append(0);
@@ -157,6 +158,30 @@ void regionFile::readPolygon()
 
 }
 
+void regionFile::readRiver()
+{
+    ifstream inFlow;
+    inFlow.open("D:/Cmap/Thames.csv");
+    string input;
+    int a;
+    while (!inFlow.eof())
+    {
+        getline(inFlow,input, ',');
+        cout<<input<<endl;
+        m_River->append(QString::fromStdString(input));
+        getline(inFlow,input, ',');
+        cout<<input<<endl;
+        m_River->append(QString::fromStdString(input));
+        getline(inFlow,input, ',');
+        inFlow>>a;
+        cout<<"one loop"<<endl;
+    }
+    inFlow.close();
+    cout<<"River Reading finished"<<endl;
+
+
+}
+
 QList<Region *> *regionFile::regionList() const
 {
     return m_regionList;
@@ -197,6 +222,16 @@ int regionFile::searchAreaCode(QString code)
         }
     }
     return -1;
+}
+
+QList<QString> *regionFile::River() const
+{
+    return m_River;
+}
+
+void regionFile::setRiver(QList<QString> *River)
+{
+    m_River = River;
 }
 QList<QPolygonF *> *regionFile::PolygonList() const
 {

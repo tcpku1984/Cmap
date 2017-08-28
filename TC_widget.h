@@ -497,6 +497,7 @@ private:
     bool m_LineChart;
     QList <int> * m_dataCheck;
     QList <QPolygonF *> * m_polygonList;
+    QList <QString> * m_River;
 
 
 

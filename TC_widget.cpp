@@ -86,6 +86,7 @@ Widget::Widget(QWidget *parent) :
     m_FileList=new QList<QList<Region *>*>;
     m_dataCheck=new QList<int>;
     m_polygonList=new QList<QPolygonF *>;
+    m_River=new QList<QString>;
     for(int i=0;i<14;i++)
     {
         m_dataCheck->append(1);
@@ -141,6 +142,13 @@ Widget::Widget(QWidget *parent) :
     regionFile* polyfile=new regionFile();
     polyfile->readPolygon();
     m_polygonList=polyfile->PolygonList();
+    polyfile->readRiver();
+    m_River=polyfile->River();
+    /*for(int i=0;i<m_River->size();i++)
+    {
+        cout<<m_River->at(i).toStdString();
+    }*/
+
     for(int i=0;i<3;i++)
     {
         regionFile* file=new regionFile();
