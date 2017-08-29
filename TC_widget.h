@@ -285,6 +285,7 @@ public:
 public slots:
     void animate();
     void animation();
+    void animationRiver();
 
 private slots:
     void on_start_pressed();
@@ -424,6 +425,7 @@ private:
 
     QTimer  *timer;
     QTimer *timer2;
+    QTimer * timer3;
     QList <Region *> * m_regionListV;
     QList <Region *> * m_regionListH;
     QList <Region *> * m_regionListSave;
@@ -439,6 +441,7 @@ private:
     int count;
     int index;
     QList <int> index2;
+    int index3;
     int m_increaseSize;
     int m_regionMaxsize;
     int m_searchRange;
@@ -498,6 +501,7 @@ private:
     QList <int> * m_dataCheck;
     QList <QPolygonF *> * m_polygonList;
     QList <QString> * m_River;
+   QPolygonF * m_RiverPolygon;
 
 
 

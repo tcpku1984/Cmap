@@ -167,14 +167,14 @@ void regionFile::readRiver()
     while (!inFlow.eof())
     {
         getline(inFlow,input, ',');
-        cout<<input<<endl;
+        getline(inFlow,input, ',');
+        //cout<<input<<endl;
         m_River->append(QString::fromStdString(input));
         getline(inFlow,input, ',');
-        cout<<input<<endl;
+        //cout<<input<<endl;
         m_River->append(QString::fromStdString(input));
-        getline(inFlow,input, ',');
         inFlow>>a;
-        cout<<"one loop"<<endl;
+
     }
     inFlow.close();
     cout<<"River Reading finished"<<endl;

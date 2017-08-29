@@ -87,6 +87,7 @@ Widget::Widget(QWidget *parent) :
     m_dataCheck=new QList<int>;
     m_polygonList=new QList<QPolygonF *>;
     m_River=new QList<QString>;
+    m_RiverPolygon=new QPolygonF();
     for(int i=0;i<14;i++)
     {
         m_dataCheck->append(1);
@@ -99,6 +100,7 @@ Widget::Widget(QWidget *parent) :
     this->setLineChart(false);
 
     index=0;
+    index3=0;
     m_increaseSize=1;
     m_regionMaxsize=110;
     m_searchRange=209;
@@ -144,10 +146,10 @@ Widget::Widget(QWidget *parent) :
     m_polygonList=polyfile->PolygonList();
     polyfile->readRiver();
     m_River=polyfile->River();
-    /*for(int i=0;i<m_River->size();i++)
+    for(int i=0;i<m_River->size();i++)
     {
         cout<<m_River->at(i).toStdString();
-    }*/
+    }
 
     for(int i=0;i<3;i++)
     {
@@ -248,6 +250,8 @@ Widget::Widget(QWidget *parent) :
     connect(timer,SIGNAL(timeout()),this,SLOT(animate()));
     timer2=new QTimer();
     connect(timer2,SIGNAL(timeout()),this,SLOT(animation()));
+    timer3=new QTimer();
+   connect(timer3,SIGNAL(timeout()),this,SLOT(animationRiver()));
 
 }
 
@@ -621,7 +625,17 @@ void Widget::paintCCg(QPainter *painter)
             }
         }
     }
-
+    if(true)
+    {
+        if(m_RiverPolygon!=NULL)
+        {
+            for(int z=0;z<m_RiverPolygon->size();z++)
+            {
+                painter->drawPoint(m_RiverPolygon->at(z));
+            }
+            painter->drawPolygon(*m_RiverPolygon);
+        }
+    }
     painter->setPen(Qt::black);
 }
 
@@ -826,6 +840,12 @@ void Widget::animation()
         index2.replace(i,index2.at(i)+1);
     }
 
+    update();
+}
+
+void Widget::animationRiver()
+{
+    index3++;
     update();
 }
 
