@@ -63,6 +63,7 @@ void regionFile::readfile(int year)
         Region * temp=new Region();
         AreaTeam * areaTemp;
         getline(inFlow,input, ',');
+        getline(inFlow,input, ',');
         temp->setCcgCode(QString::fromStdString(input));
         getline(inFlow,input, ',');
         temp->setCcgName(QString::fromStdString(input));

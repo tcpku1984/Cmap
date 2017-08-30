@@ -30,7 +30,7 @@ enum{
     HALFSIZEA=13,
     TEXTX=1760,
     SIGNX=1680,
-    DELAY=0,
+    DELAY=500,
     STEP=50
 };
 
@@ -550,6 +550,57 @@ void Widget::paintCCg(QPainter *painter)
             painter->drawText(QRect(50,50,300,500),
                               output);
         }
+        if(true)
+        {
+            cout<<index3<<endl;
+            QPen riverPen;
+            riverPen.setWidth(5);
+            riverPen.setColor(Qt::blue);
+            painter->setPen(riverPen);
+            if(m_RiverPolygon!=NULL)
+            {
+                //cout<<"here 1"<<endl;
+                for(int z=0;z<m_RiverPolygon->size();z++)
+                {
+                    painter->drawPoint(m_RiverPolygon->at(z));
+                }
+                painter->drawPolygon(*m_RiverPolygon);
+            }
+            int i1=-1,i2=-2;
+            if(index3*2+1<m_River->size())
+            {
+                //cout<<"here 2"<<endl;
+                for(int z=0;z<this->regionListV()->size();z++)
+                {
+                    //cout<<this->regionListV()->at(z)->ccgCode().toStdString()<<endl;
+                    if(this->regionListV()->at(z)->ccgCode()==m_River->at(index3*2))
+                    {
+                        i1=z;
+                    }
+                    if(this->regionListV()->at(z)->ccgCode()==m_River->at(index3*2+1))
+                    {
+                        i2=z;
+                    }
+                }
+                if(i1>0&&i2>0)
+                {
+                    painter->fillRect(QRectF(this->regionListV()->at(i1)->X(),this->regionListV()->at(i1)->Y(),
+                                  this->regionListV()->at(i1)->getSize(),this->regionListV()->at(i1)->getSize()),Qt::red);
+                    painter->fillRect(QRectF(this->regionListV()->at(i2)->X(),this->regionListV()->at(i2)->Y(),
+                                  this->regionListV()->at(i2)->getSize(),this->regionListV()->at(i2)->getSize()),Qt::red);
+                    m_RiverPolygon->append(QPointF(this->regionListV()->at(i1)->X()/2+this->regionListV()->at(i1)->getSize()/4
+                                               +this->regionListV()->at(i2)->X()/2+this->regionListV()->at(i2)->getSize()/4,
+                                               this->regionListV()->at(i1)->Y()/2+this->regionListV()->at(i1)->getSize()/4
+                                               +this->regionListV()->at(i2)->Y()/2+this->regionListV()->at(i2)->getSize()/4));
+                }
+            }
+            else
+            {
+                timer3->stop();
+
+            }
+        }
+
     }
     painter->setPen(Qt::green);
     painter->drawLine(QPointF(10,this->regionListV()->at(z)->Y()+
@@ -623,17 +674,6 @@ void Widget::paintCCg(QPainter *painter)
                     }
                 }
             }
-        }
-    }
-    if(true)
-    {
-        if(m_RiverPolygon!=NULL)
-        {
-            for(int z=0;z<m_RiverPolygon->size();z++)
-            {
-                painter->drawPoint(m_RiverPolygon->at(z));
-            }
-            painter->drawPolygon(*m_RiverPolygon);
         }
     }
     painter->setPen(Qt::black);
@@ -3727,6 +3767,7 @@ void Widget::on_checkBox_17_toggled(bool checked)
 
 void Widget::on_start_4_clicked()
 {
+    /*
     if(timer2->isActive()==true)
     {
 
@@ -3736,7 +3777,14 @@ void Widget::on_start_4_clicked()
     else
     {
         timer2->start(DELAY);
-    }
+    }*/
+
+
+        index3=0;
+        m_RiverPolygon->clear();
+        timer3->start(DELAY);
+
+
 }
 
 void Widget::on_checkBox_35_toggled(bool checked)
