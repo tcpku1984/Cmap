@@ -550,7 +550,7 @@ void Widget::paintCCg(QPainter *painter)
             painter->drawText(QRect(50,50,300,500),
                               output);
         }
-        if(true)
+        if(this->getFont()==false)
         {
             cout<<index3<<endl;
             QPen riverPen;
@@ -589,6 +589,10 @@ void Widget::paintCCg(QPainter *painter)
                     painter->fillRect(QRectF(this->regionListV()->at(i2)->X(),this->regionListV()->at(i2)->Y(),
                                   this->regionListV()->at(i2)->getSize(),this->regionListV()->at(i2)->getSize()),Qt::red);
                     m_RiverPolygon->append(QPointF(this->regionListV()->at(i1)->X()/2+this->regionListV()->at(i1)->getSize()/4
+                                               +this->regionListV()->at(i2)->X()/2+this->regionListV()->at(i2)->getSize()/4,
+                                               this->regionListV()->at(i1)->Y()/2+this->regionListV()->at(i1)->getSize()/4
+                                               +this->regionListV()->at(i2)->Y()/2+this->regionListV()->at(i2)->getSize()/4));
+                    painter->drawPoint(QPointF(this->regionListV()->at(i1)->X()/2+this->regionListV()->at(i1)->getSize()/4
                                                +this->regionListV()->at(i2)->X()/2+this->regionListV()->at(i2)->getSize()/4,
                                                this->regionListV()->at(i1)->Y()/2+this->regionListV()->at(i1)->getSize()/4
                                                +this->regionListV()->at(i2)->Y()/2+this->regionListV()->at(i2)->getSize()/4));
@@ -2049,7 +2053,7 @@ void Widget::drawGlyphChart(qreal x, qreal y, qreal s, int j, QPainter *p)
     {
         QPen pen;
         pen.setColor(this->dataColor0.at(i));
-        pen.setWidth(4);
+        pen.setWidth(8);
         p->setPen(pen);
         p->drawLine(QPointF(x+i*s/6,y+this->getFileList()->at(0)->at(j)->healthData()->at(i)*s/2/15),
                     QPointF(x+(i+1)*s/6,y+this->getFileList()->at(0)->at(j)->healthData()->at(i+1)*s/2/15));
