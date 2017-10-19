@@ -93,6 +93,9 @@ public:
     QList<Region *> *getCrossing() const;
     void setCrossing(QList<Region *> *Crossing);
 
+    int getRiverSide() const;
+    void setRiverSide(int riverSide);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -146,6 +149,7 @@ private:
     int hOrder;
     int m_Error;
     QList<Region *> * m_Crossing;
+    int m_riverSide;
 
 };
 

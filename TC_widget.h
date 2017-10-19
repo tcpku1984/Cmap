@@ -282,6 +282,9 @@ public:
     QList<Region *> *getRegionListSave() const;
     void setRegionListSave(QList<Region *> *regionListSave);
 
+    bool getRiverBoundary() const;
+    void setRiverBoundary(bool riverBoundary);
+
 public slots:
     void animate();
     void animation();
@@ -397,6 +400,8 @@ private slots:
 
     void on_start_5_pressed();
 
+    void on_checkBox_37_toggled(bool checked);
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -498,10 +503,11 @@ private:
     int m_Gap;
     bool m_showDifference;
     bool m_LineChart;
+    bool m_riverBoundary;
     QList <int> * m_dataCheck;
     QList <QPolygonF *> * m_polygonList;
     QList <QString> * m_River;
-   QPolygonF * m_RiverPolygon;
+    QPolygonF * riverPoly;
 
 
 

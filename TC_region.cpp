@@ -22,6 +22,7 @@ Region::Region()
     this->setColorIndex(0);
     this->setError(0);
     m_Crossing=new QList<Region *>;
+    m_riverSide=0;
 }
 
 Region::~Region()
@@ -240,6 +241,16 @@ void Region::setCrossing(QList<Region *> *Crossing)
 {
     m_Crossing = Crossing;
 }
+int Region::getRiverSide() const
+{
+    return m_riverSide;
+}
+
+void Region::setRiverSide(int riverSide)
+{
+    m_riverSide = riverSide;
+}
+
 
 
 
