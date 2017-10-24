@@ -87,6 +87,7 @@ Widget::Widget(QWidget *parent) :
     m_dataCheck=new QList<int>;
     m_polygonList=new QList<QPolygonF *>;
     m_River=new QList<QString>;
+    m_crossCount=0;
     //m_RiverPolygon=new QPolygonF();
     for(int i=0;i<14;i++)
     {
@@ -409,7 +410,8 @@ void Widget::paintCCg(QPainter *painter)
 
 
 
-    painter->setPen(Qt::white);    
+    painter->setPen(Qt::white);
+    m_crossCount=0;
     for(int i=0;i<this->regionListV()->size();i++)
     {
         double tmp=0;
@@ -486,12 +488,12 @@ void Widget::paintCCg(QPainter *painter)
              {
                 // cout<<"temp:"<<tmp<<endl;
                  painter->setBrush(Qt::black);
-
+                 m_crossCount++;
                  if(this->getRiverBoundary()==true)
                  {
 
                          this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-tmp);
-                         //cout<<"up!"<<endl;
+                         cout<<"move: "<<tmp<<endl;
 
                  }
              }
@@ -1178,34 +1180,38 @@ void Widget::regionIncrease()
 
 void Widget::regionIncrease2()
 {
-    this->setLoopCount(this->getLoopCount()+1);
-    for(int i=0;i<this->searchRange();i++)
+    //cout<<"test:"<<m_crossCount<<endl;
+    if(m_crossCount==0)
     {
-        double max;
-        if(this->samesize()==false)
+        this->setLoopCount(this->getLoopCount()+1);
+        for(int i=0;i<this->searchRange();i++)
         {
-            max=MAXSIZE*this->regionMaxsize()*double(
-                    this->regionListV()->at(i)->poplation()
-                    /double(this->population()));
-        }
-        else
-        {
-            max=this->regionMaxsize();
-        }
-        for(int k=0;k<this->increaseSize();k++)
-        {
-            if(this->regionListV()->at(i)->stopIncrease()==false)
+            double max;
+            if(this->samesize()==false)
             {
-               this->regionListV()->at(i)->increase();
-                if(this->regionListV()->at(i)->getSize()
-                        >max)
+                max=MAXSIZE*this->regionMaxsize()*double(
+                        this->regionListV()->at(i)->poplation()
+                        /double(this->population()));
+            }
+            else
+            {
+                max=this->regionMaxsize();
+            }
+            for(int k=0;k<this->increaseSize();k++)
+            {
+                if(this->regionListV()->at(i)->stopIncrease()==false)
                 {
-                    this->regionListV()->at(i)->stop();
-                    count++;
+                   this->regionListV()->at(i)->increase();
+                    if(this->regionListV()->at(i)->getSize()
+                            >max)
+                    {
+                        this->regionListV()->at(i)->stop();
+                        count++;
+                    }
                 }
             }
-        }
-     }
+         }
+    }
     overlapRemove();
     for(int i=0;i<this->regionListV()->size();i++)
     {
