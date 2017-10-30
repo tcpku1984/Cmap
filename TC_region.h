@@ -96,6 +96,12 @@ public:
     int getRiverSide() const;
     void setRiverSide(int riverSide);
 
+    int getLastX() const;
+    void setLastX(int lastX);
+
+    int getLastY() const;
+    void setLastY(int lastY);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -150,6 +156,8 @@ private:
     int m_Error;
     QList<Region *> * m_Crossing;
     int m_riverSide;
+    int m_lastX;
+    int m_lastY;
 
 };
 

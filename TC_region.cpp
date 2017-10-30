@@ -114,6 +114,8 @@ void Region::setSize(int value)
 
 void Region::increase()
 {
+    //this->setLastX(this->X());
+    //this->setLastY(this->Y());
     this->setX(this->X()-1);
     this->setY(this->Y()-1);
     this->setSize(this->getSize()+2);
@@ -250,6 +252,26 @@ void Region::setRiverSide(int riverSide)
 {
     m_riverSide = riverSide;
 }
+int Region::getLastX() const
+{
+    return m_lastX;
+}
+
+void Region::setLastX(int lastX)
+{
+    m_lastX = lastX;
+}
+int Region::getLastY() const
+{
+    return m_lastY;
+}
+
+void Region::setLastY(int lastY)
+{
+    m_lastY = lastY;
+}
+
+
 
 
 
