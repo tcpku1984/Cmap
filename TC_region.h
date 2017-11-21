@@ -102,6 +102,9 @@ public:
     int getLastY() const;
     void setLastY(int lastY);
 
+    bool getCrossRiver() const;
+    void setCrossRiver(bool crossRiver);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -158,6 +161,7 @@ private:
     int m_riverSide;
     int m_lastX;
     int m_lastY;
+    bool m_crossRiver;
 
 };
 

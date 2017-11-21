@@ -23,6 +23,7 @@ Region::Region()
     this->setError(0);
     m_Crossing=new QList<Region *>;
     m_riverSide=0;
+    m_crossRiver=false;
 }
 
 Region::~Region()
@@ -270,6 +271,16 @@ void Region::setLastY(int lastY)
 {
     m_lastY = lastY;
 }
+bool Region::getCrossRiver() const
+{
+    return m_crossRiver;
+}
+
+void Region::setCrossRiver(bool crossRiver)
+{
+    m_crossRiver = crossRiver;
+}
+
 
 
 
