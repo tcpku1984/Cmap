@@ -72,6 +72,7 @@ Widget::Widget(QWidget *parent) :
     QPalette pal = this->palette();
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
+    sameList=new QList<Region *>;
     m_regionListV= new QList<Region *>;
     m_regionListH= new QList<Region *>;
     m_regionListSave= new QList<Region *>;
@@ -309,7 +310,7 @@ Widget::Widget(QWidget *parent) :
                    break;
                }
            }
-           cout<<"test y:"<<y<<endl;
+           //cout<<"test y:"<<y<<endl;
            if(y==0)
            {
                if(this->regionListV()->at(z)->Y()+this->regionListV()->at(z)->getSize()/2-
@@ -1141,6 +1142,7 @@ void Widget::regionIncrease2()
         }
         else
         {
+            m_same=0;
             m_crossCount=0;
             for(int i=0;i<this->regionListV()->size();i++)
             {
@@ -1206,17 +1208,61 @@ void Widget::regionIncrease2()
                          m_crossCount++;
                          if(this->getRiverBoundary()==true)
                          {
-                                 this->regionListV()->at(i)->setX(this->regionListV()->at(i)->getLastX());
-                                 this->regionListV()->at(i)->setY(this->regionListV()->at(i)->getLastY());
+                             //cout<<"i : "<<i<<" x: "<<this->regionListV()->at(i)->X()<<endl;
+                             //cout<<"i : "<<i<<" Lastx: "<<this->regionListV()->at(i)->getLastX()<<endl;
+                             this->regionListV()->at(i)->setX(this->regionListV()->at(i)->getLastX());
+                             this->regionListV()->at(i)->setY(this->regionListV()->at(i)->getLastY());
                              //this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-tmp);
                                  //cout<<"move: "<<tmp<<endl;
-
+                         }
+                         if(sameList->size()<m_crossCount)
+                         {
+                             sameList->append(this->regionListV()->at(i));
+                         }
+                         else
+                         {
+                             if(sameList->at(m_crossCount)==this->regionListV()->at(i))
+                             {
+                                 m_same++;
+                             }
+                             else
+                             {
+                                 sameList->replace(m_crossCount,this->regionListV()->at(i));
+                             }
                          }
 
                      }
 
             }
-            cout<<"test: "<<m_crossCount<<endl;
+            if(m_crossCount==m_same&&m_same>0)
+           {
+                cout<<"dead loop detected"<<endl;
+            /*    for(int k=0;k<m_same;k++)
+                {
+                    if(sameList->at(k)->getRiverSide()==1)
+                    {
+                        for(int m=0;m<this->regionListV()->size();m++)
+                        {
+                            if(this->regionListV()->at(m)->Y()<sameList->at(k)->Y())
+                            {
+                               this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-1);
+                            }
+                        }
+                    }
+                    else if(sameList->at(k)->getRiverSide()==-1)
+                    {
+                        for(int m=0;m<this->regionListV()->size();m++)
+                        {
+                            if(this->regionListV()->at(m)->Y()>sameList->at(k)->Y())
+                            {
+                               this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()+1);
+                            }
+                        }
+
+                    }
+                }
+            */
+            }
 
         }
 

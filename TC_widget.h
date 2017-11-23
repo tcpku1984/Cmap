@@ -509,6 +509,8 @@ private:
     QList <QString> * m_River;
     QPolygonF * riverPoly;
     int m_crossCount;
+    int m_same;
+    QList <Region *> * sameList;
 
 
 
