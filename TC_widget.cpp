@@ -72,7 +72,7 @@ Widget::Widget(QWidget *parent) :
     QPalette pal = this->palette();
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
-    sameList=new QList<Region *>;
+    sameList=new QList<QPointF *>;
     m_regionListV= new QList<Region *>;
     m_regionListH= new QList<Region *>;
     m_regionListSave= new QList<Region *>;
@@ -1215,19 +1215,25 @@ void Widget::regionIncrease2()
                              //this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-tmp);
                                  //cout<<"move: "<<tmp<<endl;
                          }
+                         //cout<<"test cross"<<m
                          if(sameList->size()<m_crossCount)
                          {
-                             sameList->append(this->regionListV()->at(i));
+                             QPointF * tempPoint=new QPointF(this->regionListV()->at(i)->X(),
+                                                         this->regionListV()->at(i)->Y());
+                             sameList->append(tempPoint);
                          }
                          else
                          {
-                             if(sameList->at(m_crossCount)==this->regionListV()->at(i))
+                             if(sameList->at(m_crossCount-1)->rx()==this->regionListV()->at(i)->X()&&
+                                  sameList->at(m_crossCount-1)->ry()==this->regionListV()->at(i)->Y()   )
                              {
                                  m_same++;
                              }
                              else
                              {
-                                 sameList->replace(m_crossCount,this->regionListV()->at(i));
+                                 sameList->at(m_crossCount-1)->setX(this->regionListV()->at(i)->X());
+                                 sameList->at(m_crossCount-1)->setY(this->regionListV()->at(i)->Y());
+
                              }
                          }
 
