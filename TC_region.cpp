@@ -280,6 +280,26 @@ void Region::setCrossRiver(bool crossRiver)
 {
     m_crossRiver = crossRiver;
 }
+int Region::getCurrentX() const
+{
+    return m_currentX;
+}
+
+void Region::setCurrentX(int currentX)
+{
+    m_currentX = currentX;
+}
+int Region::getCurrentY() const
+{
+    return m_currentY;
+}
+
+void Region::setCurrentY(int currentY)
+{
+    m_currentY = currentY;
+}
+
+
 
 
 

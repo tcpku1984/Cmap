@@ -511,6 +511,9 @@ private:
     int m_crossCount;
     int m_same;
     QList <QPointF *> * sameList;
+    QList <int> * sameListIndex;
+    bool m_pushingLine=false;
+    QPointF P0,P1;
 
 
 

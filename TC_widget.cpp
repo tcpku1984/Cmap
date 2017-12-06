@@ -7,7 +7,6 @@
 #include "TC_widget.h"
 #include "ui_widget.h"
 
-
 enum{
     RATHH=400,
     RATHV=600,
@@ -72,6 +71,7 @@ Widget::Widget(QWidget *parent) :
     QPalette pal = this->palette();
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
+    sameListIndex=new QList <int>;
     sameList=new QList<QPointF *>;
     m_regionListV= new QList<Region *>;
     m_regionListH= new QList<Region *>;
@@ -487,7 +487,11 @@ void Widget::paintCCg(QPainter *painter)
         sta->update();
 
     }
-    //overlapRemove();
+    if(m_pushingLine)
+    {
+        painter->setPen(Qt::red);
+        painter->drawLine(P0,P1);
+    }
 
 
         QPen riverPen;
@@ -1094,6 +1098,20 @@ void Widget::regionIncrease()
     }
 }
 
+bool intersection(QPointF p1, QPointF p2, QPointF p, int size)
+{
+    double temp1=(p1.rx()-p.rx())*(p2.ry()-p.ry())-(p1.ry()-p.ry())*(p2.rx()-p.rx());
+    double temp2=(p1.rx()-p.rx()-size)*(p2.ry()-p.ry()-size)-(p1.ry()-p.ry()-size)*(p2.rx()-p.rx()-size);
+    double temp3=(p1.rx()-p.rx()-size)*(p2.ry()-p.ry())-(p1.ry()-p.ry())*(p2.rx()-p.rx()-size);
+    double temp4=(p1.rx()-p.rx())*(p2.ry()-p.ry()-size)-(p1.ry()-p.ry()-size)*(p2.rx()-p.rx());
+    if(temp1*temp2<0||temp3*temp4<0)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void Widget::regionIncrease2()
 {
     cout<<"index::"<<index<<endl;
@@ -1164,12 +1182,12 @@ void Widget::regionIncrease2()
                          if(this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-
                                  this->riverPoly->at(y).y()>0)
                          {
-                             currentriverside=-1;
+                             currentriverside=0;
                          }
                          else if(this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-
                                  this->riverPoly->at(y).y()<0)
                          {
-                            currentriverside=1;
+                            currentriverside=0;
                          }
                      }
                      else if(y==this->riverPoly->size())
@@ -1177,12 +1195,12 @@ void Widget::regionIncrease2()
                          if(this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-
                                  this->riverPoly->at(y-1).y()>0)
                          {
-                             currentriverside=-1;
+                             currentriverside=0;
                          }
                          else if(this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-
                                  this->riverPoly->at(y-1).y()<0)
                          {
-                            currentriverside=1;
+                            currentriverside=0;
                          }
 
                      }
@@ -1210,6 +1228,8 @@ void Widget::regionIncrease2()
                          {
                              //cout<<"i : "<<i<<" x: "<<this->regionListV()->at(i)->X()<<endl;
                              //cout<<"i : "<<i<<" Lastx: "<<this->regionListV()->at(i)->getLastX()<<endl;
+                             this->regionListV()->at(i)->setCurrentX((this->regionListV()->at(i)->X()));
+                             this->regionListV()->at(i)->setCurrentY((this->regionListV()->at(i)->Y()));
                              this->regionListV()->at(i)->setX(this->regionListV()->at(i)->getLastX());
                              this->regionListV()->at(i)->setY(this->regionListV()->at(i)->getLastY());
                              //this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-tmp);
@@ -1221,6 +1241,7 @@ void Widget::regionIncrease2()
                              QPointF * tempPoint=new QPointF(this->regionListV()->at(i)->X(),
                                                          this->regionListV()->at(i)->Y());
                              sameList->append(tempPoint);
+                             sameListIndex->append(i);
                          }
                          else
                          {
@@ -1233,6 +1254,7 @@ void Widget::regionIncrease2()
                              {
                                  sameList->at(m_crossCount-1)->setX(this->regionListV()->at(i)->X());
                                  sameList->at(m_crossCount-1)->setY(this->regionListV()->at(i)->Y());
+                                 sameListIndex->replace(m_crossCount-1,i);
 
                              }
                          }
@@ -1243,31 +1265,81 @@ void Widget::regionIncrease2()
             if(m_crossCount==m_same&&m_same>0)
            {
                 cout<<"dead loop detected"<<endl;
-            /*    for(int k=0;k<m_same;k++)
+                m_pushingLine=true;
+                Region * tempRegion=this->regionListV()->at(sameListIndex->at(0));
+                P0=QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
+                if(tempRegion->getCurrentY()<tempRegion->getLastY())
                 {
-                    if(sameList->at(k)->getRiverSide()==1)
+                    float tempx=tempRegion->getCurrentX()
+                            +(tempRegion->getLastX()-tempRegion->getCurrentX())*
+                            (SOUTHBOUND-tempRegion->getCurrentY())/(tempRegion->getLastY()-tempRegion->getCurrentY());
+                    P1=QPointF(tempx,SOUTHBOUND);
+                }
+                else
+                {
+                    float tempx=tempRegion->getCurrentX()
+                            +(tempRegion->getLastX()-tempRegion->getCurrentX())*
+                            (NORTHBOUND-tempRegion->getCurrentY())/(tempRegion->getLastY()-tempRegion->getCurrentY());
+                    P1=QPointF(tempx,NORTHBOUND);
+                }
+                double tempX= tempRegion->getCurrentX()-tempRegion->getLastX();
+                double tempY= tempRegion->getCurrentY()-tempRegion->getLastY();
+                for(int m=0;m<this->regionListV()->size();m++)
+                {
+                    if(this->regionListV()->at(m)->Y()>tempRegion->getCurrentY()&&
+                            intersection(P0,P1,
+                                         QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
+                    {
+                        this->regionListV()->at(m)->setCrossRiver(true);
+                        this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
+                        this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                    }
+                }
+
+                /*
+                for(int k=0;k<m_same;k++)
+                {
+
+                    Region * tempRegion=this->regionListV()->at(sameListIndex->at(k));
+                    double tempX= this->regionListV()->at(sameListIndex->at(k))->getCurrentX()-
+                            this->regionListV()->at(sameListIndex->at(k))->getLastX();
+                    double tempY= this->regionListV()->at(sameListIndex->at(k))->getCurrentY()-
+                            this->regionListV()->at(sameListIndex->at(k))->getLastY();
+
+                    if(tempRegion->getRiverSide()==1)
                     {
                         for(int m=0;m<this->regionListV()->size();m++)
                         {
-                            if(this->regionListV()->at(m)->Y()<sameList->at(k)->Y())
+                            if(this->regionListV()->at(m)->Y()<=tempRegion->Y()
+                                    //&&this->regionListV()->at(m)->Y()+3*this->regionListV()->at(m)->getSize()>tempRegion->Y()
+                                    )
                             {
                                this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-1);
+                                //this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-1);
+
                             }
                         }
                     }
-                    else if(sameList->at(k)->getRiverSide()==-1)
+                    else if(tempRegion->getRiverSide()==-1)
                     {
                         for(int m=0;m<this->regionListV()->size();m++)
                         {
-                            if(this->regionListV()->at(m)->Y()>sameList->at(k)->Y())
+                            if(this->regionListV()->at(m)->Y()>=tempRegion->Y()
+                                    //&&this->regionListV()->at(m)->Y()-3*this->regionListV()->at(m)->getSize()<tempRegion->Y()
+                                    )
                             {
                                this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()+1);
+                                //this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()+1);
                             }
                         }
 
                     }
                 }
-            */
+*/
+            }
+            else
+            {
+                m_pushingLine=false;
             }
 
         }

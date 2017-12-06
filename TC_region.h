@@ -105,6 +105,12 @@ public:
     bool getCrossRiver() const;
     void setCrossRiver(bool crossRiver);
 
+    int getCurrentX() const;
+    void setCurrentX(int currentX);
+
+    int getCurrentY() const;
+    void setCurrentY(int currentY);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -161,6 +167,8 @@ private:
     int m_riverSide;
     int m_lastX;
     int m_lastY;
+    int m_currentX;
+    int m_currentY;
     bool m_crossRiver;
 
 };
