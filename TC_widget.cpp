@@ -68,6 +68,7 @@ Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {
+    scale=1;
     QPalette pal = this->palette();
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
@@ -89,6 +90,7 @@ Widget::Widget(QWidget *parent) :
     m_polygonList=new QList<QPolygonF *>;
     m_River=new QList<QString>;
     m_crossCount=0;
+    m_pushingList=new QList<QPointF *>;
     //m_RiverPolygon=new QPolygonF();
     for(int i=0;i<14;i++)
     {
@@ -381,8 +383,10 @@ Widget::~Widget()
 
 void Widget::paintEvent(QPaintEvent *event)
 {
+
     this->dataColor0=m_Datacolor->getColor(this->getColor());
     QPainter painter(this);
+    painter.scale(scale,scale);
     painter.setRenderHint(QPainter::Antialiasing);
 
     for(int i=0;i<m_polygonList->size();i++)
@@ -399,6 +403,12 @@ void Widget::paintEvent(QPaintEvent *event)
         paintArea(&painter);
     }
 
+}
+
+void Widget::wheelEvent(QWheelEvent *event)
+{
+    scale+=(event->delta()/120);
+    update();
 }
 
 void Widget::paintCCg(QPainter *painter)
@@ -490,7 +500,10 @@ void Widget::paintCCg(QPainter *painter)
     if(m_pushingLine)
     {
         painter->setPen(Qt::red);
-        painter->drawLine(P0,P1);
+        for(int k=0;k<m_pushingList->size();k=k+2)
+        {
+            painter->drawLine(*m_pushingList->at(k),*m_pushingList->at(k+1));
+        }
     }
 
 
@@ -1262,40 +1275,63 @@ void Widget::regionIncrease2()
                      }
 
             }
-            if(m_crossCount==m_same&&m_same>0)
+            if(m_crossCount==m_same&&m_same>0&&this->getRiverBoundary())
            {
+
                 cout<<"dead loop detected"<<endl;
                 m_pushingLine=true;
-                Region * tempRegion=this->regionListV()->at(sameListIndex->at(0));
-                P0=QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
-                if(tempRegion->getCurrentY()<tempRegion->getLastY())
+                m_pushingList->clear();
+                for(int k=0;k<m_same;k++)
                 {
-                    float tempx=tempRegion->getCurrentX()
-                            +(tempRegion->getLastX()-tempRegion->getCurrentX())*
-                            (SOUTHBOUND-tempRegion->getCurrentY())/(tempRegion->getLastY()-tempRegion->getCurrentY());
-                    P1=QPointF(tempx,SOUTHBOUND);
-                }
-                else
-                {
-                    float tempx=tempRegion->getCurrentX()
-                            +(tempRegion->getLastX()-tempRegion->getCurrentX())*
-                            (NORTHBOUND-tempRegion->getCurrentY())/(tempRegion->getLastY()-tempRegion->getCurrentY());
-                    P1=QPointF(tempx,NORTHBOUND);
-                }
-                double tempX= tempRegion->getCurrentX()-tempRegion->getLastX();
-                double tempY= tempRegion->getCurrentY()-tempRegion->getLastY();
-                for(int m=0;m<this->regionListV()->size();m++)
-                {
-                    if(this->regionListV()->at(m)->Y()>tempRegion->getCurrentY()&&
-                            intersection(P0,P1,
-                                         QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
+                    cout<<k<<endl;
+                    Region * tempRegion=this->regionListV()->at(sameListIndex->at(k));
+                    P0=QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
+                    QPointF * temp=new QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
+                    m_pushingList->append(temp);
+
+                    if(tempRegion->getCurrentY()<tempRegion->getLastY())
                     {
-                        this->regionListV()->at(m)->setCrossRiver(true);
-                        this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
-                        this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                        float tempx=tempRegion->getCurrentX()
+                                +(tempRegion->getLastX()-tempRegion->getCurrentX())*
+                                (SOUTHBOUND-tempRegion->getCurrentY())/(tempRegion->getLastY()-tempRegion->getCurrentY());
+                        cout<<tempx<<endl;
+                        P1=QPointF(tempx,SOUTHBOUND);
+                        QPointF * temp=new QPointF(tempx,SOUTHBOUND);
+                        m_pushingList->append(temp);
+                    }
+                    else if(tempRegion->getCurrentY()>tempRegion->getLastY())
+                    {
+                        float tempx=tempRegion->getCurrentX()
+                                +(tempRegion->getLastX()-tempRegion->getCurrentX())*
+                                (NORTHBOUND-tempRegion->getCurrentY())/(tempRegion->getLastY()-tempRegion->getCurrentY());
+                        cout<<tempx<<endl;
+                        P1=QPointF(tempx,NORTHBOUND);
+                        QPointF * temp=new QPointF(tempx,NORTHBOUND);
+                        m_pushingList->append(temp);
+                    }
+                    else
+                    {
+                        P1=QPointF(EASTBOUND,tempRegion->getCurrentY());
+                        QPointF * temp=new QPointF(EASTBOUND,tempRegion->getCurrentY());
+                        m_pushingList->append(temp);
+                    }
+
+
+                    double tempX= tempRegion->getCurrentX()-tempRegion->getLastX();
+                    double tempY= tempRegion->getCurrentY()-tempRegion->getLastY();
+                    for(int m=0;m<this->regionListV()->size();m++)
+                    {
+                        if(this->regionListV()->at(m)->Y()>tempRegion->getCurrentY()&&
+                                intersection(P0,P1,
+                                             QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
+                        {
+                            this->regionListV()->at(m)->setCrossRiver(true);
+                            this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
+                            this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                        }
                     }
                 }
-
+                cout<<"arrived here"<<endl;
                 /*
                 for(int k=0;k<m_same;k++)
                 {

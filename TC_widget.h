@@ -35,6 +35,7 @@
 #include<TC_datacolor.h>
 #include<TC_statistics.h>
 #include<linechart.h>
+#include<QWheelEvent>
 using namespace std;
 namespace Ui {
 class Widget;
@@ -58,6 +59,11 @@ public:
      * @param event
      */
     void paintEvent(QPaintEvent * event);
+    /**
+     * @brief wheelEvent zoom in and out
+     * @param event
+     */
+    void wheelEvent(QWheelEvent *event);
     /**
      * @brief paintCCg draw for region node display
      * @param painter from main paintevent class
@@ -514,7 +520,8 @@ private:
     QList <int> * sameListIndex;
     bool m_pushingLine=false;
     QPointF P0,P1;
-
+    QList <QPointF *> * m_pushingList;
+    qreal scale;
 
 
 };
