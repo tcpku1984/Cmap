@@ -522,6 +522,7 @@ private:
     QPointF P0,P1;
     QList <QPointF *> * m_pushingList;
     qreal scale;
+    qreal scaleX,scaleY;
 
 
 };

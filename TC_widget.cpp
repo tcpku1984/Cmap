@@ -69,6 +69,8 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     scale=1;
+    scaleX=0;
+    scaleY=0;
     QPalette pal = this->palette();
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
@@ -386,6 +388,7 @@ void Widget::paintEvent(QPaintEvent *event)
 
     this->dataColor0=m_Datacolor->getColor(this->getColor());
     QPainter painter(this);
+    painter.translate(scaleX,scaleY);
     painter.scale(scale,scale);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -407,6 +410,8 @@ void Widget::paintEvent(QPaintEvent *event)
 
 void Widget::wheelEvent(QWheelEvent *event)
 {
+    scaleX=-event->pos().x();
+    scaleY=-event->pos().y();
     scale+=(event->delta()/120);
     update();
 }
@@ -1117,7 +1122,7 @@ bool intersection(QPointF p1, QPointF p2, QPointF p, int size)
     double temp2=(p1.rx()-p.rx()-size)*(p2.ry()-p.ry()-size)-(p1.ry()-p.ry()-size)*(p2.rx()-p.rx()-size);
     double temp3=(p1.rx()-p.rx()-size)*(p2.ry()-p.ry())-(p1.ry()-p.ry())*(p2.rx()-p.rx()-size);
     double temp4=(p1.rx()-p.rx())*(p2.ry()-p.ry()-size)-(p1.ry()-p.ry()-size)*(p2.rx()-p.rx());
-    if(temp1*temp2<0||temp3*temp4<0)
+    if(temp1*temp2<=0||temp3*temp4<=0)
     {
         return true;
     }
@@ -1321,17 +1326,36 @@ void Widget::regionIncrease2()
                     double tempY= tempRegion->getCurrentY()-tempRegion->getLastY();
                     for(int m=0;m<this->regionListV()->size();m++)
                     {
-                        if(this->regionListV()->at(m)->Y()>tempRegion->getCurrentY()&&
-                                intersection(P0,P1,
-                                             QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
+                        if(P1.ry()==SOUTHBOUND&&this->regionListV()->at(m)->Y()>tempRegion->getCurrentY())
+                        {
+                            if(intersection(P0,P1,
+                                                 QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
+                            {
+                                this->regionListV()->at(m)->setCrossRiver(true);
+                                this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
+                                this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                            }
+                        }
+                        if(P1.ry()==NORTHBOUND&&this->regionListV()->at(m)->Y()<tempRegion->getCurrentY())
+                        {
+                            if(intersection(P0,P1,
+                                                 QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
+                            {
+                                this->regionListV()->at(m)->setCrossRiver(true);
+                                this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
+                                this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                            }
+                        }
+                        if(tempY==0&&this->regionListV()->at(m)->Y()<=tempRegion->getCurrentY()&&
+                                this->regionListV()->at(m)->Y()+this->regionListV()->at(m)->getSize()>=tempRegion->getCurrentY()&&
+                                this->regionListV()->at(m)->X()>=tempRegion->getCurrentX())
                         {
                             this->regionListV()->at(m)->setCrossRiver(true);
                             this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
-                            this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
                         }
                     }
                 }
-                cout<<"arrived here"<<endl;
+                //cout<<"arrived here"<<endl;
                 /*
                 for(int k=0;k<m_same;k++)
                 {
