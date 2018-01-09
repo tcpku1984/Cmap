@@ -435,6 +435,10 @@ void Widget::paintCCg(QPainter *painter)
             painter->setBrush(Qt::black);
         if(this->getScreen()==false)
         {
+            if(i==160)
+            {
+                cout<<i<<":"<<this->regionListV()->at(i)->X()<<" "<<this->regionListV()->at(i)->Y()<<endl;
+            }
             painter->drawRect(
                         QRectF(this->regionListV()->at(i)->X(),
                                this->regionListV()->at(i)->Y(),
@@ -1251,7 +1255,9 @@ void Widget::regionIncrease2()
                              this->regionListV()->at(i)->setX(this->regionListV()->at(i)->getLastX());
                              this->regionListV()->at(i)->setY(this->regionListV()->at(i)->getLastY());
                              //this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-tmp);
-                                 //cout<<"move: "<<tmp<<endl;
+                                 cout<<"move: "<<i<<endl;
+                                 cout<<"i : "<<i<<" x: "<<this->regionListV()->at(i)->X()<<" "<<this->regionListV()->at(i)->Y()<<endl;
+                                 cout<<"i : "<<i<<" Lastx: "<<this->regionListV()->at(i)->getLastX()<<" " <<this->regionListV()->at(i)->getLastY()<<endl;
                          }
                          //cout<<"test cross"<<m
                          if(sameList->size()<m_crossCount)
@@ -1289,9 +1295,12 @@ void Widget::regionIncrease2()
                 for(int k=0;k<m_same;k++)
                 {
                     cout<<k<<endl;
+                    cout<<"index"<<sameListIndex->at(k)<<endl;
                     Region * tempRegion=this->regionListV()->at(sameListIndex->at(k));
                     P0=QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
-                    QPointF * temp=new QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
+                    //QPointF * temp=new QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
+                    QPointF * temp=new QPointF(tempRegion->X(),tempRegion->Y());
+                    cout<<tempRegion->X()<<" "<<tempRegion->Y()<<endl;
                     m_pushingList->append(temp);
 
                     if(tempRegion->getCurrentY()<tempRegion->getLastY())
@@ -1326,7 +1335,8 @@ void Widget::regionIncrease2()
                     double tempY= tempRegion->getCurrentY()-tempRegion->getLastY();
                     for(int m=0;m<this->regionListV()->size();m++)
                     {
-                        if(P1.ry()==SOUTHBOUND&&this->regionListV()->at(m)->Y()>tempRegion->getCurrentY())
+                        if(P1.ry()==SOUTHBOUND&&this->regionListV()->at(m)->Y()>tempRegion->getCurrentY()
+                                &&m!=sameListIndex->at(k))
                         {
                             if(intersection(P0,P1,
                                                  QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
@@ -1336,7 +1346,8 @@ void Widget::regionIncrease2()
                                 this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
                             }
                         }
-                        if(P1.ry()==NORTHBOUND&&this->regionListV()->at(m)->Y()<tempRegion->getCurrentY())
+                        if(P1.ry()==NORTHBOUND&&this->regionListV()->at(m)->Y()<tempRegion->getCurrentY()
+                                &&m!=sameListIndex->at(k))
                         {
                             if(intersection(P0,P1,
                                                  QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
