@@ -93,6 +93,7 @@ Widget::Widget(QWidget *parent) :
     m_River=new QList<QString>;
     m_crossCount=0;
     m_pushingList=new QList<QPointF *>;
+    m_showLastPoint=false;
     //m_RiverPolygon=new QPolygonF();
     for(int i=0;i<14;i++)
     {
@@ -146,7 +147,7 @@ Widget::Widget(QWidget *parent) :
     this->setLocalPercentage(20);
     this->setBColor(true);
     this->setOpacity(100);
-    this->setRiverBoundary(false);
+    this->setRiverBoundary(true);
     refreshColor();
     regionFile* polyfile=new regionFile();
     polyfile->readPolygon();
@@ -435,10 +436,6 @@ void Widget::paintCCg(QPainter *painter)
             painter->setBrush(Qt::black);
         if(this->getScreen()==false)
         {
-            if(i==160)
-            {
-                cout<<i<<":"<<this->regionListV()->at(i)->X()<<" "<<this->regionListV()->at(i)->Y()<<endl;
-            }
             painter->drawRect(
                         QRectF(this->regionListV()->at(i)->X(),
                                this->regionListV()->at(i)->Y(),
@@ -450,6 +447,12 @@ void Widget::paintCCg(QPainter *painter)
                                      this->regionListV()->at(i)->getSize(),
                                      this->regionListV()->at(i)->getSize()), QString::number(
                                   this->regionListV()->at(i)->getRiverSide()));
+            if(this->regionListV()->at(i)->getInterSection()==true)
+                painter->drawText(QRectF(this->regionListV()->at(i)->X(),
+                                          this->regionListV()->at(i)->Y(),
+                                          this->regionListV()->at(i)->getSize(),
+                                          this->regionListV()->at(i)->getSize()), " I ");
+
             /*
             painter->drawText(QRectF(this->regionListV()->at(i)->X(),
                                       this->regionListV()->at(i)->Y(),
@@ -512,6 +515,19 @@ void Widget::paintCCg(QPainter *painter)
         for(int k=0;k<m_pushingList->size();k=k+2)
         {
             painter->drawLine(*m_pushingList->at(k),*m_pushingList->at(k+1));
+        }
+    }
+    if(m_showLastPoint)
+    {
+        //cout<<"got there"
+        QPen pen;
+        pen.setWidth(2);
+        pen.setColor(Qt::black);
+        painter->setPen(pen);
+        for(int i=0;i<this->regionListV()->size();i++)
+        {
+            painter->drawPoint(this->regionListV()->at(i)->getLastX(),
+                               this->regionListV()->at(i)->getLastY());
         }
     }
 
@@ -1126,6 +1142,15 @@ bool intersection(QPointF p1, QPointF p2, QPointF p, int size)
     double temp2=(p1.rx()-p.rx()-size)*(p2.ry()-p.ry()-size)-(p1.ry()-p.ry()-size)*(p2.rx()-p.rx()-size);
     double temp3=(p1.rx()-p.rx()-size)*(p2.ry()-p.ry())-(p1.ry()-p.ry())*(p2.rx()-p.rx()-size);
     double temp4=(p1.rx()-p.rx())*(p2.ry()-p.ry()-size)-(p1.ry()-p.ry()-size)*(p2.rx()-p.rx());
+
+    if(p2.ry()>p1.ry()&&(p.rx()+size<p1.rx())&&p.ry()+size<p1.ry())
+    {
+        return false;
+    }
+    if(p2.ry()<p1.ry()&&(p.rx()+size<p1.rx())&&p.ry()>p1.ry())
+    {
+        return false;
+    }
     if(temp1*temp2<=0||temp3*temp4<=0)
     {
         return true;
@@ -1187,6 +1212,7 @@ void Widget::regionIncrease2()
             for(int i=0;i<this->regionListV()->size();i++)
             {
                 this->regionListV()->at(i)->setCrossRiver(false);
+                this->regionListV()->at(i)->setInterSection(false);
 
                 double tmp=0;
                  int y;
@@ -1297,9 +1323,10 @@ void Widget::regionIncrease2()
                     cout<<k<<endl;
                     cout<<"index"<<sameListIndex->at(k)<<endl;
                     Region * tempRegion=this->regionListV()->at(sameListIndex->at(k));
-                    P0=QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
+                    P0=QPointF(tempRegion->X()+tempRegion->getSize()/2,tempRegion->Y()+tempRegion->getSize()/2);
                     //QPointF * temp=new QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
-                    QPointF * temp=new QPointF(tempRegion->X(),tempRegion->Y());
+                    QPointF * temp=new QPointF(tempRegion->X()+tempRegion->getSize()/2
+                                               ,tempRegion->Y()+tempRegion->getSize()/2);
                     cout<<tempRegion->X()<<" "<<tempRegion->Y()<<endl;
                     m_pushingList->append(temp);
 
@@ -1335,13 +1362,13 @@ void Widget::regionIncrease2()
                     double tempY= tempRegion->getCurrentY()-tempRegion->getLastY();
                     for(int m=0;m<this->regionListV()->size();m++)
                     {
-                        if(P1.ry()==SOUTHBOUND&&this->regionListV()->at(m)->Y()>tempRegion->getCurrentY()
-                                &&m!=sameListIndex->at(k))
+                        if(P1.ry()==SOUTHBOUND&&m!=sameListIndex->at(k))
                         {
                             if(intersection(P0,P1,
                                                  QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
                             {
-                                this->regionListV()->at(m)->setCrossRiver(true);
+                                //this->regionListV()->at(m)->setCrossRiver(true);
+                                this->regionListV()->at(m)->setInterSection(true);
                                 this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
                                 this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
                             }
@@ -1352,16 +1379,19 @@ void Widget::regionIncrease2()
                             if(intersection(P0,P1,
                                                  QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
                             {
-                                this->regionListV()->at(m)->setCrossRiver(true);
+                                //this->regionListV()->at(m)->setCrossRiver(true);
+                                this->regionListV()->at(m)->setInterSection(true);
                                 this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
                                 this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
                             }
                         }
-                        if(tempY==0&&this->regionListV()->at(m)->Y()<=tempRegion->getCurrentY()&&
-                                this->regionListV()->at(m)->Y()+this->regionListV()->at(m)->getSize()>=tempRegion->getCurrentY()&&
+                        if(tempY==0&&this->regionListV()->at(m)->Y()<=tempRegion->Y()+tempRegion->getSize()/2&&
+                                this->regionListV()->at(m)->Y()+this->regionListV()->at(m)->getSize()>=tempRegion->Y()
+                                +tempRegion->getSize()/2&&
                                 this->regionListV()->at(m)->X()>=tempRegion->getCurrentX())
                         {
-                            this->regionListV()->at(m)->setCrossRiver(true);
+                            //this->regionListV()->at(m)->setCrossRiver(true);
+                            this->regionListV()->at(m)->setInterSection(true);
                             this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
                         }
                     }
@@ -4469,4 +4499,17 @@ void Widget::on_checkBox_37_toggled(bool checked)
     {
         this->setRiverBoundary(false);
     }
+}
+
+void Widget::on_start_6_pressed()
+{
+    if(m_showLastPoint==true)
+    {
+        m_showLastPoint=false;
+    }
+    else
+    {
+        m_showLastPoint=true;
+    }
+    update();
 }

@@ -111,6 +111,9 @@ public:
     int getCurrentY() const;
     void setCurrentY(int currentY);
 
+    bool getInterSection() const;
+    void setInterSection(bool interSection);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -170,6 +173,7 @@ private:
     int m_currentX;
     int m_currentY;
     bool m_crossRiver;
+    bool m_interSection;
 
 };
 

@@ -31,7 +31,7 @@
     <rect>
      <x>1460</x>
      <y>330</y>
-     <width>80</width>
+     <width>70</width>
      <height>28</height>
     </rect>
    </property>
@@ -417,7 +417,7 @@
       <string>River Boundary</string>
      </property>
      <property name="checked">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -1245,9 +1245,9 @@
   <widget class="QPushButton" name="start_2">
    <property name="geometry">
     <rect>
-     <x>1550</x>
+     <x>1530</x>
      <y>330</y>
-     <width>80</width>
+     <width>70</width>
      <height>28</height>
     </rect>
    </property>
@@ -1266,9 +1266,9 @@
   <widget class="QPushButton" name="start_3">
    <property name="geometry">
     <rect>
-     <x>1650</x>
+     <x>1600</x>
      <y>330</y>
-     <width>80</width>
+     <width>70</width>
      <height>28</height>
     </rect>
    </property>
@@ -1287,9 +1287,9 @@
   <widget class="QPushButton" name="start_4">
    <property name="geometry">
     <rect>
-     <x>1740</x>
+     <x>1670</x>
      <y>330</y>
-     <width>80</width>
+     <width>70</width>
      <height>28</height>
     </rect>
    </property>
@@ -1574,9 +1574,9 @@
   <widget class="QPushButton" name="start_5">
    <property name="geometry">
     <rect>
-     <x>1830</x>
+     <x>1740</x>
      <y>330</y>
-     <width>80</width>
+     <width>70</width>
      <height>28</height>
     </rect>
    </property>
@@ -1590,6 +1590,27 @@
    </property>
    <property name="text">
     <string>refresh</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="start_6">
+   <property name="geometry">
+    <rect>
+     <x>1810</x>
+     <y>330</y>
+     <width>70</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Last point</string>
    </property>
   </widget>
  </widget>

@@ -408,6 +408,8 @@ private slots:
 
     void on_checkBox_37_toggled(bool checked);
 
+    void on_start_6_pressed();
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -523,6 +525,7 @@ private:
     QList <QPointF *> * m_pushingList;
     qreal scale;
     qreal scaleX,scaleY;
+    bool m_showLastPoint;
 
 
 };

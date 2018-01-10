@@ -24,6 +24,7 @@ Region::Region()
     m_Crossing=new QList<Region *>;
     m_riverSide=0;
     m_crossRiver=false;
+    m_interSection=false;
 }
 
 Region::~Region()
@@ -298,6 +299,16 @@ void Region::setCurrentY(int currentY)
 {
     m_currentY = currentY;
 }
+bool Region::getInterSection() const
+{
+    return m_interSection;
+}
+
+void Region::setInterSection(bool interSection)
+{
+    m_interSection = interSection;
+}
+
 
 
 
