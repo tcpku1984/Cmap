@@ -72,6 +72,7 @@ Widget::Widget(QWidget *parent) :
     scaleX=0;
     scaleY=0;
     QPalette pal = this->palette();
+    this->setRiverWidth(5);
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
     sameListIndex=new QList <int>;
@@ -304,6 +305,12 @@ Widget::Widget(QWidget *parent) :
 
            }
        }
+       /*
+       cout<<"river point"<<endl;
+       for(int x=0;x<riverPoly->size();x++)
+       {
+           cout<<"  "<<riverPoly->at(x).x();
+       }*/
        int y;
        for(int z=0;z<this->regionListV()->size();z++)
        {
@@ -533,7 +540,7 @@ void Widget::paintCCg(QPainter *painter)
 
 
         QPen riverPen;
-        riverPen.setWidth(5);
+        riverPen.setWidth(this->getRiverWidth());
         riverPen.setColor(Qt::green);
         painter->setPen(riverPen);
         painter->drawPolyline(*riverPoly);
@@ -1159,8 +1166,43 @@ bool intersection(QPointF p1, QPointF p2, QPointF p, int size)
     return false;
 }
 
+double mult(QPointF a, QPointF b, QPointF c)
+{
+    return (a.x()-c.x())*(b.y()-c.y())-(b.x()-c.x())*(a.y()-c.y());
+}
+
+
+bool intersect(QPointF aa, QPointF bb, QPointF cc, QPointF dd)
+{
+    if ( max(aa.x(), bb.x())<min(cc.x(), dd.x()) )
+    {
+        return false;
+    }
+    if ( max(aa.y(), bb.y())<min(cc.y(), dd.y()) )
+    {
+        return false;
+    }
+    if ( max(cc.x(), dd.x())<min(aa.x(), bb.x()) )
+    {
+        return false;
+    }
+    if ( max(cc.y(), dd.y())<min(aa.y(), bb.y()) )
+    {
+        return false;
+    }
+    if ( mult(cc, bb, aa)*mult(bb, dd, aa)<0 )
+    {
+        return false;
+    }
+    if ( mult(aa, dd, cc)*mult(dd, bb, cc)<0 )
+    {
+        return false;
+    }
+    return true;
+}
 void Widget::regionIncrease2()
 {
+    bool crossRiver;
     cout<<"index::"<<index<<endl;
     cout<<"m cross:"<<m_crossCount<<endl;
         if(index%2==0)
@@ -1209,11 +1251,12 @@ void Widget::regionIncrease2()
         {
             m_same=0;
             m_crossCount=0;
+
             for(int i=0;i<this->regionListV()->size();i++)
             {
                 this->regionListV()->at(i)->setCrossRiver(false);
                 this->regionListV()->at(i)->setInterSection(false);
-
+/*
                 double tmp=0;
                  int y;
                  int currentriverside=0;
@@ -1266,8 +1309,32 @@ void Widget::regionIncrease2()
 
 
                      }
+                     */
                      //cout<<"temp:"<<tmp<<endl;
-                     if(abs(currentriverside-this->regionListV()->at(i)->getRiverSide())>1)
+                crossRiver=false;
+                if(this->regionListV()->at(i)->X()==this->regionListV()->at(i)->getLastX()&&this->regionListV()->at(i)->Y()==this->regionListV()->at(i)->getLastY())
+                {
+
+                }
+                else
+                {
+                    for(int z=0;z<riverPoly->size()-1;z++)
+                    {
+                        if(intersect(QPointF(this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()/2,
+                                             this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2),
+                                      QPointF(this->regionListV()->at(i)->getLastX()+this->regionListV()->at(i)->getSize()/2,
+                                             this->regionListV()->at(i)->getLastY()+this->regionListV()->at(i)->getSize()/2),
+                                      this->riverPoly->at(z),
+                                      this->riverPoly->at(z+1)))
+                        {
+                            cout<<z<<" test river"<<endl;
+                            crossRiver=true;
+                            break;
+                        }
+                    }
+                }
+                     //if(abs(currentriverside-this->regionListV()->at(i)->getRiverSide())>1)
+                    if(crossRiver)
                      {
                         // cout<<"temp:"<<tmp<<endl;
                          this->regionListV()->at(i)->setCrossRiver(true);
@@ -1312,6 +1379,7 @@ void Widget::regionIncrease2()
                      }
 
             }
+
             if(m_crossCount==m_same&&m_same>0&&this->getRiverBoundary())
            {
 
@@ -3153,6 +3221,16 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
     }
     this->setYError(this->getYError()+error);
 }
+
+int Widget::getRiverWidth() const
+{
+    return m_riverWidth;
+}
+
+void Widget::setRiverWidth(int riverWidth)
+{
+    m_riverWidth = riverWidth;
+}
 bool Widget::getRiverBoundary() const
 {
     return m_riverBoundary;
@@ -4511,5 +4589,18 @@ void Widget::on_start_6_pressed()
     {
         m_showLastPoint=true;
     }
+    update();
+}
+
+void Widget::on_start_7_clicked()
+{
+    this->setFinished(true);
+    m_pushingList->clear();
+    on_start_2_pressed();
+}
+
+void Widget::on_horizontalSlider_9_valueChanged(int value)
+{
+    this->setRiverWidth(value);
     update();
 }

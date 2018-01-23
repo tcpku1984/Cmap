@@ -291,6 +291,9 @@ public:
     bool getRiverBoundary() const;
     void setRiverBoundary(bool riverBoundary);
 
+    int getRiverWidth() const;
+    void setRiverWidth(int riverWidth);
+
 public slots:
     void animate();
     void animation();
@@ -410,6 +413,10 @@ private slots:
 
     void on_start_6_pressed();
 
+    void on_start_7_clicked();
+
+    void on_horizontalSlider_9_valueChanged(int value);
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -526,6 +533,7 @@ private:
     qreal scale;
     qreal scaleX,scaleY;
     bool m_showLastPoint;
+    int m_riverWidth;
 
 
 };
