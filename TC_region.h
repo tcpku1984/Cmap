@@ -13,6 +13,7 @@
 #include <QString>
 #include <QList>
 #include <iostream>
+#include <QPointF>
 using namespace std;
 class Region
 {
@@ -114,6 +115,17 @@ public:
     bool getInterSection() const;
     void setInterSection(bool interSection);
 
+    QList<QPointF *> *getPointList() const;
+    void setPointList(QList<QPointF *> *value);
+
+    void addPoint();
+    void clearPointList();
+
+
+
+    QList<int> *getSizeList() const;
+    void setSizeList(QList<int> *value);
+
 private:
     /**
      * @brief m_ccgCode information of ccg code
@@ -174,6 +186,9 @@ private:
     int m_currentY;
     bool m_crossRiver;
     bool m_interSection;
+    QList <QPointF*> * pointList;
+    QList <int>  *sizeList;
+
 
 };
 

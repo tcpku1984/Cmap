@@ -534,7 +534,12 @@ private:
     qreal scaleX,scaleY;
     bool m_showLastPoint;
     int m_riverWidth;
-
+    int m_originalX;
+    int m_originalY;
+    int m_newX;
+    int m_newY;
+    QPointF translation=QPointF(0,0);
+    bool m_moving;
 
 };
 

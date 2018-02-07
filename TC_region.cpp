@@ -25,6 +25,8 @@ Region::Region()
     m_riverSide=0;
     m_crossRiver=false;
     m_interSection=false;
+    pointList=new QList<QPointF*>;
+    sizeList= new QList<int>;
 }
 
 Region::~Region()
@@ -308,6 +310,41 @@ void Region::setInterSection(bool interSection)
 {
     m_interSection = interSection;
 }
+QList<QPointF *> *Region::getPointList() const
+{
+    return pointList;
+}
+
+void Region::setPointList(QList<QPointF *> *value)
+{
+    pointList = value;
+}
+
+void Region::addPoint()
+{
+    QPointF * newPoint=new QPointF(this->X(),this->Y());
+    pointList->append(newPoint);
+    sizeList->append(this->getSize());
+}
+
+void Region::clearPointList()
+{
+    pointList->clear();
+    sizeList->clear();
+}
+QList<int> *Region::getSizeList() const
+{
+    return sizeList;
+}
+
+void Region::setSizeList(QList<int> *value)
+{
+    sizeList = value;
+}
+
+
+
+
 
 
 
