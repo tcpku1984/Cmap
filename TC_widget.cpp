@@ -463,10 +463,13 @@ void Widget::paintCCg(QPainter *painter)
         if(this->regionListV()->at(i)->getCrossRiver()==true)
             painter->setBrush(Qt::black);*/
         painter->setBrush(Qt::white);
-        painter->setPen(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
-        if(this->regionListV()->at(i)->getCrossRiver()==true)
-            painter->setPen(Qt::black);
+        QPen pencil;
+        pencil.setWidthF(0.2);
+        pencil.setColor(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
 
+        if(this->regionListV()->at(i)->getCrossRiver()==true)
+            pencil.setColor(Qt::black);
+        painter->setPen(pencil);
         if(this->getScreen()==false)
         {
             painter->drawRect(
@@ -474,9 +477,9 @@ void Widget::paintCCg(QPainter *painter)
                                this->regionListV()->at(i)->Y(),
                                this->regionListV()->at(i)->getSize(),
                                this->regionListV()->at(i)->getSize()));
-
-            painter->drawPoint(QPointF(this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()/2,
-                                       this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2));
+            //painter->drawLine(QPointF((qreal)this->regionListV()->at(i)->X()+));
+            painter->drawPoint(QPointF((qreal)this->regionListV()->at(i)->X()+(qreal)this->regionListV()->at(i)->getSize()/2,
+                                       (qreal)this->regionListV()->at(i)->Y()+(qreal)this->regionListV()->at(i)->getSize()/2));
             /*
            painter->drawText(QRectF(this->regionListV()->at(i)->X(),
                                      this->regionListV()->at(i)->Y(),
@@ -859,9 +862,9 @@ void Widget::paintCCg(QPainter *painter)
                     {
                         painter->setPen(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
                         QLineF line=QLineF(QPointF(this->regionListV()->at(i)->X()+
-                                                   this->regionListV()->at(i)->getSize()/2,
+                                                   (qreal)this->regionListV()->at(i)->getSize()/2,
                                                    this->regionListV()->at(i)->Y()+
-                                                   this->regionListV()->at(i)->getSize()/2),
+                                                   (qreal)this->regionListV()->at(i)->getSize()/2),
                                            QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
                                                    this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
                                                    this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
@@ -875,9 +878,9 @@ void Widget::paintCCg(QPainter *painter)
                         {
                             QLinearGradient grad;
                             grad.setStart(QPointF(this->regionListV()->at(i)->X()+
-                                                  this->regionListV()->at(i)->getSize()/2,
+                                                  (qreal)this->regionListV()->at(i)->getSize()/2,
                                                   this->regionListV()->at(i)->Y()+
-                                                  this->regionListV()->at(i)->getSize()/2));
+                                                  (qreal)this->regionListV()->at(i)->getSize()/2));
                             grad.setFinalStop(QPointF(this->regionListV()->at(i)->getCrossing()->at(z)->X()+
                                                       this->regionListV()->at(i)->getCrossing()->at(z)->getSize()/2,
                                                       this->regionListV()->at(i)->getCrossing()->at(z)->Y()+
@@ -1364,10 +1367,10 @@ void Widget::regionIncrease2()
                 {
                     for(int z=0;z<riverPoly->size()-1;z++)
                     {
-                        if(intersect(QPointF(this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()/2,
-                                             this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2),
-                                      QPointF(this->regionListV()->at(i)->getLastX()+this->regionListV()->at(i)->getSize()/2,
-                                             this->regionListV()->at(i)->getLastY()+this->regionListV()->at(i)->getSize()/2),
+                        if(intersect(QPointF(this->regionListV()->at(i)->X()+(qreal)this->regionListV()->at(i)->getSize()/2,
+                                             this->regionListV()->at(i)->Y()+(qreal)this->regionListV()->at(i)->getSize()/2),
+                                      QPointF(this->regionListV()->at(i)->getLastX()+(qreal)this->regionListV()->at(i)->getSize()/2,
+                                             this->regionListV()->at(i)->getLastY()+(qreal)this->regionListV()->at(i)->getSize()/2),
                                       this->riverPoly->at(z),
                                       this->riverPoly->at(z+1)))
                         {
