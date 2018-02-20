@@ -442,7 +442,7 @@
       <number>1</number>
      </property>
      <property name="value">
-      <number>5</number>
+      <number>1</number>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -1684,6 +1684,27 @@
    </property>
    <property name="text">
     <string>restart</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="start_8">
+   <property name="geometry">
+    <rect>
+     <x>1530</x>
+     <y>360</y>
+     <width>70</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>previous</string>
    </property>
   </widget>
  </widget>

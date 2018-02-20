@@ -417,6 +417,8 @@ private slots:
 
     void on_horizontalSlider_9_valueChanged(int value);
 
+    void on_start_8_pressed();
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);

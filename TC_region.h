@@ -34,8 +34,8 @@ public:
     int poplation() const;
     void setPoplation(int poplation);
 
-    int Y() const;
-    void setY(int Y);
+    qreal Y() const;
+    void setY(qreal Y);
 
     bool stopIncrease() const;
     void setStopIncrease(bool stopIncrease);
@@ -48,8 +48,8 @@ public:
     QString ccgName() const;
     void setCcgName(const QString &ccgName);
 
-    int X() const;
-    void setX(int X);
+    qreal X() const;
+    void setX(qreal X);
 
     int getSize() const;
     void setSize(int value);
@@ -97,20 +97,20 @@ public:
     int getRiverSide() const;
     void setRiverSide(int riverSide);
 
-    int getLastX() const;
-    void setLastX(int lastX);
+    qreal getLastX() const;
+    void setLastX(qreal lastX);
 
-    int getLastY() const;
-    void setLastY(int lastY);
+    qreal getLastY() const;
+    void setLastY(qreal lastY);
 
     bool getCrossRiver() const;
     void setCrossRiver(bool crossRiver);
 
-    int getCurrentX() const;
-    void setCurrentX(int currentX);
+    qreal getCurrentX() const;
+    void setCurrentX(qreal currentX);
 
-    int getCurrentY() const;
-    void setCurrentY(int currentY);
+    qreal getCurrentY() const;
+    void setCurrentY(qreal currentY);
 
     bool getInterSection() const;
     void setInterSection(bool interSection);
@@ -152,11 +152,11 @@ private:
      * @brief m_X information of x position on map
      */
 
-    int m_X;
+    qreal m_X;
     /**
      * @brief m_Oy information of horizontal order
      */
-    int m_Y;
+    qreal m_Y;
     /**
      * @brief m_stopIncrease information of whether point
      * can do increment or not
@@ -180,10 +180,10 @@ private:
     int m_Error;
     QList<Region *> * m_Crossing;
     int m_riverSide;
-    int m_lastX;
-    int m_lastY;
-    int m_currentX;
-    int m_currentY;
+    qreal m_lastX;
+    qreal m_lastY;
+    qreal m_currentX;
+    qreal m_currentY;
     bool m_crossRiver;
     bool m_interSection;
     QList <QPointF*> * pointList;

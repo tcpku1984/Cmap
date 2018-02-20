@@ -61,12 +61,12 @@ void Region::setPoplation(int poplation)
 {
     m_poplation = poplation;
 }
-int Region::Y() const
+qreal Region::Y() const
 {
     return m_Y;
 }
 
-void Region::setY(int Y)
+void Region::setY(qreal Y)
 {
     m_Y = Y;
 }
@@ -97,12 +97,12 @@ void Region::setCcgName(const QString &ccgName)
 {
     m_ccgName = ccgName;
 }
-int Region::X() const
+qreal Region::X() const
 {
     return m_X;
 }
 
-void Region::setX(int X)
+void Region::setX(qreal X)
 {
     m_X = X;
 }
@@ -256,21 +256,21 @@ void Region::setRiverSide(int riverSide)
 {
     m_riverSide = riverSide;
 }
-int Region::getLastX() const
+qreal Region::getLastX() const
 {
     return m_lastX;
 }
 
-void Region::setLastX(int lastX)
+void Region::setLastX(qreal lastX)
 {
     m_lastX = lastX;
 }
-int Region::getLastY() const
+qreal Region::getLastY() const
 {
     return m_lastY;
 }
 
-void Region::setLastY(int lastY)
+void Region::setLastY(qreal lastY)
 {
     m_lastY = lastY;
 }
@@ -283,21 +283,21 @@ void Region::setCrossRiver(bool crossRiver)
 {
     m_crossRiver = crossRiver;
 }
-int Region::getCurrentX() const
+qreal Region::getCurrentX() const
 {
     return m_currentX;
 }
 
-void Region::setCurrentX(int currentX)
+void Region::setCurrentX(qreal currentX)
 {
     m_currentX = currentX;
 }
-int Region::getCurrentY() const
+qreal Region::getCurrentY() const
 {
     return m_currentY;
 }
 
-void Region::setCurrentY(int currentY)
+void Region::setCurrentY(qreal currentY)
 {
     m_currentY = currentY;
 }

@@ -79,7 +79,7 @@ Widget::Widget(QWidget *parent) :
     scaleX=0;
     scaleY=0;
     QPalette pal = this->palette();
-    this->setRiverWidth(5);
+    this->setRiverWidth(1);
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
     sameListIndex=new QList <int>;
@@ -446,6 +446,7 @@ void Widget::wheelEvent(QWheelEvent *event)
 
 void Widget::paintCCg(QPainter *painter)
 {
+    //cout<<"size "<<this->regionListV()->at(0)->getSize()<<endl;
     QFont font("Arial");
     font.setPixelSize(FONTSIZEA);
     painter->setFont(font);
@@ -464,7 +465,7 @@ void Widget::paintCCg(QPainter *painter)
             painter->setBrush(Qt::black);*/
         painter->setBrush(Qt::white);
         QPen pencil;
-        pencil.setWidthF(0.2);
+        pencil.setWidthF(0.4);
         pencil.setColor(regionColor.at(this->regionListV()->at(i)->getColorIndex()));
 
         if(this->regionListV()->at(i)->getCrossRiver()==true)
@@ -560,7 +561,7 @@ void Widget::paintCCg(QPainter *painter)
     {
         //cout<<"got there"
         QPen pen;
-        pen.setWidth(2);
+        pen.setWidthF(0.2);
         pen.setColor(Qt::black);
         painter->setPen(pen);
         for(int i=0;i<this->regionListV()->size();i++)
@@ -568,11 +569,18 @@ void Widget::paintCCg(QPainter *painter)
             /*
             painter->drawPoint(this->regionListV()->at(i)->getLastX(),
                                this->regionListV()->at(i)->getLastY());*/
-            for(int z=0;z<this->regionListV()->at(i)->getPointList()->size();z++)
+            for(int z=0;z<this->regionListV()->at(i)->getPointList()->size()-1;z++)
             {
                 qreal halfsize=this->regionListV()->at(i)->getSizeList()->at(z)/2;
-                painter->drawPoint(this->regionListV()->at(i)->getPointList()->at(z)->rx()+halfsize,
-                                   this->regionListV()->at(i)->getPointList()->at(z)->ry()+halfsize);
+                qreal halfsize1=this->regionListV()->at(i)->getSizeList()->at(z+1)/2;
+                if(this->regionListV()->at(i)->getPointList()->at(z)->rx()+halfsize==this->regionListV()->at(i)->getPointList()->at(z+1)->rx()+halfsize1
+                        &&this->regionListV()->at(i)->getPointList()->at(z)->ry()+halfsize==this->regionListV()->at(i)->getPointList()->at(z+1)->ry()+halfsize1)
+                {}
+                else{
+                painter->drawLine(QPointF(this->regionListV()->at(i)->getPointList()->at(z)->rx()+halfsize,
+                                   this->regionListV()->at(i)->getPointList()->at(z)->ry()+halfsize),
+                                  QPointF(this->regionListV()->at(i)->getPointList()->at(z+1)->rx()+halfsize1,
+                                                                     this->regionListV()->at(i)->getPointList()->at(z+1)->ry()+halfsize1));}
             }
         }
     }
@@ -1359,7 +1367,8 @@ void Widget::regionIncrease2()
 */
 
 
-                if(this->regionListV()->at(i)->X()==this->regionListV()->at(i)->getLastX()&&this->regionListV()->at(i)->Y()==this->regionListV()->at(i)->getLastY())
+                if(fabs(this->regionListV()->at(i)->X()-this->regionListV()->at(i)->getLastX())<1
+                        &&fabs(this->regionListV()->at(i)->Y()-this->regionListV()->at(i)->getLastY())<1)
                 {
 
                 }
@@ -1684,7 +1693,7 @@ void Widget::regionIncrease2()
 
         }
     }
-    overlapRemove();
+    //overlapRemove();
     if(this->getXcross()==true)
     {
         qSort(this->getCurrentregion()->begin(),this->getCurrentregion()->end(),
@@ -4276,7 +4285,7 @@ void Widget::on_start_2_pressed()
             qSort(this->getLastYregion()->begin(),this->getLastYregion()->end(),
                   YOrder);
                 this->setFinished(false);
-
+            //cout<<"size "<<this->regionListV()->at(0)->getSize()<<endl;
 
             count=0;
             index=0;
@@ -4677,5 +4686,27 @@ void Widget::on_start_7_clicked()
 void Widget::on_horizontalSlider_9_valueChanged(int value)
 {
     this->setRiverWidth(value);
+    update();
+}
+
+void Widget::on_start_8_pressed()
+{
+    for(int i=0;i<this->regionListV()->size();i++)
+    {
+        if(this->regionListV()->at(i)->getPointList()->size()>0)
+        {
+            this->regionListV()->at(i)->setX(this->regionListV()->at(i)->getPointList()->back()->rx());
+            this->regionListV()->at(i)->setY(this->regionListV()->at(i)->getPointList()->back()->ry());
+            this->regionListV()->at(i)->setSize(this->regionListV()->at(i)->getSizeList()->back());
+            this->regionListV()->at(i)->getPointList()->removeLast();
+            this->regionListV()->at(i)->getSizeList()->removeLast();
+            if(this->regionListV()->at(i)->getPointList()->size()>0)
+            {
+                this->regionListV()->at(i)->setLastX(this->regionListV()->at(i)->getPointList()->back()->rx());
+                this->regionListV()->at(i)->setLastY(this->regionListV()->at(i)->getPointList()->back()->ry());
+            }
+        }
+    }
+    m_pushingList->clear();
     update();
 }
