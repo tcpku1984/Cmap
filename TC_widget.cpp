@@ -79,7 +79,7 @@ Widget::Widget(QWidget *parent) :
     scaleX=0;
     scaleY=0;
     QPalette pal = this->palette();
-    this->setRiverWidth(1);
+    this->setRiverWidth(0.1);
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
     sameListIndex=new QList <int>;
@@ -102,6 +102,8 @@ Widget::Widget(QWidget *parent) :
     m_crossCount=0;
     m_pushingList=new QList<QPointF *>;
     m_showLastPoint=false;
+    m_showDefination=false;
+    riverDefination=new QList<QPointF *>;
     //m_RiverPolygon=new QPolygonF();
     for(int i=0;i<14;i++)
     {
@@ -162,6 +164,7 @@ Widget::Widget(QWidget *parent) :
     refreshColor();
     regionFile* polyfile=new regionFile();
     polyfile->readPolygon();
+    //polyfile->readRiverPolygon();
     m_polygonList=polyfile->PolygonList();
     polyfile->readRiver();
     m_River=polyfile->River();
@@ -295,8 +298,8 @@ Widget::Widget(QWidget *parent) :
            {
                //painter->drawPoint(this->regionListV()->at(i1)->X()+this->regionListV()->at(i1)->getSize()/2,
                  //                 this->regionListV()->at(i1)->Y()+this->regionListV()->at(i1)->getSize()/2);
-               riverPoly->append(QPointF(this->regionListV()->at(i1)->X()+this->regionListV()->at(i1)->getSize()/2,
-                                         this->regionListV()->at(i1)->Y()+this->regionListV()->at(i1)->getSize()/2));
+               riverPoly->append(QPointF(this->regionListV()->at(i1)->X()+(qreal)this->regionListV()->at(i1)->getSize()/2,
+                                         this->regionListV()->at(i1)->Y()+(qreal)this->regionListV()->at(i1)->getSize()/2));
            }
            else
            {
@@ -308,10 +311,14 @@ Widget::Widget(QWidget *parent) :
                  //                         +this->regionListV()->at(i2)->X()/2+this->regionListV()->at(i2)->getSize()/4,
                    //                       this->regionListV()->at(i1)->Y()/2+this->regionListV()->at(i1)->getSize()/4
                      //                     +this->regionListV()->at(i2)->Y()/2+this->regionListV()->at(i2)->getSize()/4));
-               riverPoly->append(QPointF(this->regionListV()->at(i1)->X()/2+this->regionListV()->at(i1)->getSize()/4
-                                         +this->regionListV()->at(i2)->X()/2+this->regionListV()->at(i2)->getSize()/4,
-                                         this->regionListV()->at(i1)->Y()/2+this->regionListV()->at(i1)->getSize()/4
-                                         +this->regionListV()->at(i2)->Y()/2+this->regionListV()->at(i2)->getSize()/4));
+               riverDefination->append(new QPointF(this->regionListV()->at(i1)->X()+(qreal)this->regionListV()->at(i1)->getSize()/2,
+                                              this->regionListV()->at(i1)->Y()+(qreal)this->regionListV()->at(i1)->getSize()/2 ));
+               riverDefination->append(new QPointF(this->regionListV()->at(i2)->X()+(qreal)this->regionListV()->at(i2)->getSize()/2,
+                                              this->regionListV()->at(i2)->Y()+(qreal)this->regionListV()->at(i2)->getSize()/2 ));
+               riverPoly->append(QPointF(this->regionListV()->at(i1)->X()/2+(qreal)this->regionListV()->at(i1)->getSize()/4
+                                         +this->regionListV()->at(i2)->X()/2+(qreal)this->regionListV()->at(i2)->getSize()/4,
+                                         this->regionListV()->at(i1)->Y()/2+(qreal)this->regionListV()->at(i1)->getSize()/4
+                                         +this->regionListV()->at(i2)->Y()/2+(qreal)this->regionListV()->at(i2)->getSize()/4));
 
            }
        }
@@ -446,6 +453,20 @@ void Widget::wheelEvent(QWheelEvent *event)
 
 void Widget::paintCCg(QPainter *painter)
 {
+    QPen riverPen;
+    riverPen.setWidthF(this->getRiverWidth());
+    riverPen.setColor(Qt::green);
+    painter->setPen(riverPen);
+    painter->drawPolyline(*riverPoly);
+    riverPen.setColor(Qt::blue);
+    painter->setPen(riverPen);
+    if(m_showDefination==true)
+    {
+        for(int i=0;i<this->getRiverDefination()->size()-1;i=i+2)
+        {
+            painter->drawLine(*this->getRiverDefination()->at(i),*this->getRiverDefination()->at(i+1));
+        }
+    }
     //cout<<"size "<<this->regionListV()->at(0)->getSize()<<endl;
     QFont font("Arial");
     font.setPixelSize(FONTSIZEA);
@@ -586,11 +607,7 @@ void Widget::paintCCg(QPainter *painter)
     }
 
 
-        QPen riverPen;
-        riverPen.setWidth(this->getRiverWidth());
-        riverPen.setColor(Qt::green);
-        painter->setPen(riverPen);
-        painter->drawPolyline(*riverPoly);
+
 
 
 
@@ -3301,13 +3318,23 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
     }
     this->setYError(this->getYError()+error);
 }
+QList<QPointF *> *Widget::getRiverDefination() const
+{
+    return riverDefination;
+}
 
-int Widget::getRiverWidth() const
+void Widget::setRiverDefination(QList<QPointF *> *value)
+{
+    riverDefination = value;
+}
+
+
+qreal Widget::getRiverWidth() const
 {
     return m_riverWidth;
 }
 
-void Widget::setRiverWidth(int riverWidth)
+void Widget::setRiverWidth(qreal riverWidth)
 {
     m_riverWidth = riverWidth;
 }
@@ -4685,7 +4712,7 @@ void Widget::on_start_7_clicked()
 
 void Widget::on_horizontalSlider_9_valueChanged(int value)
 {
-    this->setRiverWidth(value);
+    this->setRiverWidth((qreal)value/10);
     update();
 }
 
@@ -4708,5 +4735,18 @@ void Widget::on_start_8_pressed()
         }
     }
     m_pushingList->clear();
+    update();
+}
+
+void Widget::on_start_9_clicked()
+{
+    if(m_showDefination==true)
+    {
+        m_showDefination=false;
+    }
+    else
+    {
+        m_showDefination=true;
+    }
     update();
 }

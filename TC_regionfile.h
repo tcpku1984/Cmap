@@ -21,6 +21,7 @@ public:
     regionFile();
     void readfile(int year);
     void readPolygon();
+    void readRiverPolygon();
     void readRiver();
     QList<Region *> *regionList() const;
     void setRegionList(QList<Region *> *regionList);
@@ -43,6 +44,9 @@ public:
     QList<QString> *River() const;
     void setRiver(QList<QString> *River);
 
+    QList<QPolygonF *> *RiverPolygonList() const;
+    void setRiverPolygonList(QList<QPolygonF *> *RiverPolygonList);
+
 private:
     int searchAreaCode(QString code);
     QList < Region *> * m_regionList;
@@ -51,6 +55,7 @@ private:
     QList<double> * m_AveragePrevlance;
     bool m_display;
     QList<QPolygonF *> * m_PolygonList;
+    QList<QPolygonF *> * m_RiverPolygonList;
     QList<QString> * m_River;
 
 

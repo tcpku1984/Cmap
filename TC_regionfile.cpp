@@ -16,6 +16,7 @@ regionFile::regionFile()
 {
     m_regionList=new QList<Region *>;
     m_PolygonList=new QList<QPolygonF *>;
+    m_RiverPolygonList=new QList<QPolygonF *>;
     m_AreaGroup=new QList<AreaTeam *>;
     m_AveragePrevlance=new QList<double>;
     m_River=new QList<QString>;
@@ -159,6 +160,43 @@ void regionFile::readPolygon()
 
 }
 
+void regionFile::readRiverPolygon()
+{
+    ifstream inFlow;
+    inFlow.open("D:/Cmap/tempnodes.csv");
+    string input;
+    double number=-1;
+    int count=0;
+    QPolygonF * tempPolygon;
+    double tempx,tempy;
+    while (!inFlow.eof()&&count<5)
+    {
+        getline(inFlow,input, ',');
+        if(number!=atof(input.c_str()))
+        {
+            number=atof(input.c_str());
+            cout<<number<<endl;
+            tempPolygon=new QPolygonF();
+            m_RiverPolygonList->append(tempPolygon);
+            count++;
+            cout<<count<<endl;
+        }
+
+        getline(inFlow,input, ',');
+        tempx=atof(input.c_str())/RATHH+HH;
+        //cout<<tempx;
+        string tempstring;
+        inFlow>>tempstring;
+        tempy=-atof(tempstring.c_str())/RATHV+VV;
+        //cout<<tempy<<endl;
+        tempPolygon->append(QPointF(tempx,tempy));
+    }
+    inFlow.close();
+    cout<<"rvier Polygon Reading finished::"<<number<<endl;
+
+
+}
+
 void regionFile::readRiver()
 {
     ifstream inFlow;
@@ -224,6 +262,16 @@ int regionFile::searchAreaCode(QString code)
     }
     return -1;
 }
+QList<QPolygonF *> *regionFile::RiverPolygonList() const
+{
+    return m_RiverPolygonList;
+}
+
+void regionFile::setRiverPolygonList(QList<QPolygonF *> *RiverPolygonList)
+{
+    m_RiverPolygonList = RiverPolygonList;
+}
+
 
 QList<QString> *regionFile::River() const
 {

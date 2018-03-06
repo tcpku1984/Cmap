@@ -291,8 +291,11 @@ public:
     bool getRiverBoundary() const;
     void setRiverBoundary(bool riverBoundary);
 
-    int getRiverWidth() const;
-    void setRiverWidth(int riverWidth);
+    qreal getRiverWidth() const;
+    void setRiverWidth(qreal riverWidth);
+
+    QList<QPointF *> *getRiverDefination() const;
+    void setRiverDefination(QList<QPointF *> *value);
 
 public slots:
     void animate();
@@ -419,6 +422,8 @@ private slots:
 
     void on_start_8_pressed();
 
+    void on_start_9_clicked();
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -532,16 +537,18 @@ private:
     bool m_pushingLine=false;
     QPointF P0,P1;
     QList <QPointF *> * m_pushingList;
+    QList <QPointF *> * riverDefination;
     qreal scale;
     qreal scaleX,scaleY;
     bool m_showLastPoint;
-    int m_riverWidth;
+    qreal m_riverWidth;
     int m_originalX;
     int m_originalY;
     int m_newX;
     int m_newY;
     QPointF translation=QPointF(0,0);
     bool m_moving;
+    bool m_showDefination;
 
 };
 
