@@ -424,6 +424,8 @@ private slots:
 
     void on_start_9_clicked();
 
+    void on_start_10_pressed();
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -549,6 +551,7 @@ private:
     QPointF translation=QPointF(0,0);
     bool m_moving;
     bool m_showDefination;
+    bool m_showRiverOnTop;
 
 };
 

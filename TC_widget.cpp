@@ -103,6 +103,7 @@ Widget::Widget(QWidget *parent) :
     m_pushingList=new QList<QPointF *>;
     m_showLastPoint=false;
     m_showDefination=false;
+    m_showRiverOnTop=false;
     riverDefination=new QList<QPointF *>;
     //m_RiverPolygon=new QPolygonF();
     for(int i=0;i<14;i++)
@@ -457,7 +458,10 @@ void Widget::paintCCg(QPainter *painter)
     riverPen.setWidthF(this->getRiverWidth());
     riverPen.setColor(Qt::green);
     painter->setPen(riverPen);
-    painter->drawPolyline(*riverPoly);
+    if(m_showRiverOnTop==false)
+    {
+        painter->drawPolyline(*riverPoly);
+    }
     riverPen.setColor(Qt::blue);
     painter->setPen(riverPen);
     if(m_showDefination==true)
@@ -608,7 +612,13 @@ void Widget::paintCCg(QPainter *painter)
 
 
 
-
+    if(m_showRiverOnTop==true)
+    {
+        riverPen.setWidthF(this->getRiverWidth());
+        riverPen.setColor(Qt::green);
+        painter->setPen(riverPen);
+        painter->drawPolyline(*riverPoly);
+    }
 
 
     if(this->getFinished())
@@ -1311,6 +1321,33 @@ void Widget::regionIncrease2()
                 //overlapRemove();
             }
             overlapRemove();
+            for(int i=0;i<this->regionListV()->size();i++)
+            {
+                if(fabs(this->regionListV()->at(i)->X()-this->regionListV()->at(i)->getLastX())<1
+                        &&fabs(this->regionListV()->at(i)->Y()-this->regionListV()->at(i)->getLastY())<1)
+                {
+
+                }
+                else
+                {
+                    for(int z=0;z<riverPoly->size()-1;z++)
+                    {
+                        if(intersect(QPointF(this->regionListV()->at(i)->X()+(qreal)this->regionListV()->at(i)->getSize()/2,
+                                             this->regionListV()->at(i)->Y()+(qreal)this->regionListV()->at(i)->getSize()/2),
+                                      QPointF(this->regionListV()->at(i)->getLastX()+(qreal)this->regionListV()->at(i)->getSize()/2,
+                                             this->regionListV()->at(i)->getLastY()+(qreal)this->regionListV()->at(i)->getSize()/2),
+                                      this->riverPoly->at(z),
+                                      this->riverPoly->at(z+1)))
+                        {
+                            //cout<<z<<" test river"<<endl;
+                            //cout<<"x "<<this->regionListV()->at(i)->X()<<" : "<<this->regionListV()->at(i)->getLastX()<<endl;
+                            //cout<<"y "<<this->regionListV()->at(i)->Y()<< " : "<< this->regionListV()->at(i)->getLastY()<<endl;
+                            this->regionListV()->at(i)->setCrossRiver(true);
+                            break;
+                        }
+                    }
+                }
+            }
         }
         else
         {
@@ -1400,9 +1437,9 @@ void Widget::regionIncrease2()
                                       this->riverPoly->at(z),
                                       this->riverPoly->at(z+1)))
                         {
-                            cout<<z<<" test river"<<endl;
-                            cout<<"x "<<this->regionListV()->at(i)->X()<<" : "<<this->regionListV()->at(i)->getLastX()<<endl;
-                            cout<<"y "<<this->regionListV()->at(i)->Y()<< " : "<< this->regionListV()->at(i)->getLastY()<<endl;
+                            //cout<<z<<" test river"<<endl;
+                            //cout<<"x "<<this->regionListV()->at(i)->X()<<" : "<<this->regionListV()->at(i)->getLastX()<<endl;
+                            //cout<<"y "<<this->regionListV()->at(i)->Y()<< " : "<< this->regionListV()->at(i)->getLastY()<<endl;
                             crossRiver=true;
                             break;
                         }
@@ -1423,9 +1460,9 @@ void Widget::regionIncrease2()
                              this->regionListV()->at(i)->setX(this->regionListV()->at(i)->getLastX());
                              this->regionListV()->at(i)->setY(this->regionListV()->at(i)->getLastY());
                              //this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-tmp);
-                                 cout<<"move: "<<i<<endl;
-                                 cout<<"i : "<<i<<" x: "<<this->regionListV()->at(i)->getCurrentX()<<" "<<this->regionListV()->at(i)->getCurrentY()<<endl;
-                                 cout<<"i : "<<i<<" Lastx: "<<this->regionListV()->at(i)->getLastX()<<" " <<this->regionListV()->at(i)->getLastY()<<endl;
+                                 //cout<<"move: "<<i<<endl;
+                                // cout<<"i : "<<i<<" x: "<<this->regionListV()->at(i)->getCurrentX()<<" "<<this->regionListV()->at(i)->getCurrentY()<<endl;
+                                // cout<<"i : "<<i<<" Lastx: "<<this->regionListV()->at(i)->getLastX()<<" " <<this->regionListV()->at(i)->getLastY()<<endl;
                          }
                          //cout<<"test cross"<<m
                          if(sameList->size()<m_crossCount)
@@ -1505,7 +1542,8 @@ void Widget::regionIncrease2()
                     double tempY= tempRegion->getCurrentY()-tempRegion->getLastY();
                     for(int m=0;m<this->regionListV()->size();m++)
                     {
-                        if(P1.ry()==SOUTHBOUND&&m!=sameListIndex->at(k))
+                        /*
+                        if(P1.ry()==SOUTHBOUND&&m!=sameListIndex->at(k)&&this->regionListV()->at(m)->X()>=tempRegion->getCurrentX())
                         {
                             if(intersection(P0,P1,
                                                  QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
@@ -1517,7 +1555,7 @@ void Widget::regionIncrease2()
                             }
                         }
                         if(P1.ry()==NORTHBOUND&&this->regionListV()->at(m)->Y()<tempRegion->getCurrentY()
-                                &&m!=sameListIndex->at(k))
+                                &&m!=sameListIndex->at(k)&&this->regionListV()->at(m)->X()<=tempRegion->getCurrentX())
                         {
                             if(intersection(P0,P1,
                                                  QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),this->regionListV()->at(m)->getSize()))
@@ -1533,10 +1571,25 @@ void Widget::regionIncrease2()
                                 +tempRegion->getSize()/2&&
                                 this->regionListV()->at(m)->X()>=tempRegion->getCurrentX())
                         {
+                            cout<<"horizantal intersection"<<endl;
                             //this->regionListV()->at(m)->setCrossRiver(true);
                             this->regionListV()->at(m)->setInterSection(true);
                             this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
-                        }
+                        }*/
+
+                            if(intersect(P0,P1,QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
+                                         QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize()
+                                                 ,this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize()))||
+                                    intersect(P0,P1,QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize(),
+                                                            this->regionListV()->at(m)->Y()),
+                                                             QPointF(this->regionListV()->at(m)->X(),
+                                                             this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize())))
+                            {
+                                this->regionListV()->at(m)->setInterSection(true);
+                                this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
+                                this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                            }
+
                     }
                 }
                 //cout<<"arrived here"<<endl;
@@ -3172,6 +3225,7 @@ void Widget::overlapRemove()
             maxY=minY+this->regionListV()->at(i)->getSize()*9/16;
         }
         nodeRect[i]=new vpsc::Rectangle(minX,maxX,minY,maxY);
+
     }
     removeRectangleOverlap(this->regionListV()->size(),nodeRect,1e-3,1e-3);
     for(int i=0;i<this->regionListV()->size();i++)
@@ -4279,6 +4333,7 @@ void Widget::on_start_2_pressed()
         this->getLastregion()->clear();
         this->getCurrentYregion()->clear();
         this->getLastYregion()->clear();
+        this->sameList->clear();
         if(this->getGroup()==false)
         {
             for(int i=0;i<this->regionListV()->size();i++)
@@ -4735,6 +4790,7 @@ void Widget::on_start_8_pressed()
         }
     }
     m_pushingList->clear();
+    overlapRemove();
     update();
 }
 
@@ -4747,6 +4803,19 @@ void Widget::on_start_9_clicked()
     else
     {
         m_showDefination=true;
+    }
+    update();
+}
+
+void Widget::on_start_10_pressed()
+{
+    if(m_showRiverOnTop==true)
+    {
+        m_showRiverOnTop=false;
+    }
+    else
+    {
+        m_showRiverOnTop=true;
     }
     update();
 }
