@@ -105,6 +105,7 @@ Widget::Widget(QWidget *parent) :
     m_showDefination=false;
     m_showRiverOnTop=false;
     riverDefination=new QList<QPointF *>;
+    m_pushingWidth=0;
     //m_RiverPolygon=new QPolygonF();
     for(int i=0;i<14;i++)
     {
@@ -513,10 +514,12 @@ void Widget::paintCCg(QPainter *painter)
                                      this->regionListV()->at(i)->getSize()), QString::number(
                                   this->regionListV()->at(i)->getRiverSide()));*/
             if(this->regionListV()->at(i)->getInterSection()==true)
-                painter->drawText(QRectF(this->regionListV()->at(i)->X(),
+                painter->fillRect(QRectF(this->regionListV()->at(i)->X(),
                                           this->regionListV()->at(i)->Y(),
-                                          this->regionListV()->at(i)->getSize(),
-                                          this->regionListV()->at(i)->getSize()), " I ");
+                                          qreal(this->regionListV()->at(i)->getSize()/4),
+                                          qreal(this->regionListV()->at(i)->getSize()/4)),
+                                  regionColor.at(this->regionListV()->at(i)->getColorIndex()));
+
 
             /*
             painter->drawText(QRectF(this->regionListV()->at(i)->X(),
@@ -1588,6 +1591,44 @@ void Widget::regionIncrease2()
                                 this->regionListV()->at(m)->setInterSection(true);
                                 this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
                                 this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                            }
+                            qreal dz=sqrt((P0.rx()-P1.rx())*(P0.rx()-P1.rx())+(P0.ry()-P1.ry())*(P0.ry()-P1.ry()));
+                            qreal dx=this->regionListV()->at(m)->getSize()*(P0.ry()-P1.ry())/dz;
+                            qreal dy=this->regionListV()->at(m)->getSize()*(P0.rx()-P1.rx())/dz;
+                            for(int n=1;n<=m_pushingWidth;n++)
+                            {
+                                m_pushingList->append(new QPointF((P0.rx()+n*dx),(P0.ry()+n*dy)));
+                                m_pushingList->append(new QPointF((P1.rx()+n*dx),(P1.ry()+n*dy)));
+                                m_pushingList->append(new QPointF((P0.rx()-n*dx),(P0.ry()-n*dy)));
+                                m_pushingList->append(new QPointF((P1.rx()-n*dx),(P1.ry()-n*dy)));
+                                if(intersect(QPointF((P0.rx()+n*dx),(P0.ry()+n*dy)),
+                                             QPointF((P1.rx()+n*dx),(P1.ry()+n*dy)),QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
+                                             QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize()
+                                                     ,this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize()))||
+                                        intersect(QPointF((P0.rx()+n*dx),(P0.ry()+n*dy)),
+                                                  QPointF((P1.rx()+n*dx),(P1.ry()+n*dy)),QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize(),
+                                                                this->regionListV()->at(m)->Y()),
+                                                                 QPointF(this->regionListV()->at(m)->X(),
+                                                                 this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize())))
+                                {
+                                    this->regionListV()->at(m)->setInterSection(true);
+                                    this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
+                                    this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                                }
+                                if(intersect(QPointF((P0.rx()-n*dx),(P0.ry()-n*dy)),
+                                             QPointF((P1.rx()-n*dx),(P1.ry()-n*dy)),QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
+                                             QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize()
+                                                     ,this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize()))||
+                                        intersect(QPointF((P0.rx()-n*dx),(P0.ry()-n*dy)),
+                                                  QPointF((P1.rx()-n*dx),(P1.ry()-n*dy)),QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize(),
+                                                                this->regionListV()->at(m)->Y()),
+                                                                 QPointF(this->regionListV()->at(m)->X(),
+                                                                 this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize())))
+                                {
+                                    this->regionListV()->at(m)->setInterSection(true);
+                                    this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
+                                    this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
+                                }
                             }
 
                     }
@@ -4818,4 +4859,9 @@ void Widget::on_start_10_pressed()
         m_showRiverOnTop=true;
     }
     update();
+}
+
+void Widget::on_horizontalSlider_10_valueChanged(int value)
+{
+    m_pushingWidth=value;
 }

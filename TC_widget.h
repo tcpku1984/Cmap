@@ -426,6 +426,8 @@ private slots:
 
     void on_start_10_pressed();
 
+    void on_horizontalSlider_10_valueChanged(int value);
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -552,6 +554,7 @@ private:
     bool m_moving;
     bool m_showDefination;
     bool m_showRiverOnTop;
+    int m_pushingWidth;
 
 };
 
