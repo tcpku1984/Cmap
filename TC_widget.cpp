@@ -30,7 +30,8 @@ enum{
     TEXTX=1760,
     SIGNX=1680,
     DELAY=500,
-    STEP=50
+    STEP=50,
+    RIVERWIDTH=30
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -1495,7 +1496,7 @@ void Widget::regionIncrease2()
 
             }
 
-            if(m_crossCount==m_same&&m_same>0&&this->getRiverBoundary())
+            if(m_same>0&&this->getRiverBoundary())
            {
 
                 cout<<"dead loop detected"<<endl;
@@ -1506,10 +1507,10 @@ void Widget::regionIncrease2()
                     cout<<k<<endl;
                     cout<<"index"<<sameListIndex->at(k)<<endl;
                     Region * tempRegion=this->regionListV()->at(sameListIndex->at(k));
-                    P0=QPointF(tempRegion->X()+tempRegion->getSize()/2,tempRegion->Y()+tempRegion->getSize()/2);
+                    P0=QPointF(tempRegion->X()+(qreal)tempRegion->getSize()/2,tempRegion->Y()+(qreal)tempRegion->getSize()/2);
                     //QPointF * temp=new QPointF(tempRegion->getCurrentX(),tempRegion->getCurrentY());
-                    QPointF * temp=new QPointF(tempRegion->X()+tempRegion->getSize()/2
-                                               ,tempRegion->Y()+tempRegion->getSize()/2);
+                    QPointF * temp=new QPointF(tempRegion->X()+(qreal)tempRegion->getSize()/2
+                                               ,tempRegion->Y()+(qreal)tempRegion->getSize()/2);
                     cout<<tempRegion->X()<<" "<<tempRegion->Y()<<endl;
                     m_pushingList->append(temp);
 
@@ -1589,18 +1590,18 @@ void Widget::regionIncrease2()
                                                              this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize())))
                             {
                                 this->regionListV()->at(m)->setInterSection(true);
-                                this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
-                                this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
                             }
                             qreal dz=sqrt((P0.rx()-P1.rx())*(P0.rx()-P1.rx())+(P0.ry()-P1.ry())*(P0.ry()-P1.ry()));
-                            qreal dx=this->regionListV()->at(m)->getSize()*(P0.ry()-P1.ry())/dz;
-                            qreal dy=this->regionListV()->at(m)->getSize()*(P0.rx()-P1.rx())/dz;
+                            qreal dx=(qreal)this->regionListV()->at(m)->getSize()*(P0.ry()-P1.ry())/dz/RIVERWIDTH;
+                            qreal dy=(qreal)this->regionListV()->at(m)->getSize()*(P0.rx()-P1.rx())/dz/RIVERWIDTH;
+                            int mw=m_pushingWidth;
+                            m_pushingList->append(new QPointF((P0.rx()+mw*dx),(P0.ry()+mw*dy)));
+                            m_pushingList->append(new QPointF((P1.rx()+mw*dx),(P1.ry()+mw*dy)));
+                            m_pushingList->append(new QPointF((P0.rx()-mw*dx),(P0.ry()-mw*dy)));
+                            m_pushingList->append(new QPointF((P1.rx()-mw*dx),(P1.ry()-mw*dy)));
                             for(int n=1;n<=m_pushingWidth;n++)
                             {
-                                m_pushingList->append(new QPointF((P0.rx()+n*dx),(P0.ry()+n*dy)));
-                                m_pushingList->append(new QPointF((P1.rx()+n*dx),(P1.ry()+n*dy)));
-                                m_pushingList->append(new QPointF((P0.rx()-n*dx),(P0.ry()-n*dy)));
-                                m_pushingList->append(new QPointF((P1.rx()-n*dx),(P1.ry()-n*dy)));
+
                                 if(intersect(QPointF((P0.rx()+n*dx),(P0.ry()+n*dy)),
                                              QPointF((P1.rx()+n*dx),(P1.ry()+n*dy)),QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
                                              QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize()
@@ -1612,8 +1613,6 @@ void Widget::regionIncrease2()
                                                                  this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize())))
                                 {
                                     this->regionListV()->at(m)->setInterSection(true);
-                                    this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
-                                    this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
                                 }
                                 if(intersect(QPointF((P0.rx()-n*dx),(P0.ry()-n*dy)),
                                              QPointF((P1.rx()-n*dx),(P1.ry()-n*dy)),QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
@@ -1626,9 +1625,12 @@ void Widget::regionIncrease2()
                                                                  this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize())))
                                 {
                                     this->regionListV()->at(m)->setInterSection(true);
-                                    this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
-                                    this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
                                 }
+                            }
+                            if(this->regionListV()->at(m)->getInterSection()==true)
+                            {
+                                this->regionListV()->at(m)->setX(this->regionListV()->at(m)->X()-tempX);
+                                this->regionListV()->at(m)->setY(this->regionListV()->at(m)->Y()-tempY);
                             }
 
                     }
