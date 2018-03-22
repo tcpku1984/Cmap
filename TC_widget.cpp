@@ -1595,31 +1595,31 @@ void Widget::regionIncrease2()
                             qreal dx=(qreal)this->regionListV()->at(m)->getSize()*(P0.ry()-P1.ry())/dz/RIVERWIDTH;
                             qreal dy=(qreal)this->regionListV()->at(m)->getSize()*(P0.rx()-P1.rx())/dz/RIVERWIDTH;
                             int mw=m_pushingWidth;
-                            m_pushingList->append(new QPointF((P0.rx()+mw*dx),(P0.ry()+mw*dy)));
-                            m_pushingList->append(new QPointF((P1.rx()+mw*dx),(P1.ry()+mw*dy)));
-                            m_pushingList->append(new QPointF((P0.rx()-mw*dx),(P0.ry()-mw*dy)));
-                            m_pushingList->append(new QPointF((P1.rx()-mw*dx),(P1.ry()-mw*dy)));
+                            m_pushingList->append(new QPointF((P0.rx()+mw*dx),(P0.ry()-mw*dy)));
+                            m_pushingList->append(new QPointF((P1.rx()+mw*dx),(P1.ry()-mw*dy)));
+                            m_pushingList->append(new QPointF((P0.rx()-mw*dx),(P0.ry()+mw*dy)));
+                            m_pushingList->append(new QPointF((P1.rx()-mw*dx),(P1.ry()+mw*dy)));
                             for(int n=1;n<=m_pushingWidth;n++)
                             {
 
-                                if(intersect(QPointF((P0.rx()+n*dx),(P0.ry()+n*dy)),
-                                             QPointF((P1.rx()+n*dx),(P1.ry()+n*dy)),QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
+                                if(intersect(QPointF((P0.rx()+n*dx),(P0.ry()-n*dy)),
+                                             QPointF((P1.rx()+n*dx),(P1.ry()-n*dy)),QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
                                              QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize()
                                                      ,this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize()))||
-                                        intersect(QPointF((P0.rx()+n*dx),(P0.ry()+n*dy)),
-                                                  QPointF((P1.rx()+n*dx),(P1.ry()+n*dy)),QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize(),
+                                        intersect(QPointF((P0.rx()+n*dx),(P0.ry()-n*dy)),
+                                                  QPointF((P1.rx()+n*dx),(P1.ry()-n*dy)),QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize(),
                                                                 this->regionListV()->at(m)->Y()),
                                                                  QPointF(this->regionListV()->at(m)->X(),
                                                                  this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize())))
                                 {
                                     this->regionListV()->at(m)->setInterSection(true);
                                 }
-                                if(intersect(QPointF((P0.rx()-n*dx),(P0.ry()-n*dy)),
-                                             QPointF((P1.rx()-n*dx),(P1.ry()-n*dy)),QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
+                                if(intersect(QPointF((P0.rx()-n*dx),(P0.ry()+n*dy)),
+                                             QPointF((P1.rx()-n*dx),(P1.ry()+n*dy)),QPointF(this->regionListV()->at(m)->X(),this->regionListV()->at(m)->Y()),
                                              QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize()
                                                      ,this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize()))||
-                                        intersect(QPointF((P0.rx()-n*dx),(P0.ry()-n*dy)),
-                                                  QPointF((P1.rx()-n*dx),(P1.ry()-n*dy)),QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize(),
+                                        intersect(QPointF((P0.rx()-n*dx),(P0.ry()+n*dy)),
+                                                  QPointF((P1.rx()-n*dx),(P1.ry()+n*dy)),QPointF(this->regionListV()->at(m)->X()+(qreal)this->regionListV()->at(m)->getSize(),
                                                                 this->regionListV()->at(m)->Y()),
                                                                  QPointF(this->regionListV()->at(m)->X(),
                                                                  this->regionListV()->at(m)->Y()+(qreal)this->regionListV()->at(m)->getSize())))
