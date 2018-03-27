@@ -1714,7 +1714,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Last point</string>
+    <string>reset</string>
    </property>
   </widget>
   <widget class="QPushButton" name="start_7">

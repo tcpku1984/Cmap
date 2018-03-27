@@ -414,6 +414,7 @@ Widget::~Widget()
 void Widget::paintEvent(QPaintEvent *event)
 {
 
+
     this->dataColor0=m_Datacolor->getColor(this->getColor());
     QPainter painter(this);
     painter.translate(scaleX,scaleY);
@@ -429,6 +430,13 @@ void Widget::paintEvent(QPaintEvent *event)
                 m_originalX = m_newX;
                 m_originalY = m_newY;
 
+                QPen boundary;
+                boundary.setWidthF(0.5);
+                boundary.setColor(Qt::red);
+                painter.setPen(boundary);
+                painter.drawRect(QRectF(0,0,1920,1080));
+                boundary.setColor(Qt::black);
+                painter.setPen(boundary);
 
     for(int i=0;i<m_polygonList->size();i++)
     {
@@ -443,6 +451,7 @@ void Widget::paintEvent(QPaintEvent *event)
     {
         paintArea(&painter);
     }
+
 
 }
 
@@ -868,6 +877,7 @@ void Widget::paintCCg(QPainter *painter)
         }
 */
     }
+    /*
     painter->setPen(Qt::green);
     painter->drawLine(QPointF(10,this->regionListV()->at(z)->Y()+
                              this->regionListV()->at(z)->getSize()/2),
@@ -876,7 +886,7 @@ void Widget::paintCCg(QPainter *painter)
     painter->drawLine(QPointF(this->regionListH()->at(z)->X()+
                              this->regionListH()->at(z)->getSize()/2,0),
                      QPointF(this->regionListH()->at(z)->X()+
-                            this->regionListH()->at(z)->getSize()/2,1920));
+                            this->regionListH()->at(z)->getSize()/2,1920));*/
     if(this->getCenterLines()==true)
     {
         for(int i=0;i<this->regionListH()->size();i++)
@@ -4790,6 +4800,7 @@ void Widget::on_checkBox_37_toggled(bool checked)
 
 void Widget::on_start_6_pressed()
 {
+    /*
     if(m_showLastPoint==true)
     {
         m_showLastPoint=false;
@@ -4797,7 +4808,17 @@ void Widget::on_start_6_pressed()
     else
     {
         m_showLastPoint=true;
-    }
+    }*/
+
+    m_originalX=0;
+    m_originalY=0;
+    m_newX=0;
+    m_newY=0;
+    scaleX=0;
+    scaleY=0;
+    scale=1;
+
+    translation=QPoint(0,0);
     update();
 }
 
