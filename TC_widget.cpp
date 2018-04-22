@@ -10,7 +10,7 @@
 enum{
     RATHH=400,
     RATHV=600,
-    HH=-400,
+    HH=-250,
     VV=1050,
     MAXSIZE=65,
     HALF=2,
@@ -22,7 +22,7 @@ enum{
     FONTSIZEB=14,
     GRAY=85,
     NORTHBOUND=1,
-    SOUTHBOUND=950,
+    SOUTHBOUND=1000,
     WESTBOUND=10,
     EASTBOUND=1650,
     HALFSIZE=105,
@@ -434,7 +434,7 @@ void Widget::paintEvent(QPaintEvent *event)
                 boundary.setWidthF(0.5);
                 boundary.setColor(Qt::red);
                 painter.setPen(boundary);
-                painter.drawRect(QRectF(0,0,1920,1080));
+                painter.drawRect(QRectF(0,-50,1650,1120));
                 boundary.setColor(Qt::black);
                 painter.setPen(boundary);
 
@@ -459,7 +459,7 @@ void Widget::wheelEvent(QWheelEvent *event)
 {
     scaleX=-event->pos().x();
     scaleY=-event->pos().y();
-    scale+=(event->delta()/120);
+    scale+=(event->delta()/(qreal)120);
     update();
 }
 
@@ -1295,7 +1295,7 @@ void Widget::regionIncrease2()
     cout<<"m cross:"<<m_crossCount<<endl;
         if(index%2==0)
         {
-            if(m_crossCount==0)
+            if(m_crossCount==0||this->getRiverBoundary()==false)
             {
                 this->setLoopCount(this->getLoopCount()+1);
                 for(int i=0;i<this->searchRange();i++)
@@ -1544,10 +1544,16 @@ void Widget::regionIncrease2()
                         QPointF * temp=new QPointF(tempx,NORTHBOUND);
                         m_pushingList->append(temp);
                     }
-                    else
+                    else if(tempRegion->getCurrentX()<tempRegion->getLastX())
                     {
                         P1=QPointF(EASTBOUND,tempRegion->getCurrentY());
                         QPointF * temp=new QPointF(EASTBOUND,tempRegion->getCurrentY());
+                        m_pushingList->append(temp);
+                    }
+                    else
+                    {
+                        P1=QPointF(WESTBOUND,tempRegion->getCurrentY());
+                        QPointF * temp=new QPointF(WESTBOUND,tempRegion->getCurrentY());
                         m_pushingList->append(temp);
                     }
 

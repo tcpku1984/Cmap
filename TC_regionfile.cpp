@@ -9,7 +9,7 @@ enum{
     ATTNUM=14,
     RATHH=400,
     RATHV=600,
-    HH=-400,
+    HH=-250,
     VV=1050
 };
 regionFile::regionFile()

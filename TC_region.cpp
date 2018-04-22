@@ -7,7 +7,7 @@
 #include "TC_region.h"
 enum{
     NORTHBOUND=1,
-    SOUTHBOUND=950,
+    SOUTHBOUND=1000,
     WESTBOUND=100,
     EASTBOUND=1900,
     HALFSIZE=106
