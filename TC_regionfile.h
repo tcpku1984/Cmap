@@ -47,12 +47,20 @@ public:
     QList<QPolygonF *> *RiverPolygonList() const;
     void setRiverPolygonList(QList<QPolygonF *> *RiverPolygonList);
 
+    QList<double> *MinPrevlance() const;
+    void setMinPrevlance(QList<double> *MinPrevlance);
+
+    QList<double> *MaxPrevlance() const;
+    void setMaxPrevlance(QList<double> *MaxPrevlance);
+
 private:
     int searchAreaCode(QString code);
     QList < Region *> * m_regionList;
     int m_populiation;
     QList <AreaTeam *>  * m_AreaGroup;
     QList<double> * m_AveragePrevlance;
+    QList<double> * m_MinPrevlance;
+    QList<double> * m_MaxPrevlance;
     bool m_display;
     QList<QPolygonF *> * m_PolygonList;
     QList<QPolygonF *> * m_RiverPolygonList;

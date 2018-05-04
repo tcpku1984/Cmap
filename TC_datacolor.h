@@ -53,6 +53,12 @@ public:
     QList<QColor> getDataColor5() const;
     void setDataColor5(const QList<QColor> &value);
 
+    QList<QColor> getDataColor6() const;
+    void setDataColor6(const QList<QColor> &value);
+
+    QList<QColor> getDataColor7() const;
+    void setDataColor7(const QList<QColor> &value);
+
 private:
     QList<QColor> dataColor0;
     QList<QColor> dataColor1;
@@ -65,6 +71,8 @@ private:
     QList<QColor> colorTest1;
     QList<QColor> colorTest2;
     QList<QColor> colorTest3;
+    QList<QColor> dataColor6;
+    QList<QColor> dataColor7;
 };
 
 #endif // DATACOLOR_H

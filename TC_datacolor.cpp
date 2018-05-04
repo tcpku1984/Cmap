@@ -99,9 +99,14 @@ dataColor::dataColor()
             <<QColor("#ce7e2b")<<QColor("#f8cca6")
             <<QColor("#069668")<<QColor("#ff7074")
             <<QColor("#3aa609");
-
-
-
+    dataColor6<<QColor("#d73027")<<QColor("#f46d43")<<QColor("#fdae61")
+            <<QColor("#fee08b")<<QColor("#ffffbf")
+            <<QColor("#d9ef8b")<<QColor("#a6d96a")
+            <<QColor("#66bd63")<<QColor("#1a9850");
+    dataColor7<<QColor("#f7fcfd")<<QColor("#e5f5f9")<<QColor("#ccece6")
+            <<QColor("#99d8c9")<<QColor("#66c2a4")
+            <<QColor("#41ae76")<<QColor("#238b45")
+            <<QColor("#006d2c")<<QColor("#00441b");
 
 
 
@@ -185,6 +190,10 @@ QList<QColor> dataColor::getColor(int number)
         return this->getColorTest();
     case 6:
         return this->getDataColor5();
+     case 7:
+        return this->getDataColor6();
+    case 8:
+        return this->getDataColor7();
         break;
 
     }
@@ -234,6 +243,26 @@ void dataColor::setDataColor5(const QList<QColor> &value)
 {
     dataColor5 = value;
 }
+QList<QColor> dataColor::getDataColor6() const
+{
+    return dataColor6;
+}
+
+void dataColor::setDataColor6(const QList<QColor> &value)
+{
+    dataColor6 = value;
+}
+QList<QColor> dataColor::getDataColor7() const
+{
+    return dataColor7;
+}
+
+void dataColor::setDataColor7(const QList<QColor> &value)
+{
+    dataColor7 = value;
+}
+
+
 
 
 

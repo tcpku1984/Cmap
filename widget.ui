@@ -442,7 +442,7 @@
       <number>5</number>
      </property>
      <property name="value">
-      <number>1</number>
+      <number>20</number>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -494,7 +494,7 @@
       <number>10</number>
      </property>
      <property name="value">
-      <number>0</number>
+      <number>30</number>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -523,6 +523,86 @@
      <property name="textFormat">
       <enum>Qt::RichText</enum>
      </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>220</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Coronary-heart-disease</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Heart Failure</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Stroke</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Chronic-kidney-disease</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Diabetes</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Hypertension</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>COPD</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mental-Health</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Osteoporosis</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Rheumatoid-Arthritis</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Cancer</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Epilepsy</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Hypothyroidism</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Asthma</string>
+      </property>
+     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_2">

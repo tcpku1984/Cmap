@@ -80,7 +80,7 @@ Widget::Widget(QWidget *parent) :
     scaleX=0;
     scaleY=0;
     QPalette pal = this->palette();
-    this->setRiverWidth(0.1);
+    this->setRiverWidth(2);
     pal.setColor(this->backgroundRole(), Qt::white);
     this->setPalette(pal);
     sameListIndex=new QList <int>;
@@ -104,9 +104,9 @@ Widget::Widget(QWidget *parent) :
     m_pushingList=new QList<QPointF *>;
     m_showLastPoint=false;
     m_showDefination=false;
-    m_showRiverOnTop=false;
+    m_showRiverOnTop=true;
     riverDefination=new QList<QPointF *>;
-    m_pushingWidth=0;
+    m_pushingWidth=30;
     //m_RiverPolygon=new QPolygonF();
     for(int i=0;i<14;i++)
     {
@@ -128,7 +128,7 @@ Widget::Widget(QWidget *parent) :
     m_dataYear=2013;
     this->setLoopCount(1);
     m_border=1;
-    this->setColor(6);
+    this->setColor(7);
     this->setFilter(0);
     finished=false;
     m_samesize=true;
@@ -164,6 +164,7 @@ Widget::Widget(QWidget *parent) :
     this->setBColor(true);
     this->setOpacity(100);
     this->setRiverBoundary(true);
+    this->setDisorder(0);
     refreshColor();
     regionFile* polyfile=new regionFile();
     polyfile->readPolygon();
@@ -196,9 +197,13 @@ Widget::Widget(QWidget *parent) :
     sta->setWindowFlags(Qt::WindowStaysOnTopHint);
     sta->setGeometry(QRect(10,600,400,200));
     m_AveragePrevlance=new QList<double>;
+    m_MinPrevlance=new QList<double>;
+    m_MaxPrevlance=new QList<double>;
     for(int i=0;i<14;i++)
     {
         this->getAveragePrevlance()->append(0);
+        this->getMinPrevlance()->append(30);
+        this->getMaxPrevlance()->append(0);
     }
 
     ui->setupUi(this);
@@ -208,6 +213,8 @@ Widget::Widget(QWidget *parent) :
     this->setPopulation(file->populiation());
     this->setAreaGroup(file->AreaGroup());
     this->setAveragePrevlance(file->AveragePrevlance());
+    this->setMaxPrevlance(file->MaxPrevlance());
+    this->setMinPrevlance(file->MinPrevlance());
     for(int i=0;i<this->regionListV()->size();i++)
     {
        this->regionListH()->append(this->regionListV()->at(i));
@@ -435,7 +442,7 @@ void Widget::paintEvent(QPaintEvent *event)
                 boundary.setColor(Qt::red);
                 painter.setPen(boundary);
                 painter.drawRect(QRectF(0,-50,1650,1120));
-                boundary.setColor(Qt::black);
+                boundary.setColor(Qt::gray);
                 painter.setPen(boundary);
 
     for(int i=0;i<m_polygonList->size();i++)
@@ -625,18 +632,20 @@ void Widget::paintCCg(QPainter *painter)
 
 
 
-    if(m_showRiverOnTop==true)
-    {
-        riverPen.setWidthF(this->getRiverWidth());
-        riverPen.setColor(Qt::green);
-        painter->setPen(riverPen);
-        painter->drawPolyline(*riverPoly);
-    }
+
 
 
     if(this->getFinished())
     {
         painter->setBrush(Qt::NoBrush);
+       for(int i=0;i<this->regionListV()->size();i++)
+        {
+
+            drawCartogram(this->regionListV()->at(i)->X(),
+                          this->regionListV()->at(i)->Y(),
+                          this->regionListV()->at(i)->getSize(),
+                          i,painter);
+        }
         /*
         if(this->getLineChart()==true)
         {
@@ -876,6 +885,13 @@ void Widget::paintCCg(QPainter *painter)
             }
         }
 */
+    }
+    if(m_showRiverOnTop==true)
+    {
+        riverPen.setWidthF(this->getRiverWidth());
+        riverPen.setColor(Qt::green);
+        painter->setPen(riverPen);
+        painter->drawPolyline(*riverPoly);
     }
     /*
     painter->setPen(Qt::green);
@@ -2801,6 +2817,22 @@ void Widget::drawGlyphChart(qreal x, qreal y, qreal s, int j, QPainter *p)
 
 }
 
+void Widget::drawCartogram(qreal x, qreal y, qreal s, int j, QPainter *p)
+{
+    QPen pen;
+    int d=this->getDisorder();
+    int i=(int)(8*(this->regionListV()->at(j)->healthData()->at(d)-this->getMinPrevlance()->at(d))
+            /(this->getMaxPrevlance()->at(d)-this->getMinPrevlance()->at(d)));
+    if(i>13)
+    {
+        cout<<"warning!"<<endl;
+        i=0;
+    }
+    //pen.setColor(this->dataColor0.at(i));
+    p->fillRect(QRectF(x,y,s,s),this->dataColor0.at(i));
+
+}
+
 qreal Widget::calRatio(qreal w, qreal l, int pos, int number, QList<double> *data)
 {
     qreal ratio=1;
@@ -3149,9 +3181,9 @@ void Widget::drawSign(QPainter *p)
     p->setPen(Qt::white);
     if(this->getCgroup()==false)
     {
-        for(int i=0;i<14;i++)
+        for(int i=0;i<9;i++)
         {
-            p->fillRect(1680,440+i*40,70,40,dataColor0[i]);
+            p->fillRect(1760,440+i*40,70,40,dataColor0[i]);
             /*
             if(this->getGradient()==false)
             {
@@ -3229,6 +3261,11 @@ void Widget::drawSign(QPainter *p)
                                                               0,0.97));
         }
     }
+    int d=this->getDisorder();
+    p->setPen(Qt::black);
+    p->drawText(QRect(1830,440,140,40),"Min\n"+QString::number(this->getMinPrevlance()->at(d)));
+    p->drawText(QRect(1830,760,140,40),"Max\n"+QString::number(this->getMaxPrevlance()->at(d)));
+    /*
     p->setPen(Qt::black);
     p->drawText(QRect(TEXTX,440,140,40),"Coronary-heart-disease");
     p->drawText(QRect(TEXTX,480,140,40),"Heart Failure");
@@ -3238,12 +3275,12 @@ void Widget::drawSign(QPainter *p)
     p->drawText(QRect(TEXTX,640,140,40),"Hypertension");
     p->drawText(QRect(TEXTX,680,140,40),"COPD");
     p->drawText(QRect(TEXTX,720,140,40),"Mental-Health");
-    p->drawText(QRect(TEXTX,760,140,40),"Osteoporosis");
+    p->drawText(QRect(TEXTX,760,140,40),"Osteoporosis");A
     p->drawText(QRect(TEXTX,800,140,40),"Rheumatoid-Arthritis");
     p->drawText(QRect(TEXTX,840,140,40),"Cancer");
     p->drawText(QRect(TEXTX,880,140,40),"Epilepsy");
     p->drawText(QRect(TEXTX,920,140,40),"Hypothyroidism");
-    p->drawText(QRect(TEXTX,960,140,40),"Asthma");
+    p->drawText(QRect(TEXTX,960,140,40),"Asthma");*/
     if(this->getColorFilter()==true)
     {
         for(int i=0;i<14;i++)
@@ -3431,6 +3468,36 @@ int Widget::errorYCountA(QList<AreaTeam *> *r1, QList<AreaTeam *> *r2)
     }
     this->setYError(this->getYError()+error);
 }
+int Widget::getDisorder() const
+{
+    return m_disorder;
+}
+
+void Widget::setDisorder(int disorder)
+{
+    m_disorder = disorder;
+}
+
+QList<double> *Widget::getMaxPrevlance() const
+{
+    return m_MaxPrevlance;
+}
+
+void Widget::setMaxPrevlance(QList<double> *MaxPrevlance)
+{
+    m_MaxPrevlance = MaxPrevlance;
+}
+
+QList<double> *Widget::getMinPrevlance() const
+{
+    return m_MinPrevlance;
+}
+
+void Widget::setMinPrevlance(QList<double> *MinPrevlance)
+{
+    m_MinPrevlance = MinPrevlance;
+}
+
 QList<QPointF *> *Widget::getRiverDefination() const
 {
     return riverDefination;
@@ -4893,4 +4960,9 @@ void Widget::on_start_10_pressed()
 void Widget::on_horizontalSlider_10_valueChanged(int value)
 {
     m_pushingWidth=value;
+}
+
+void Widget::on_comboBox_5_currentIndexChanged(int index)
+{
+    this->setDisorder(index);
 }

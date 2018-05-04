@@ -95,6 +95,7 @@ public:
     QList <rectHolder *> * drawSqTreeMap(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p,int layer,int j);
     void drawLineChart(qreal x,qreal y,qreal s,int j, QPainter * p);
     void drawGlyphChart(qreal x,qreal y,qreal s,int j, QPainter * p);
+    void drawCartogram(qreal x,qreal y,qreal s,int j, QPainter * p);
     qreal calRatio(qreal w, qreal l, int pos, int number, QList<double> *data);
     QList <rectHolder *> * drawSqTreeMap2(qreal x,qreal y,qreal width,qreal length,int pos,QList<double> * data, QPainter * p);
     qreal calRatio2(qreal w, qreal l, int pos, int number, QList<double> *data);
@@ -297,6 +298,15 @@ public:
     QList<QPointF *> *getRiverDefination() const;
     void setRiverDefination(QList<QPointF *> *value);
 
+    QList<double> *getMinPrevlance() const;
+    void setMinPrevlance(QList<double> *MinPrevlance);
+
+    QList<double> *getMaxPrevlance() const;
+    void setMaxPrevlance(QList<double> *MaxPrevlance);
+
+    int getDisorder() const;
+    void setDisorder(int disorder);
+
 public slots:
     void animate();
     void animation();
@@ -428,6 +438,8 @@ private slots:
 
     void on_horizontalSlider_10_valueChanged(int value);
 
+    void on_comboBox_5_currentIndexChanged(int index);
+
 private:
     Ui::Widget *ui;
     void addPopulation(int population);
@@ -489,6 +501,8 @@ private:
     int m_Windowsnumber;
     QList <AreaTeam *>  * m_AreaGroup;
     QList <double> * m_AveragePrevlance;
+    QList<double> * m_MinPrevlance;
+    QList<double> * m_MaxPrevlance;
     int m_border;
     int m_Color;
     bool m_gradient;
@@ -555,6 +569,7 @@ private:
     bool m_showDefination;
     bool m_showRiverOnTop;
     int m_pushingWidth;
+    int m_disorder;
 
 };
 

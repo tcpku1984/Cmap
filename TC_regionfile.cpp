@@ -19,10 +19,14 @@ regionFile::regionFile()
     m_RiverPolygonList=new QList<QPolygonF *>;
     m_AreaGroup=new QList<AreaTeam *>;
     m_AveragePrevlance=new QList<double>;
+    m_MinPrevlance=new QList<double>;
+    m_MaxPrevlance=new QList<double>;
     m_River=new QList<QString>;
     for(int i=0;i<14;i++)
     {
         this->AveragePrevlance()->append(0);
+        this->MinPrevlance()->append(30);
+        this->MaxPrevlance()->append(0);
     }
     this->setPopuliation(0);
     this->setDisplay(true);
@@ -83,6 +87,14 @@ void regionFile::readfile(int year)
             }
             this->AveragePrevlance()->replace(j,
                                               this->AveragePrevlance()->at(j)+b);
+            if(b>this->MaxPrevlance()->at(j))
+            {
+                this->MaxPrevlance()->replace(j,b);
+            }
+            if(b<this->MinPrevlance()->at(j))
+            {
+                this->MinPrevlance()->replace(j,b);
+            }
             tempList->append(b);
         }
         temp->setHealthData(tempList);
@@ -262,6 +274,26 @@ int regionFile::searchAreaCode(QString code)
     }
     return -1;
 }
+QList<double> *regionFile::MaxPrevlance() const
+{
+    return m_MaxPrevlance;
+}
+
+void regionFile::setMaxPrevlance(QList<double> *MaxPrevlance)
+{
+    m_MaxPrevlance = MaxPrevlance;
+}
+
+QList<double> *regionFile::MinPrevlance() const
+{
+    return m_MinPrevlance;
+}
+
+void regionFile::setMinPrevlance(QList<double> *MinPrevlance)
+{
+    m_MinPrevlance = MinPrevlance;
+}
+
 QList<QPolygonF *> *regionFile::RiverPolygonList() const
 {
     return m_RiverPolygonList;
