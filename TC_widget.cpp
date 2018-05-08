@@ -474,7 +474,7 @@ void Widget::paintCCg(QPainter *painter)
 {
     QPen riverPen;
     riverPen.setWidthF(this->getRiverWidth());
-    riverPen.setColor(Qt::green);
+    riverPen.setColor(Qt::blue);
     painter->setPen(riverPen);
     if(m_showRiverOnTop==false)
     {
@@ -889,10 +889,27 @@ void Widget::paintCCg(QPainter *painter)
     if(m_showRiverOnTop==true)
     {
         riverPen.setWidthF(this->getRiverWidth());
-        riverPen.setColor(Qt::green);
+        riverPen.setColor(Qt::blue);
         painter->setPen(riverPen);
         painter->drawPolyline(*riverPoly);
-    }
+        if(this->getRiverBoundary()==false){
+            for(int k=0;k<this->regionListV()->size();k++)
+        {
+            if(this->regionListV()->at(k)->getCrossRiver()==true)
+            {
+                painter->drawLine(QPointF(this->regionListV()->at(k)->X(),this->regionListV()->at(k)->Y()),
+                                  QPointF(this->regionListV()->at(k)->X()+this->regionListV()->at(k)->getSize(),
+                                          this->regionListV()->at(k)->Y()+this->regionListV()->at(k)->getSize()));
+                painter->drawLine(QPointF(this->regionListV()->at(k)->X(),
+                                          this->regionListV()->at(k)->Y()+this->regionListV()->at(k)->getSize()),
+                                  QPointF(this->regionListV()->at(k)->X()+this->regionListV()->at(k)->getSize(),
+                                          this->regionListV()->at(k)->Y()));
+
+            }
+        }
+
+        }
+      }
     /*
     painter->setPen(Qt::green);
     painter->drawLine(QPointF(10,this->regionListV()->at(z)->Y()+
@@ -1353,6 +1370,7 @@ void Widget::regionIncrease2()
             overlapRemove();
             for(int i=0;i<this->regionListV()->size();i++)
             {
+                /*
                 if(fabs(this->regionListV()->at(i)->X()-this->regionListV()->at(i)->getLastX())<1
                         &&fabs(this->regionListV()->at(i)->Y()-this->regionListV()->at(i)->getLastY())<1)
                 {
@@ -1376,10 +1394,66 @@ void Widget::regionIncrease2()
                             break;
                         }
                     }
-                }
+                }*/
+                double tmp=0;
+                 int y;
+                 int currentriverside=0;
+                     for(y=0;y<this->riverPoly->size();y++)
+                     {
+                         if(this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()/2>
+                                 this->riverPoly->at(y).x())
+                         {
+                             break;
+                         }
+                     }
+                     if(y==0)
+                     {
+                         if(this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-
+                                 this->riverPoly->at(y).y()>0)
+                         {
+                             currentriverside=0;
+                         }
+                         else if(this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-
+                                 this->riverPoly->at(y).y()<0)
+                         {
+                            currentriverside=0;
+                         }
+                     }
+                     else if(y==this->riverPoly->size())
+                     {
+                         if(this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-
+                                 this->riverPoly->at(y-1).y()>0)
+                         {
+                             currentriverside=0;
+                         }
+                         else if(this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-
+                                 this->riverPoly->at(y-1).y()<0)
+                         {
+                            currentriverside=0;
+                         }
+
+                     }
+                     else
+                     {
+                         double dx=this->riverPoly->at(y-1).x()-this->riverPoly->at(y).x();
+                         double dy=this->riverPoly->at(y-1).y()-this->riverPoly->at(y).y();
+                         double tmpx=this->regionListV()->at(i)->X()+this->regionListV()->at(i)->getSize()/2-this->riverPoly->at(y).x();
+                         double tmpy=this->riverPoly->at(y).y()+tmpx*dy/dx;
+                         tmp=this->regionListV()->at(i)->Y()+this->regionListV()->at(i)->getSize()/2-tmpy;
+                         if(tmp>0)
+                             currentriverside=-1;
+                         else if(tmp<0)
+                             currentriverside=1;
+
+
+                     }
+                     if(abs(currentriverside-this->regionListV()->at(i)->getRiverSide())>1)
+                     {
+                      this->regionListV()->at(i)->setCrossRiver(true);
+                     }
             }
         }
-        else
+        else if(index%2==1&&this->getRiverBoundary()==true)
         {
             m_same=0;
             m_crossCount=0;
