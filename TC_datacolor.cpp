@@ -99,10 +99,14 @@ dataColor::dataColor()
             <<QColor("#ce7e2b")<<QColor("#f8cca6")
             <<QColor("#069668")<<QColor("#ff7074")
             <<QColor("#3aa609");
-    dataColor6<<QColor("#d73027")<<QColor("#f46d43")<<QColor("#fdae61")
-            <<QColor("#fee08b")<<QColor("#ffffbf")
-            <<QColor("#d9ef8b")<<QColor("#a6d96a")
-            <<QColor("#66bd63")<<QColor("#1a9850");
+
+    dataColor6<<QColor("#1a9850")<<QColor("#66bd63")<<QColor("#a6d96a")
+            <<QColor("#d9ef8b")<<QColor("#ffffbf")
+            <<QColor("#fee08b")<<QColor("#fdae61")
+            <<QColor("#f46d43")<<QColor("#d73027");
+
+
+
     dataColor7<<QColor("#f7fcfd")<<QColor("#e5f5f9")<<QColor("#ccece6")
             <<QColor("#99d8c9")<<QColor("#66c2a4")
             <<QColor("#41ae76")<<QColor("#238b45")

@@ -27,6 +27,8 @@ Region::Region()
     m_interSection=false;
     pointList=new QList<QPointF*>;
     sizeList= new QList<int>;
+    m_lastX=0;
+    m_lastY=0;
 }
 
 Region::~Region()

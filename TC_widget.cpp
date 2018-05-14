@@ -31,7 +31,8 @@ enum{
     SIGNX=1680,
     DELAY=500,
     STEP=50,
-    RIVERWIDTH=30
+    RIVERWIDTH=30,
+    DISTANCE=1
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -1321,6 +1322,49 @@ bool intersect(QPointF aa, QPointF bb, QPointF cc, QPointF dd)
     }
     return true;
 }
+
+qreal pDistance(qreal rx,qreal ry,qreal rx1, qreal ry1,qreal rx2,qreal ry2)
+{
+    qreal a=rx-rx1;
+    qreal b=ry-ry1;
+    qreal c=rx1-rx2;
+    qreal d=ry1-ry2;
+    qreal dot=a*c+b*d;
+    qreal len=c*c+d*d;
+    qreal para=-1;
+    if(len!=0)
+    {
+        para=dot/len;
+    }
+    qreal x,y;
+    if(para<0)
+    {
+        x=rx1;
+        y=ry1;
+    }
+    else if(para>1)
+    {
+        x=rx2;
+        y=ry2;
+    }
+    else
+    {
+        x=rx1+para*c;
+        y=ry2+para*d;
+    }
+    if(ry>y)
+    {
+        return -sqrt((rx-x)*(rx-x)+(ry-y)*(ry-y));
+    }
+    else
+    {
+        return sqrt((rx-x)*(rx-x)+(ry-y)*(ry-y));
+    }
+}
+
+
+
+
 void Widget::regionIncrease2()
 {
     bool crossRiver;
@@ -1370,31 +1414,6 @@ void Widget::regionIncrease2()
             overlapRemove();
             for(int i=0;i<this->regionListV()->size();i++)
             {
-                /*
-                if(fabs(this->regionListV()->at(i)->X()-this->regionListV()->at(i)->getLastX())<1
-                        &&fabs(this->regionListV()->at(i)->Y()-this->regionListV()->at(i)->getLastY())<1)
-                {
-
-                }
-                else
-                {
-                    for(int z=0;z<riverPoly->size()-1;z++)
-                    {
-                        if(intersect(QPointF(this->regionListV()->at(i)->X()+(qreal)this->regionListV()->at(i)->getSize()/2,
-                                             this->regionListV()->at(i)->Y()+(qreal)this->regionListV()->at(i)->getSize()/2),
-                                      QPointF(this->regionListV()->at(i)->getLastX()+(qreal)this->regionListV()->at(i)->getSize()/2,
-                                             this->regionListV()->at(i)->getLastY()+(qreal)this->regionListV()->at(i)->getSize()/2),
-                                      this->riverPoly->at(z),
-                                      this->riverPoly->at(z+1)))
-                        {
-                            //cout<<z<<" test river"<<endl;
-                            //cout<<"x "<<this->regionListV()->at(i)->X()<<" : "<<this->regionListV()->at(i)->getLastX()<<endl;
-                            //cout<<"y "<<this->regionListV()->at(i)->Y()<< " : "<< this->regionListV()->at(i)->getLastY()<<endl;
-                            this->regionListV()->at(i)->setCrossRiver(true);
-                            break;
-                        }
-                    }
-                }*/
                 double tmp=0;
                  int y;
                  int currentriverside=0;
@@ -1523,7 +1542,17 @@ void Widget::regionIncrease2()
 
                      //cout<<"temp:"<<tmp<<endl;
 */
-
+                for(int z=0;z<riverPoly->size()-1;z++)
+                {
+                    if(fabs(pDistance(this->regionListV()->at(i)->X()+(qreal)this->regionListV()->at(i)->getSize()/2,
+                                      this->regionListV()->at(i)->Y()+(qreal)this->regionListV()->at(i)->getSize()/2,
+                                      this->riverPoly->at(z).x(),this->riverPoly->at(z).y(),
+                                      this->riverPoly->at(z+1).x(),this->riverPoly->at(z+1).y()))<DISTANCE)
+                    {
+                        crossRiver=true;
+                        break;
+                    }
+                }
 
                 if(fabs(this->regionListV()->at(i)->X()-this->regionListV()->at(i)->getLastX())<1
                         &&fabs(this->regionListV()->at(i)->Y()-this->regionListV()->at(i)->getLastY())<1)
@@ -3257,7 +3286,7 @@ void Widget::drawSign(QPainter *p)
     {
         for(int i=0;i<9;i++)
         {
-            p->fillRect(1760,440+i*40,70,40,dataColor0[i]);
+            p->fillRect(1760,440+i*40,70,40,dataColor0[8-i]);
             /*
             if(this->getGradient()==false)
             {
@@ -3337,8 +3366,8 @@ void Widget::drawSign(QPainter *p)
     }
     int d=this->getDisorder();
     p->setPen(Qt::black);
-    p->drawText(QRect(1830,440,140,40),"Min\n"+QString::number(this->getMinPrevlance()->at(d)));
-    p->drawText(QRect(1830,760,140,40),"Max\n"+QString::number(this->getMaxPrevlance()->at(d)));
+    p->drawText(QRect(1830,440,140,40),"Max\n"+QString::number(this->getMaxPrevlance()->at(d)));
+    p->drawText(QRect(1830,760,140,40),"Min\n"+QString::number(this->getMinPrevlance()->at(d)));
     /*
     p->setPen(Qt::black);
     p->drawText(QRect(TEXTX,440,140,40),"Coronary-heart-disease");
