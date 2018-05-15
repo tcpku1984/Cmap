@@ -32,7 +32,7 @@ enum{
     DELAY=500,
     STEP=50,
     RIVERWIDTH=30,
-    DISTANCE=1
+    DISTANCE=0
 };
 
 bool verticalOrder(Region * r1, Region * r2)
@@ -218,6 +218,8 @@ Widget::Widget(QWidget *parent) :
     this->setMinPrevlance(file->MinPrevlance());
     for(int i=0;i<this->regionListV()->size();i++)
     {
+        this->regionListV()->at(i)->setLastX(this->regionListV()->at(i)->X());
+        this->regionListV()->at(i)->setLastY(this->regionListV()->at(i)->Y());
        this->regionListH()->append(this->regionListV()->at(i));
 
     }
@@ -1370,7 +1372,7 @@ void Widget::regionIncrease2()
     bool crossRiver;
     cout<<"index::"<<index<<endl;
     cout<<"m cross:"<<m_crossCount<<endl;
-        if(index%2==0)
+        if(index%2==0&&index!=0)
         {
             if(m_crossCount==0||this->getRiverBoundary()==false)
             {
@@ -1476,6 +1478,7 @@ void Widget::regionIncrease2()
         {
             m_same=0;
             m_crossCount=0;
+
 
             for(int i=0;i<this->regionListV()->size();i++)
             {
@@ -1588,10 +1591,30 @@ void Widget::regionIncrease2()
                          {
                              //cout<<"i : "<<i<<" x: "<<this->regionListV()->at(i)->X()<<endl;
                              //cout<<"i : "<<i<<" Lastx: "<<this->regionListV()->at(i)->getLastX()<<endl;
-                             this->regionListV()->at(i)->setCurrentX((this->regionListV()->at(i)->X()));
-                             this->regionListV()->at(i)->setCurrentY((this->regionListV()->at(i)->Y()));
-                             this->regionListV()->at(i)->setX(this->regionListV()->at(i)->getLastX());
-                             this->regionListV()->at(i)->setY(this->regionListV()->at(i)->getLastY());
+                             if(this->regionListV()->at(i)->getLastX()==this->regionListV()->at(i)->X()
+                                     &&this->regionListV()->at(i)->getLastY()==this->regionListV()->at(i)->Y())
+                             {
+                                 if(this->regionListV()->at(i)->getRiverSide()>0)
+                                 {
+                                     this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-DISTANCE-1);
+                                     this->regionListV()->at(i)->setLastX(this->regionListV()->at(i)->X());
+                                     this->regionListV()->at(i)->setLastY(this->regionListV()->at(i)->Y());
+                                 }
+                                 else if(this->regionListV()->at(i)->getRiverSide()<0)
+                                 {
+                                     this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()+DISTANCE+1);
+                                     this->regionListV()->at(i)->setLastX(this->regionListV()->at(i)->X());
+                                     this->regionListV()->at(i)->setLastY(this->regionListV()->at(i)->Y());
+                                 }
+
+                             }
+                             else
+                             {
+                                 this->regionListV()->at(i)->setCurrentX((this->regionListV()->at(i)->X()));
+                                 this->regionListV()->at(i)->setCurrentY((this->regionListV()->at(i)->Y()));
+                                 this->regionListV()->at(i)->setX(this->regionListV()->at(i)->getLastX());
+                                 this->regionListV()->at(i)->setY(this->regionListV()->at(i)->getLastY());
+                             }
                              //this->regionListV()->at(i)->setY(this->regionListV()->at(i)->Y()-tmp);
                                  //cout<<"move: "<<i<<endl;
                                 // cout<<"i : "<<i<<" x: "<<this->regionListV()->at(i)->getCurrentX()<<" "<<this->regionListV()->at(i)->getCurrentY()<<endl;
